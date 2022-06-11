@@ -118,6 +118,8 @@ class MessageReceiver(MessageSender):
                 1)
             self.serverSocket.bind(addr)
             self.serverSocket.listen()
+
+            return True
             self.addr = self.serverSocket.getsockname()
             self.debugLogger.info(
                 'Listening at %s' % str(self.addr))
