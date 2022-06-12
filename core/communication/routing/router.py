@@ -16,6 +16,8 @@ from ..utils.connection.message.toSend import MessageToSend
 from ..utils.types.message.type import MessageType
 from ..utils.types.component.identitySerializable import Component
 
+from ...warehouse.DataWarehouse import DataWarehouse
+
 # ToDo: read from .env
 ADDRESS: Address = ["127.0.0.1", 5000]
 PORT_RANGE = [5000, 5001]
@@ -30,6 +32,13 @@ class Router:
             # ToDo: add a dispatcher here
             self.debugLogger.warning("----------------------------")
             self.debugLogger.warning(message.toDict())
+
+
+            #1. receive fetch request message m
+            #2. receive data update
+            #3. receive initialize FL
+            #4. receive terminate FL
+            #5. receive next step indication(parent to child)
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, 'instance'):
