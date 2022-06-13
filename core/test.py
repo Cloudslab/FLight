@@ -23,13 +23,19 @@ class aaaaa(MessageToSend):
         super().__init__(messageType, data, destination, messageSubType, messageSubSubType)
         self.x = 1
 
+class test:
+    def __init__(self):
+        self.x = 1
+        self.y = 2
+
 if __name__ == "__main__":
     destination = Component(["127.0.0.1", 5000])
     message_to_send = aaaaa(
         MessageType.NONE,
         data={
             "w": 0,
-            "bias": 0
+            "bias": 0,
+            "test": test().__dict__
         },
         destination=destination
 
@@ -37,4 +43,5 @@ if __name__ == "__main__":
 
     r = Router()
     r.communicator.sendMessage(message_to_send)
+    print(message_to_send.__class__)
     print("HW")

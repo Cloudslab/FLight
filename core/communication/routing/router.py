@@ -16,7 +16,7 @@ from ..utils.connection.message.toSend import MessageToSend
 from ..utils.types.message.type import MessageType
 from ..utils.types.component.identitySerializable import Component
 
-from ...warehouse.DataWarehouse import DataWarehouse
+#from ...warehouse.DataWarehouse import DataWarehouse
 
 # ToDo: read from .env
 ADDRESS: Address = ["127.0.0.1", 5000]
