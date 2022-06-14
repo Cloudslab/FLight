@@ -15,10 +15,12 @@ from ..utils.connection.message.received import MessageReceived
 from ..utils.connection.message.toSend import MessageToSend
 from ..utils.types.message.type import MessageType
 from ..utils.types.component.identitySerializable import Component
+from ...warehouse.DataWarehouse import DataWarehouse
 
-#from ...warehouse.DataWarehouse import DataWarehouse
+# from ...warehouse.DataWarehouse import DataWarehouse
 
 # ToDo: read from .env
+
 ADDRESS: Address = ["127.0.0.1", 5000]
 PORT_RANGE = [5000, 5001]
 LOG_LVL = 0
@@ -32,13 +34,19 @@ class Router:
             # ToDo: add a dispatcher here
             self.debugLogger.warning("----------------------------")
             self.debugLogger.warning(message.toDict())
+            from ...ml.model.LinearRegression import LinearRegressionFactory
+            if message.data["id"] == "pointer_give":  # receive create linear regression message
 
+                local_model = LinearRegressionFactory().LinearRegressionClient(message.toDict()["data"]["pointer"],
+                                                                               ["127.0.0.1", 5000])
+                if local_model:
+                    local_model.server_ptr.ack_client_ready(local_model.ptr)
 
-            #1. receive fetch request message m
-            #2. receive data update
-            #3. receive initialize FL
-            #4. receive terminate FL
-            #5. receive next step indication(parent to child)
+            if message.data["id"] == "pointer_ack":  # try to add it to local linear regression model
+                ptr_dict = message.toDict()["data"]["pointer"]
+                local_model = DataWarehouse().get(ptr_dict["remote_retriever_name"], ptr_dict["remote_id"])
+                if local_model:
+                    local_model.add_worker_pointer(message.toDict()["data"]["call_back_pointer"])
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, 'instance'):

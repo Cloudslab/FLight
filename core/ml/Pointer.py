@@ -4,7 +4,7 @@ Points to a remote object
 
 
 from abc import ABC, abstractmethod
-from ..communication.utils.types import MessageSubType, MessageSubSubType, Address
+from ..communication.utils.types.basic.address import Address
 from ..communication.message import PointerMessage, PointerMessage_RETRIEVE, PointerDataMessage
 from ..communication.routing import Router
 from ..warehouse.DataWarehouse import DataWarehouse
@@ -12,6 +12,14 @@ from ..warehouse.DataWarehouse import DataWarehouse
 
 class Pointer(ABC):
     __slots__ = ["address", "remote_id", "version", "remote_retriever_name"]
+
+    def toDict(self):
+        return {
+            "address": self.address,
+            "remote_id": self.remote_id,
+            "version": self.version,
+            "remote_retriever_name": self.remote_retriever_name
+        }
 
     def __init__(self, address: Address, remote_id: int, version: int, remote_retriever_name: str):
         self.address = address

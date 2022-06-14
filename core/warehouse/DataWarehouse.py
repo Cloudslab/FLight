@@ -1,7 +1,8 @@
 import uuid
-from RetrieverAbstract import RetrieverAbstract
-from ScalarRetriever import ScalarRetriever
 
+from .RetrieverAbstract import RetrieverAbstract
+from .ScalarRetriever import ScalarRetriever
+from .ModelWarehouse import ModelRetriever
 
 class DataWarehouse:
 
@@ -9,6 +10,7 @@ class DataWarehouse:
         if not hasattr(cls, "instance"):
             cls.instance = super(DataWarehouse, cls).__new__(cls)
             cls.instance.__setattr__(ScalarRetriever.RETRIEVER_NAMESPACE, ScalarRetriever())
+            cls.instance.__setattr__(ModelRetriever.RETRIEVER_NAMESPACE, ModelRetriever())
         return cls.instance
 
     @classmethod
@@ -22,26 +24,26 @@ class DataWarehouse:
 
     @classmethod
     def get(cls, retriever_name, unique_id: uuid.UUID):
-        if not hasattr(cls, retriever_name):
+        if not hasattr(cls.instance, retriever_name):
             # ToDo: call debug logger
             return None
-        if not isinstance(getattr(cls, retriever_name), RetrieverAbstract):
+        if not isinstance(getattr(cls.instance, retriever_name), RetrieverAbstract):
             # ToDo: call debug logger
             return None
 
-        return getattr(cls, retriever_name).get(unique_id)
+        return getattr(cls.instance, retriever_name).get(str(unique_id))
 
     @classmethod
     def set(cls, retriever_name, data, unique_id: uuid.UUID = None):
-        if not hasattr(cls, retriever_name):
+        if not hasattr(cls.instance, retriever_name):
             # ToDo: call debug logger
             return None
-        if not isinstance(getattr(cls, retriever_name), RetrieverAbstract):
+        if not isinstance(getattr(cls.instance, retriever_name), RetrieverAbstract):
             # ToDo: call debug logger
             return None
 
-        new_id = unique_id if unique_id else cls._generate_id()
-        if getattr(cls, retriever_name).set(new_id, data):
+        new_id = str(unique_id) if unique_id else str(cls._generate_id())
+        if getattr(cls.instance, retriever_name).set(new_id, data):
             return new_id
         else:
             return None

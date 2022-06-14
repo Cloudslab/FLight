@@ -2,9 +2,8 @@ from ..Pointer import Pointer
 from Scalar import Scalar
 from ...communication.utils.types import Address
 from ...warehouse.ScalarRetriever import ScalarRetriever
-from ...warehouse.DataWarehouse import DataWarehouse
 
-#After a Scalar is created, this is produced to pass to remote to provide access
+# After a Scalar is created, this is produced to pass to remote to provide access
 
 
 class ScalarPointer(Pointer):

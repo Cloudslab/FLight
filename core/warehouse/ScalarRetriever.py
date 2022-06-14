@@ -1,4 +1,4 @@
-from RetrieverAbstract import RetrieverAbstract
+from .RetrieverAbstract import RetrieverAbstract
 from ..ml.basic.Scalar import Scalar
 import uuid
 
