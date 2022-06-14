@@ -1,7 +1,9 @@
 from ..Pointer import Pointer
+from ...communication.message import PointerMessage
 from ...communication.utils.types import Address
 from ...warehouse.ModelWarehouse import ModelRetriever
-from ...communication.message.LinearRegressionPointerMessages import LinearRegressionAckMessage
+from ...communication.message.LinearRegressionPointerMessages import LinearRegressionAckMessage, LinearRegressionStep, \
+    LinearRegressionFetchServer, LinearRegressionServerData, LinearRegressionClientData
 from ...communication.routing import Router
 
 class LinearRegressionPointer(Pointer):
@@ -20,7 +22,33 @@ class LinearRegressionPointer(Pointer):
             # ToDo log error here
             return None
 
-    # used for linear regression client to to tell remote server local model is ready
+    def export_pointer(self, remote_address: Address):
+        message_to_send = PointerMessage(self, remote_address, "lr_init")
+        Router().communicator.sendMessage(message_to_send)
+
+    # when a server pointer is hold by client, client can use it to tell remote server local model is ready
     def ack_client_ready(self, client_ptr: Pointer):
         message_to_send = LinearRegressionAckMessage(self, client_ptr)
+        Router().communicator.sendMessage(message_to_send)
+
+    # when a client pointer is hold by server, server can use it to invite client to do a train
+    def step(self, server_ptr: Pointer):
+        message_to_send = LinearRegressionStep(self, server_ptr)
+        Router().communicator.sendMessage(message_to_send)
+
+    # when a server pointer is hold by client, client can use it to fetch server data
+    def fetch_server(self, client_ptr: Pointer):
+        message_to_send = LinearRegressionFetchServer(self, client_ptr)
+        Router().communicator.sendMessage(message_to_send)
+
+    # when a client pointer is hold by server, server can use it to push local data to client (indicate if just give or
+    # ask to train)
+    def push_client(self, server_ptr: Pointer, model_data: dict, flag: str):
+        message_to_send = LinearRegressionServerData(self, server_ptr, model_data, flag)
+        Router().communicator.sendMessage(message_to_send)
+
+    # when a server pointer is hold by client, client can use it to push local data to server (indicate if just give or
+    # ask to train)
+    def push_server(self, client_ptr: Pointer, model_data: dict, flag: str):
+        message_to_send = LinearRegressionClientData(self, client_ptr, model_data, flag)
         Router().communicator.sendMessage(message_to_send)

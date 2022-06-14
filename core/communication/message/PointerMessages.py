@@ -9,8 +9,8 @@ from ..utils.types import MessageType, Address, Component
 
 # after whatever object created, we wish to pass the pointer to remote interested site
 class PointerMessage(MessageToSend):
-    def __init__(self, pointer: 'Pointer', dest_addr):
-        super().__init__(MessageType.NONE, {"id": "pointer_give", "pointer": pointer.toDict()}, Component(dest_addr))
+    def __init__(self, pointer: 'Pointer', dest_addr, ptr_id="pointer_give"):
+        super().__init__(MessageType.NONE, {"id": ptr_id, "pointer": pointer.toDict()}, Component(dest_addr))
 
 
 # we want to use the pointer to retrieve remote data, also provides which object from ourselves interested in this data
