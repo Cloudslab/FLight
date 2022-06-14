@@ -12,9 +12,10 @@ RUN apk add --no-cache \
     linux-headers
 RUN python -m pip install --retries 100 --default-timeout=600  --no-cache-dir --upgrade pip
 
-COPY ./core ./docker_playground
+COPY ./ ./workplace
+COPY ./bigTest.py ./workplace
 #COPY ./core/requirements.txt ./requirements.txt
 #RUN python -m pip install --upgrade pip
 #RUN pip install -r requirements.txt
 
-CMD ["python", "docker_playground/communication/route111.py"]
+CMD ["python", "workplace/bigTest.py"]
