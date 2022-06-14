@@ -21,7 +21,7 @@ from ...warehouse.DataWarehouse import DataWarehouse
 
 # ToDo: read from .env
 
-ADDRESS: Address = ["127.0.0.1", 5000]
+ADDRESS: Address = ["10.211.55.4", 5000]
 PORT_RANGE = [5000, 5001]
 LOG_LVL = 0
 MASTER_ADDR = ["127.0.0.1", 5000]
@@ -39,11 +39,12 @@ class Router:
             if message.data["id"] == "lr_init":  # receive create linear regression message
 
                 local_model = LinearRegressionFactory().LinearRegressionClient(message.toDict()["data"]["pointer"],
-                                                                               ["127.0.0.1", 5000])
+                                                                               ADDRESS)
                 if local_model:
                     local_model.server_ptr.ack_client_ready(local_model.ptr)
 
             if message.data["id"] == "lr_ack":  # try to add it to local linear regression model
+
                 ptr_dict = message.toDict()["data"]["pointer"]
                 local_model = DataWarehouse().get(ptr_dict["remote_retriever_name"], ptr_dict["remote_id"])
                 if local_model:
