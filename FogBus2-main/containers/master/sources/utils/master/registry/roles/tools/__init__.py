@@ -1,1 +1,0 @@
-from .generateTokenList import generateTokenList
