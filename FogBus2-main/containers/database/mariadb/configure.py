@@ -60,6 +60,7 @@ def create():
               ' -d mariadb:10.5.9'
     ret = os.system(command=command)
     if ret != 0:
+        logger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         return terminate()
     logger.info('Created MariaDB'
                 '\n    Container name: %s'
