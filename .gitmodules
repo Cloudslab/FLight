@@ -1,0 +1,3 @@
+[submodule "FogBus2"]
+	path = FogBus2
+	url = https://github.com/Cloudslab/FogBus2.git
