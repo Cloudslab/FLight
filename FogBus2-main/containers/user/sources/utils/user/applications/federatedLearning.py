@@ -48,6 +48,8 @@ class FederatedLearning(ApplicationUserSide):
                 break
             else:
                 self.basicComponent.debugLogger.info("Still waiaiaiaiaiaia----------")
+                self.basicComponent.debugLogger.info(
+                    'Received all the 3 ID: \r\n%s', pformat(result))
 
         self.basicComponent.debugLogger.info(
             'Received all the 3 ID: \r\n%s', pformat(result))
