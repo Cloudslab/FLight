@@ -34,22 +34,13 @@ class FederatedLearning(ApplicationUserSide):
         lastDataSentTime = time()
 
         # wait for all the 4 results
-        while True:
-            result = self.resultForActuator.get()
+        result = self.resultForActuator.get()
 
-            responseTime = (time() - lastDataSentTime) * 1000
-            self.responseTime.update(responseTime)
-            self.responseTimeCount += 1
+        responseTime = (time() - lastDataSentTime) * 1000
+        self.responseTime.update(responseTime)
+        self.responseTimeCount += 1
 
-            self.basicComponent.debugLogger.info("still waiting--------------------------")
-
-            if 'taskID0' in result and 'taskID1' in result and 'taskID2' in result:
-                self.basicComponent.debugLogger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                break
-            else:
-                self.basicComponent.debugLogger.info("Still waiaiaiaiaiaia----------")
-                self.basicComponent.debugLogger.info(
-                    'Received all the 3 ID: \r\n%s', pformat(result))
+        self.basicComponent.debugLogger.info("still waiting--------------------------")
 
         self.basicComponent.debugLogger.info(
             'Received all the 3 ID: \r\n%s', pformat(result))
