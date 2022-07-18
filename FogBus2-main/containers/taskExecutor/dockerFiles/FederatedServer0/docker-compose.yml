@@ -4,7 +4,7 @@ services:
 
   fogbus2-federated_worker0:
     # image: fogbus2-naive_formula0
-    image: fogbus2-federated_server0
+    image: fogbus2-federated_worker0
     build:
       context: ../../
       dockerfile: dockerFiles/FederatedWorker0/Dockerfile

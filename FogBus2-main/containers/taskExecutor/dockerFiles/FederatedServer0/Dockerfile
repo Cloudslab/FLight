@@ -59,7 +59,7 @@ COPY  --from=builder /usr/local/ /usr/local/
 COPY --from=builder /usr/lib/ /usr/lib/
 
 # Hostname
-RUN echo "FederatedServer0" > /etc/hostname
+RUN echo "FederatedWorker0" > /etc/hostname
 
 # Run FederatedWorker0
 WORKDIR /workplace

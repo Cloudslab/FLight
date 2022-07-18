@@ -161,5 +161,7 @@ def initTask(taskName: str) -> Union[BaseTask, None]:
         task = FederatedWorker1()
     elif taskName == 'FederatedWorker2':
         task = FederatedWorker2()
+    elif taskName == 'FederatedServer0':
+        task = FederatedServer0()
 
     return task
