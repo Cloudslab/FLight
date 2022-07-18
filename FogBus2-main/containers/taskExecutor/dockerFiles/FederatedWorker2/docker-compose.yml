@@ -1,0 +1,16 @@
+version: '3'
+
+services:
+
+  fogbus2-federated_worker2:
+    # image: fogbus2-naive_formula0
+    image: fogbus2-federated_worker2
+    build:
+      context: ../../
+      dockerfile: dockerFiles/FederatedWorker2/Dockerfile
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Australia/Melbourne
+    network_mode:
+      host

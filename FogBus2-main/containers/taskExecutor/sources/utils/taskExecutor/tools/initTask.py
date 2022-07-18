@@ -155,5 +155,11 @@ def initTask(taskName: str) -> Union[BaseTask, None]:
         task = NaiveFormula2()
     elif taskName == 'NaiveFormula3':
         task = NaiveFormula3()
+    elif taskName == 'FederatedWorker0':
+        task = FederatedWorker0()
+    elif taskName == 'FederatedWorker1':
+        task = FederatedWorker1()
+    elif taskName == 'FederatedWorker2':
+        task = FederatedWorker2()
 
     return task
