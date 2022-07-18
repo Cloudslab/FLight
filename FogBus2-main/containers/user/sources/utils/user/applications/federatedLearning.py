@@ -44,6 +44,7 @@ class FederatedLearning(ApplicationUserSide):
             self.basicComponent.debugLogger.info("still waiting--------------------------")
 
             if 'taskID0' in result and 'taskID1' in result and 'taskID2' in result:
+                self.basicComponent.debugLogger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                 break
 
         self.basicComponent.debugLogger.info(
