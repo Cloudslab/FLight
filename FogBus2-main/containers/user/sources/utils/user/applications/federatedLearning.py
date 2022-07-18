@@ -46,6 +46,8 @@ class FederatedLearning(ApplicationUserSide):
             if 'taskID0' in result and 'taskID1' in result and 'taskID2' in result:
                 self.basicComponent.debugLogger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                 break
+            else:
+                self.basicComponent.debugLogger.info("Still waiaiaiaiaiaia----------")
 
         self.basicComponent.debugLogger.info(
             'Received all the 3 ID: \r\n%s', pformat(result))
