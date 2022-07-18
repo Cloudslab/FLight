@@ -2,7 +2,7 @@ version: '3'
 
 services:
 
-  fogbus2-federated_worker0:
+  fogbus2-federated_server0:
     # image: fogbus2-naive_formula0
     image: fogbus2-federated_server0
     build:
