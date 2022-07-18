@@ -41,6 +41,8 @@ class FederatedLearning(ApplicationUserSide):
             self.responseTime.update(responseTime)
             self.responseTimeCount += 1
 
+            self.basicComponent.debugLogger.info("still waiting--------------------------")
+
             if 'taskID0' in result and 'taskID1' in result and 'taskID2' in result:
                 break
 
