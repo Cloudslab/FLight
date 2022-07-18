@@ -18,6 +18,7 @@ class FederatedLearning(ApplicationUserSide):
             targetHeight=targetHeight,
             showWindow=showWindow,
             basicComponent=basicComponent)
+        self.count = 3
 
     def prepare(self):
         pass
@@ -34,13 +35,17 @@ class FederatedLearning(ApplicationUserSide):
         lastDataSentTime = time()
 
         # wait for all the 4 results
-        result = self.resultForActuator.get()
+        while self.count > 0:
+            result = self.resultForActuator.get()
 
-        responseTime = (time() - lastDataSentTime) * 1000
-        self.responseTime.update(responseTime)
-        self.responseTimeCount += 1
+            responseTime = (time() - lastDataSentTime) * 1000
+            self.responseTime.update(responseTime)
+            self.responseTimeCount += 1
 
-        self.basicComponent.debugLogger.info("still waiting--------------------------")
+            self.basicComponent.debugLogger.info("still waiting--------------------------")
+            self.basicComponent.debugLogger.info(
+                'Received all the 3 ID: \r\n%s', pformat(result))
+            self.count -= 1
 
         self.basicComponent.debugLogger.info(
-            'Received all the 3 ID: \r\n%s', pformat(result))
+            'Done')
