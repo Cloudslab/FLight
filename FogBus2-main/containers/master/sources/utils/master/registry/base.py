@@ -74,7 +74,6 @@ class Registry(ABC):
     def registerClient(self, message: MessageReceived):
         source = message.source
         if source.role is ComponentRole.USER:
-            self.debugLogger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             return self.registerUser(message)
         if source.role is ComponentRole.ACTOR:
             return self.registerActor(message)
