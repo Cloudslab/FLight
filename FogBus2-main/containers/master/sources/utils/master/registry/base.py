@@ -158,7 +158,6 @@ class Registry(ABC):
         applicationName = data['applicationName']
         label = data['label']
         if applicationName not in self.applicationManager.applications:
-            self.debugLogger.info("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb")
             return None
         application = self.applicationManager.applications[applicationName]
         applicationCopy: Application = application.copy(withLabel=label)

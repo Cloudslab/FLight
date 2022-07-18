@@ -60,7 +60,6 @@ def create():
               ' -d mariadb:10.5.9'
     ret = os.system(command=command)
     if ret != 0:
-        logger.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
         return terminate()
     logger.info('Created MariaDB'
                 '\n    Container name: %s'
@@ -182,7 +181,7 @@ if __name__ == '__main__':
         create()
     if args.init:
         if args.create:
-            toSleep = 30
+            toSleep = 5
             logger.info('Sleep %d seconds waiting for creation...', toSleep)
             while True:
                 print('%d seconds left...' % toSleep, end='\r')
