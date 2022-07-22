@@ -28,6 +28,7 @@ class FederatedLearning(ApplicationUserSide):
             'Application is running: %s', self.appName)
 
         inputData = {
+            "number":1
         }
 
         # put it in to data uploading queue
@@ -35,17 +36,8 @@ class FederatedLearning(ApplicationUserSide):
         lastDataSentTime = time()
 
         # wait for all the 4 results
-        while self.count > 0:
-            result = self.resultForActuator.get()
 
-            responseTime = (time() - lastDataSentTime) * 1000
-            self.responseTime.update(responseTime)
-            self.responseTimeCount += 1
+        result = self.resultForActuator.get()
 
-            self.basicComponent.debugLogger.info("still waiting--------------------------")
-            self.basicComponent.debugLogger.info(
-                'Received all the 3 ID: \r\n%s', pformat(result))
-            self.count -= 1
 
-        self.basicComponent.debugLogger.info(
-            'Done')
+        self.basicComponent.debugLogger.info('Done: the result is ', result["number"])
