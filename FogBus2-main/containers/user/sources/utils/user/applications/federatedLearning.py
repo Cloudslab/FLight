@@ -28,7 +28,8 @@ class FederatedLearning(ApplicationUserSide):
             'Application is running: %s', self.appName)
 
         inputData = {
-            "number":1
+            "number": 1,
+            "tag": "Federated Learning"
         }
 
         # put it in to data uploading queue

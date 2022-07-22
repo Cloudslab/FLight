@@ -7,5 +7,6 @@ class FederatedWorker(BaseTask):
     def exec(self, inputData):
 
         inputData["number"] += 1
-
+        if "addr" in inputData:
+            inputData["ServerAddr"] = inputData["addr"]
         return inputData

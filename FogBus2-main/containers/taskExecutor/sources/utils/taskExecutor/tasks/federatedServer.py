@@ -8,4 +8,7 @@ class FederatedServer(BaseTask):
 
         inputData["number"] *= 2
 
+        if "addr" in inputData:
+            inputData["WorkerAddr"] = inputData["addr"]
+
         return inputData

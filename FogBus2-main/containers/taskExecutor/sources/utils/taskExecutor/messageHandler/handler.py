@@ -87,6 +87,10 @@ class TaskExecutorMessageHandler:
     def handleData(self, message: MessageReceived):
 
         data = message.data
+
+        if "tag" in data and data["tag"] == "Federated Learning":
+            data["addr"] = self.basicComponent.addr
+
         intermediateData = data['intermediateData']
         result = self.task.exec(intermediateData)
         processingTime = time() * 1000 - message.receivedAtLocalTimestamp
