@@ -36,7 +36,7 @@ class FederatedLearning(ApplicationUserSide):
 
         # wait for all the 4 results
 
-        result = self.resultForActuator.get()
-
-
-        self.basicComponent.debugLogger.info('Done: the result is: %s', result)
+        while True:
+            result = self.resultForActuator.get()
+            self.basicComponent.debugLogger.info('Done: the result is: %s', result)
+            self.basicComponent.debugLogger.info('--------------------------XXX-------------------------')
