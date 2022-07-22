@@ -33,7 +33,6 @@ class FederatedLearning(ApplicationUserSide):
 
         # put it in to data uploading queue
         self.dataToSubmit.put(inputData)
-        lastDataSentTime = time()
 
         # wait for all the 4 results
 
