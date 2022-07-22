@@ -92,6 +92,7 @@ class TaskExecutorMessageHandler:
 
         if "tag" in intermediateData and intermediateData["tag"] == "Federated Learning":
             intermediateData["addr"] = self.basicComponent.addr
+        self.basicComponent.debugLogger.info(intermediateData)
         result = self.task.exec(intermediateData)
         processingTime = time() * 1000 - message.receivedAtLocalTimestamp
         self.task.updateProcessingTime(processingTime)
