@@ -8,9 +8,6 @@ from .federatedServer import FederatedServer
 
 
 from .faceDetection import FaceDetection
-from .federatedWorker0 import FederatedWorker0
-from .federatedWorker1 import FederatedWorker1
-from .federatedWorker2 import FederatedWorker2
 from .gameOfLife import GameOfLife
 from .gameOfLife0 import GameOfLife0
 from .gameOfLife1 import GameOfLife1

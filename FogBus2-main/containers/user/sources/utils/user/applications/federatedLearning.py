@@ -41,3 +41,4 @@ class FederatedLearning(ApplicationUserSide):
             result = self.resultForActuator.get()
             self.basicComponent.debugLogger.info('Done: the result is: %s', result)
             self.basicComponent.debugLogger.info('--------------------------XXX-------------------------')
+        return
