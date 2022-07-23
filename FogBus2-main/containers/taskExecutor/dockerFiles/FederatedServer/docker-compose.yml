@@ -7,7 +7,7 @@ services:
     image: fogbus2-federated_server
     build:
       context: ../../
-      dockerfile: dockerFiles/FederatedWorker0/Dockerfile
+      dockerfile: dockerFiles/FederatedServer/Dockerfile
     environment:
       PUID: 1000
       PGID: 1000
