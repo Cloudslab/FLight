@@ -6,4 +6,5 @@ class FederatedServer(BaseTask):
 
     def exec(self, inputData):
         inputData["server_addr"] = inputData["self_addr"]
+        inputData["worker_addr"] = inputData["child_addr"]
         return inputData
