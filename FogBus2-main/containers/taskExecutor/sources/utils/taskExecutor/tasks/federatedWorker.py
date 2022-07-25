@@ -16,4 +16,4 @@ class FederatedWorker(BaseTask):
             conn, addr = s.accept()
             with conn:
                 data = conn.recv(1024)
-                conn.sendall(data)
+                #conn.sendall(data)
