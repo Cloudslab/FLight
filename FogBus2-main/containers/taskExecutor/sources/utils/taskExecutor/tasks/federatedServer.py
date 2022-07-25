@@ -9,4 +9,5 @@ class FederatedServer(BaseTask):
 
         self.worker_addr.append(inputData["child_addr"])
         inputData["worker_addr"] = self.worker_addr
+        inputData["server_addr"] = inputData["self_addr"]
         return inputData

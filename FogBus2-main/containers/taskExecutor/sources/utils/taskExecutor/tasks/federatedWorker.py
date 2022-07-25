@@ -6,3 +6,5 @@ class FederatedWorker(BaseTask):
 
     def exec(self, inputData):
         print("worker exec")
+
+        import socket
