@@ -5,6 +5,4 @@ class FederatedWorker(BaseTask):
         super().__init__(taskID=220, taskName='FederatedWorker')
 
     def exec(self, inputData):
-        print("worker exec")
-
-        import socket
+        return inputData
