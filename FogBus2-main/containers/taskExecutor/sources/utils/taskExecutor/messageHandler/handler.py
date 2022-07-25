@@ -87,12 +87,25 @@ class TaskExecutorMessageHandler:
     def handleData(self, message: MessageReceived):
 
         data = message.data
-
         intermediateData = data['intermediateData']
-
-        if "tag" in intermediateData and intermediateData["tag"] == "Federated Learning":
-            intermediateData["addr"] = self.basicComponent.addr
         self.basicComponent.debugLogger.info(intermediateData)
+        # NEW codes added for Federated Learning @ Wuji Zhu
+        if "tag" in intermediateData and intermediateData["tag"] == "Federated Learning" and \
+                len(self.registrationManager.childrenAddresses.keys()):
+            data['intermediateData'] = {"child_addr": self.basicComponent.addr}
+            for addr in self.registrationManager.childrenAddresses.values():
+                child = Component(addr=addr)
+                self.basicComponent.sendMessage(
+                    messageType=MessageType.DATA,
+                    messageSubType=MessageSubType.INTERMEDIATE_DATA,
+                    data=data,
+                    destination=child)
+
+            self.task.exec(intermediateData)
+            return
+
+        # End of codes added for Federated Learning
+
         result = self.task.exec(intermediateData)
         processingTime = time() * 1000 - message.receivedAtLocalTimestamp
         self.task.updateProcessingTime(processingTime)
@@ -117,6 +130,8 @@ class TaskExecutorMessageHandler:
             data=data,
             destination=self.basicComponent.master)
         return
+
+
 
     def handleWait(self, message: MessageReceived):
         self.basicComponent.isRegistered.clear()
