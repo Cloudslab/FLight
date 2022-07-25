@@ -5,4 +5,5 @@ class FederatedWorker(BaseTask):
         super().__init__(taskID=220, taskName='FederatedWorker')
 
     def exec(self, inputData):
+        inputData["worker_addr"] = inputData["self_addr"]
         return inputData
