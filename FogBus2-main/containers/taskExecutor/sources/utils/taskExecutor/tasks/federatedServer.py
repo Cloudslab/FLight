@@ -16,6 +16,5 @@ class FederatedServer(BaseTask):
             s.connect((HOST, PORT))
             s.sendall(b"Hello, world")
             data = s.recv(1024)
-            data = data.decode("utf-8")
         inputData["finalRRR"] = data
         return inputData

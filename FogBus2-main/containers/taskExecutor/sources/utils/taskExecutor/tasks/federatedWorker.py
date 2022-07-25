@@ -16,6 +16,4 @@ class FederatedWorker(BaseTask):
             conn, addr = s.accept()
             with conn:
                 data = conn.recv(1024)
-                data = data.decode("utf-8")
-                data += "aaaaaaaaaaaaaaa"
-                conn.sendall(data.encode("utf-8"))
+                conn.sendall(data)
