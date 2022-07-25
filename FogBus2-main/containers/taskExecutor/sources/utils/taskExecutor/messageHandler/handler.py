@@ -91,8 +91,9 @@ class TaskExecutorMessageHandler:
         self.basicComponent.debugLogger.info(intermediateData)
         # NEW codes added for Federated Learning @ Wuji Zhu
         if "tag" in intermediateData and intermediateData["tag"] == "Federated Learning":
+
+            intermediateData["self_addr"] = self.basicComponent.addr
             if len(self.registrationManager.childrenAddresses.keys()):
-                intermediateData["self_addr"] = self.basicComponent.addr
                 data['intermediateData'] = {"child_addr": self.basicComponent.addr}
                 for addr in self.registrationManager.childrenAddresses.values():
                     child = Component(addr=addr)
