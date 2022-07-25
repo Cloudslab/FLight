@@ -7,4 +7,15 @@ class FederatedServer(BaseTask):
     def exec(self, inputData):
         inputData["server_addr"] = inputData["self_addr"]
         inputData["worker_addr"] = inputData["child_addr"]
+
+        import socket
+
+        HOST, PORT = inputData["child_addr"]
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.connect((HOST, PORT))
+            s.sendall(b"Hello, world")
+            data = s.recv(1024)
+            data = data.decode("utf-8")
+        inputData["finalRRR"] = data
         return inputData

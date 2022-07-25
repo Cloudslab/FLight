@@ -6,4 +6,16 @@ class FederatedWorker(BaseTask):
 
     def exec(self, inputData):
         inputData["worker_addr"] = inputData["self_addr"]
-        return inputData
+        import socket
+
+        HOST, PORT = inputData["self_addr"]
+
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.bind((HOST, PORT))
+            s.listen()
+            conn, addr = s.accept()
+            with conn:
+                data = conn.recv(1024)
+                data = data.decode("utf-8")
+                data += "aaaaaaaaaaaaaaa"
+                conn.sendall(data.encode("utf-8"))
