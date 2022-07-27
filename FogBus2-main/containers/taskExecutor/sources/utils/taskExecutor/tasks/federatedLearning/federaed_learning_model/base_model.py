@@ -31,7 +31,7 @@ from abc import ABC, abstractmethod
 class base_model(ABC):
 
     @abstractmethod
-    def step(self):
+    def step(self, train_data):
         raise NotImplementedError("Override with a epoch of train of this model")
 
     @abstractmethod
