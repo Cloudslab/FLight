@@ -6,7 +6,7 @@ version: model version
 uuid: model id
 """
 from base_model import base_model
-
+import pickle
 
 class linear_regression(base_model):
 
@@ -16,6 +16,44 @@ class linear_regression(base_model):
         self.lr = lr
         self.version = 1
         self.uuid = uuid
+
+    def ack_ready(self, role, ptr):
+        pass
+
+    def add_peer(self, ptr):
+        pass
+
+    def add_client(self, ptr):
+        pass
+
+    def add_server(self, ptr):
+        pass
+
+    def ask_next(self, role, ptr):
+        pass
+
+    def can_federate(self):
+        return True
+
+    def can_fetch(self, role, ptr):
+        return True
+
+    def can_load(self, role, ptr):
+        return True
+
+    def federate(self, fl_algo):
+        pass
+
+    def fetch_client(self, client_id):
+        pass
+
+    def fetch_peer(self, peer_id):
+        pass
+
+    def fetch_server(self, server_id):
+        pass
+
+    # ------------------------ pass all line ------------------------------
 
     def step(self, train_data):
         # for large ds, train_data can be necessary information to load dataset
@@ -42,39 +80,23 @@ class linear_regression(base_model):
 
         self.b = self.b - self.lr * grad_B
         self.w = self.w - self.lr * grad_W
+        self.version += 1
 
-    def ack_ready(self, role, ptr):
-        pass
-    def add_peer(self, ptr):
-        pass
-    def add_client(self, ptr):
-        pass
-    def add_server(self, ptr):
-        pass
-    def ask_next(self, role, ptr):
-        pass
-    def can_federate(self):
-        return True
-    def can_fetch(self, role, ptr):
-        return True
-    def can_load(self, role, ptr):
-        return True
-    def export(self):
-        pass
-    def federate(self, fl_algo):
-        pass
-    def fetch_client(self, client_id):
-        pass
-    def fetch_peer(self, peer_id):
-        pass
-    def fetch_server(self, server_id):
-        pass
     def load(self, data):
-        pass
+        if len(data) == 3:
+            self.w, self.b, self.lr = data
+        elif len(data) == 2:
+            self.w, self.b = data
+        self.version += 1
+
+    def export(self):
+        return pickle.dumps((self.w, self.b, self.lr, self.version))
+
+
 if __name__ == "__main__":
-    model = linear_regression(0,0,0.01,0)
+    model = linear_regression(0, 0, 0.1, 0)
     for i in range(1000):
-        model.step(([1,2,3,4,5],[3,5,7,9,11]))
+        model.step(([1, 2, 3, 4, 5], [3, 5, 7, 9, 11]))
 
-
-    print(model.w, model.b)
+    print(model.export())
+    print(pickle.loads(model.export()))
