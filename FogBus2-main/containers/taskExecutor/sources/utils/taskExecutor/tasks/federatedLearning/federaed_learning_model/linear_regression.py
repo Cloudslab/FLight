@@ -83,6 +83,7 @@ class linear_regression(base_model):
         self.version += 1
 
     def load(self, data):
+        data = pickle.loads(data)
         if len(data) == 3:
             self.w, self.b, self.lr = data
         elif len(data) == 2:

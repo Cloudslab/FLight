@@ -38,8 +38,8 @@ class data_warehouse:
                 model_id = str(cls._generate_id())
         elif hasattr(cls, model_id):
             return None
-
-        return getattr(cls, str(model_id))
+        setattr(cls, str(model_id))
+        return str(model_id)
 
     @classmethod
     def update(cls, data, model_id):
