@@ -1,3 +1,5 @@
+from time import sleep
+
 from federatedLearning.communicate.router import router
 from federatedLearning.communicate.router import router_factory
 from federatedLearning.federaed_learning_model.linear_regression import linear_regression
@@ -12,10 +14,15 @@ if __name__ == "__main__":
     router_factory.get_router(("127.0.0.1", 12345)).add_handler("ack_ready_", ack_ready_handler())
 
     lr = linear_regression(0, 0, 0.1)
-    print(lr.uuid)
 
     lr.add_client(("127.0.0.1",12345))
+    lr.add_client(("127.0.0.1",12345))
     lr.add_client(("127.0.0.1", 12345))
+
+    while len(lr.client) < 3:
+        sleep(0.1)
+
+    lr.ask_next(1,1,1)
 
     dd = data_warehouse()
     print("debug")

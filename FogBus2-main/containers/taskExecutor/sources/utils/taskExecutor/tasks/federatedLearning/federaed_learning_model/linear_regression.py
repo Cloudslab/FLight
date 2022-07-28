@@ -29,8 +29,8 @@ class linear_regression(base_model):
     def add_server(self, ptr):
         pass
 
-    def ask_next(self, role, ptr):
-        pass
+    def can_next(self, ptr):
+        print("hahaha")
 
     def can_federate(self):
         return True
@@ -98,10 +98,16 @@ class linear_regression(base_model):
         router.send(addr, "add_client_lr__", self.export())
 
     def ack_ready(self, role, ptr):
-        print("aaaaaaaaa")
         router = router_factory.get_default_router()
         addr, server_uuid = ptr
         router.send(addr, "ack_ready__fl__", (role, (server_uuid, self.uuid)))
+
+    def ask_next(self, role, ptr, itr_nums):
+        router = router_factory.get_default_router()
+        for (remote_id, addr) in self.client:
+            router.send(addr, "ask_next___fl__", (self.uuid, remote_id, itr_nums))
+
+
 
 if __name__ == "__main__":
     pass

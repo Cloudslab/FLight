@@ -22,7 +22,8 @@ base_model defines common behavior all model involved within federated learning 
     tell other this model finish update
 13. ask_next(role, ptr):
     ask others to perform next round operation(typically server ask worker to perform operation)
-
+14. can_next(ptr):
+    ask whether a remote model can ask local train
 
 """
 from abc import ABC, abstractmethod
@@ -87,6 +88,10 @@ class base_model(ABC):
         raise NotImplementedError("Override with logic of ack model is ready to another model with connection")
 
     @abstractmethod
-    def ask_next(self, role, ptr):
+    def ask_next(self, role, ptr, itr_nums):
         raise NotImplementedError("Override with logic of asking a remote model to do training")
+
+    @abstractmethod
+    def can_next(self, ptr):
+        raise NotImplementedError("Override with logic of whether a remote model can ask local train")
 

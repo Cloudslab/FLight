@@ -52,9 +52,6 @@ class router:
 
         self.sendingQueue = queue.Queue()
 
-
-        self.remain = 2
-
     def __del__(self):
         if self.socket:
             self.socket.close()
@@ -73,7 +70,7 @@ class router:
 
     def _dispatch(self):
         self.socket.listen(5)
-        while True and self.remain:
+        while True:
             conn, _ = self.socket.accept()
             event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
             model_type = conn.recv(MODEL_STRING_LEN).decode("utf-8")
@@ -87,19 +84,17 @@ class router:
                 print(model_type)
                 print(pickle.loads(conn.recv(1000)))
                 conn.close()
-                self.remain -= 1
 
     def _send(self):
-        r =4
-        while True and self.remain and r:
+        while True:
             address, tag, data = self.sendingQueue.get()
+            print("send")
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect(address)
                 s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8") +
                           pickle.dumps(data))
                 s.close()
-                r -= 1
             except Exception as e:
                 print(e)
                 self.sendingQueue.put((address, tag, data))
