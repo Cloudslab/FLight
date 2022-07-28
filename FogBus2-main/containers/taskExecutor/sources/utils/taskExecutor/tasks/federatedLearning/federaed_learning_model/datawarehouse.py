@@ -31,14 +31,14 @@ class data_warehouse:
         return None
 
     @classmethod
-    def set(cls, data, model_id=None):
+    def set(cls, model, model_id=None):
         if not model_id:
             model_id = str(cls._generate_id())
             while hasattr(cls, model_id):
                 model_id = str(cls._generate_id())
         elif hasattr(cls, model_id):
             return None
-        setattr(cls, str(model_id))
+        setattr(cls, str(model_id), model)
         return str(model_id)
 
     @classmethod

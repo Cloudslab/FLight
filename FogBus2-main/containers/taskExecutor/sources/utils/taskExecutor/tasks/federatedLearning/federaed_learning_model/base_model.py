@@ -71,7 +71,7 @@ class base_model(ABC):
         raise NotImplementedError("Override with logic of requesting a federated learning relationship with server.")
 
     @abstractmethod
-    def add_client(self, ptr):
+    def add_client(self, addr):
         raise NotImplementedError("Override with logic of requesting a federated learning relationship with client.")
 
     @abstractmethod

@@ -5,25 +5,29 @@ lr: learning rate
 version: model version
 uuid: model id
 """
-from base_model import base_model
+from .base_model import base_model
+from ..communicate.router import router_factory
+from .datawarehouse import data_warehouse
 import pickle
+
 
 class linear_regression(base_model):
 
-    def __init__(self, w, b, lr, uuid):
+    def __init__(self, w, b, lr, uuid = None):
         self.w = w
         self.b = b
         self.lr = lr
         self.version = 1
-        self.uuid = uuid
+        self.client = {}
+        self.server = {}
+        self.peer = {}
+        self.waiting_list = {}
+        self.uuid = data_warehouse.set(self)
 
     def ack_ready(self, role, ptr):
         pass
 
     def add_peer(self, ptr):
-        pass
-
-    def add_client(self, ptr):
         pass
 
     def add_server(self, ptr):
@@ -91,13 +95,11 @@ class linear_regression(base_model):
         self.version += 1
 
     def export(self):
-        return pickle.dumps((self.w, self.b, self.lr, self.version))
+        return pickle.dumps((self.w, self.b, self.lr, self.version, self.uuid))
 
+    def add_client(self, addr):
+        router = router_factory.get_default_router()
+        router.send(addr, "register", self.export())
 
 if __name__ == "__main__":
-    model = linear_regression(0, 0, 0.1, 0)
-    for i in range(1000):
-        model.step(([1, 2, 3, 4, 5], [3, 5, 7, 9, 11]))
-
-    print(model.export())
-    print(pickle.loads(model.export()))
+    pass

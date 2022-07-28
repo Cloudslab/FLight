@@ -1,5 +1,40 @@
 import socket
+import ast
 from threading import Thread
+import queue
+import pickle
+
+
+ADDRESS_STRING_LEN = 40
+EVENT_STRING_LEN = 8
+
+class router_factory:
+    routers = {}
+
+    @classmethod
+    def set_router(cls, addr):
+        if addr not in cls.routers:
+            try:
+                new_router = router(addr[0], addr[1])
+                new_router.start()
+                cls.routers[addr] = new_router
+            except Exception as e:
+                print(e)
+                print("Router Creation Fail")
+                pass
+
+    @classmethod
+    def get_router(cls, addr):
+        if addr in cls.routers:
+            return cls.routers[addr]
+        else:
+            cls.set_router(addr)
+            return cls.routers[addr]
+
+    @classmethod
+    def get_default_router(cls):
+        if len(router_factory.routers):
+            return router_factory.routers[list(router_factory.routers.keys())[0]]
 
 
 class router:
@@ -9,53 +44,59 @@ class router:
         return super(router, cls).__new__(cls, *args, **kwargs)
 
     def __init__(self, ip, port):
-        self.socketI = None
-        self.socketI = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socketI.bind((ip, port))
+        self.socket = None
+        self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.socket.bind((ip, port))
 
-        self.socketO = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.socketO.bind((ip, port+1))
+        self.sendingQueue = queue.Queue()
+
+
+        self.remain = 2
 
     def __del__(self):
-        if self.socketI:
-            self.socketI.close()
-        if self.socketO:
-            self.socketO.close()
+        if self.socket:
+            self.socket.close()
 
     def __str__(self):
         output = ""
-        if self.socketI: output += str(self.socketI.getsockname())
-        if self.socketO: output += str(self.socketO.getsockname())
+        if self.socket: output += str(self.socket.getsockname())
         return output
 
     def add_handler(self, key, handler):
         self.__setattr__(key, handler)
 
-    def dispatch(self):
+    def start(self):
         Thread(target=self._dispatch).start()
+        Thread(target=self._send).start()
 
     def _dispatch(self):
-        self.socketI.listen()
-        remain = 2
-        while True and remain:
-            conn, addr = self.socketI.accept()
-            event = conn.recv(8).decode("utf-8")
+        self.socket.listen(5)
+        while True and self.remain:
+            conn, _ = self.socket.accept()
+            event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
+            addr = ast.literal_eval(conn.recv(ADDRESS_STRING_LEN).decode("utf-8").rstrip())
             if hasattr(self, event) and callable(getattr(self, event)):
                 Thread(target=getattr(self, event), args=(conn, addr,)).start()
             else:
-                print(conn)
+                print(event)
                 print(addr)
+                print(pickle.loads(conn.recv(1000)))
                 conn.close()
-                remain -= 1
+                self.remain -= 1
+
+    def _send(self):
+        r = 2
+        while True and self.remain and r:
+            address, tag, data = self.sendingQueue.get()
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.connect(address)
+                s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8")+data)
+                s.close()
+                r -= 1
+            except Exception as e:
+                print(e)
+                self.sendingQueue.put((address, tag, data))
 
     def send(self, address, tag, data):
-        if self.socketO:
-            self.socketO.connect(address)
-            buf = tag.encode("utf-8") + data
-            self.socketO.sendall(buf)
-
-
-if __name__ == "__main__":
-    ro = router("127.0.0.1", 12345)
-    ro.dispatch()
-    print(ro)
+        self.sendingQueue.put((address, tag, data))
