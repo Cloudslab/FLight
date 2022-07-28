@@ -81,6 +81,7 @@ class router:
             if hasattr(self, event) and callable(getattr(self, event)):
                 Thread(target=getattr(self, event), args=(conn, addr, model_type, )).start()
             else:
+                print("--------------------------------------")
                 print(event)
                 print(addr)
                 print(model_type)
@@ -89,7 +90,7 @@ class router:
                 self.remain -= 1
 
     def _send(self):
-        r = 2
+        r =4
         while True and self.remain and r:
             address, tag, data = self.sendingQueue.get()
             try:

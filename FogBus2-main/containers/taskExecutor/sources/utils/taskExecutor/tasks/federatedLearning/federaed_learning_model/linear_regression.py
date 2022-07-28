@@ -21,11 +21,7 @@ class linear_regression(base_model):
         self.client = []
         self.server = []
         self.peer = []
-        self.waiting_list = {}
         self.uuid = data_warehouse.set(self)
-
-    def ack_ready(self, role, ptr):
-        pass
 
     def add_peer(self, ptr):
         pass
@@ -99,7 +95,13 @@ class linear_regression(base_model):
 
     def add_client(self, addr):
         router = router_factory.get_default_router()
-        router.send(addr, "add_client_fl__", self.export())
+        router.send(addr, "add_client_lr__", self.export())
+
+    def ack_ready(self, role, ptr):
+        print("aaaaaaaaa")
+        router = router_factory.get_default_router()
+        addr, server_uuid = ptr
+        router.send(addr, "ack_ready__fl__", (role, (server_uuid, self.uuid)))
 
 if __name__ == "__main__":
     pass
