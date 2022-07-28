@@ -6,7 +6,9 @@ import pickle
 
 
 ADDRESS_STRING_LEN = 40
-EVENT_STRING_LEN = 8
+EVENT_STRING_LEN = 10
+MODEL_STRING_LEN = 5
+
 
 class router_factory:
     routers = {}
@@ -74,12 +76,14 @@ class router:
         while True and self.remain:
             conn, _ = self.socket.accept()
             event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
+            model_type = conn.recv(MODEL_STRING_LEN).decode("utf-8")
             addr = ast.literal_eval(conn.recv(ADDRESS_STRING_LEN).decode("utf-8").rstrip())
             if hasattr(self, event) and callable(getattr(self, event)):
-                Thread(target=getattr(self, event), args=(conn, addr,)).start()
+                Thread(target=getattr(self, event), args=(conn, addr, model_type, )).start()
             else:
                 print(event)
                 print(addr)
+                print(model_type)
                 print(pickle.loads(conn.recv(1000)))
                 conn.close()
                 self.remain -= 1
@@ -91,7 +95,8 @@ class router:
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect(address)
-                s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8")+data)
+                s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8") +
+                          pickle.dumps(data))
                 s.close()
                 r -= 1
             except Exception as e:

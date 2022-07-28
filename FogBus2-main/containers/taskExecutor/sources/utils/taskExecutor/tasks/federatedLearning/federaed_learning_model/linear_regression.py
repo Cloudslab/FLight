@@ -13,14 +13,14 @@ import pickle
 
 class linear_regression(base_model):
 
-    def __init__(self, w, b, lr, uuid = None):
+    def __init__(self, w, b, lr):
         self.w = w
         self.b = b
         self.lr = lr
         self.version = 1
-        self.client = {}
-        self.server = {}
-        self.peer = {}
+        self.client = []
+        self.server = []
+        self.peer = []
         self.waiting_list = {}
         self.uuid = data_warehouse.set(self)
 
@@ -87,19 +87,19 @@ class linear_regression(base_model):
         self.version += 1
 
     def load(self, data):
-        data = pickle.loads(data)
-        if len(data) == 3:
+        #data = pickle.loads(data)
+        if len(data) >= 3:
             self.w, self.b, self.lr = data
         elif len(data) == 2:
             self.w, self.b = data
         self.version += 1
 
     def export(self):
-        return pickle.dumps((self.w, self.b, self.lr, self.version, self.uuid))
+        return self.w, self.b, self.lr, self.version, self.uuid
 
     def add_client(self, addr):
         router = router_factory.get_default_router()
-        router.send(addr, "register", self.export())
+        router.send(addr, "add_client_fl__", self.export())
 
 if __name__ == "__main__":
     pass
