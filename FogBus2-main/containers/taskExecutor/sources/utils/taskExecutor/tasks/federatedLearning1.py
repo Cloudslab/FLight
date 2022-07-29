@@ -6,4 +6,4 @@ class federatedLearning1(BaseTask):
         super().__init__(taskID=232, taskName='FederatedLearning1')
 
     def exec(self, inputData):
-        router_factory.get_router((inputData["self_addr"],12345))
+        router_factory.get_router((inputData["self_addr"],54321))
