@@ -9,7 +9,7 @@ base_model defines common behavior all model involved within federated learning 
 6. export(): export weights
 7. load(data): load weights
 8. can_fetch(role, ptr): check if another model can access weights of this model
-9. can_load(role, ptr): check if another model contribute weights of this model
+9. can_load(role, ptr, version): check if another model contribute weights of this model
 10. add_server/client/peer(ptr): request a model to be aggregation server/client/peer and take current model as worker:
     if ptr contain both address & model local id, then request the model
     if ptr only contain address, then request a new model on address side
@@ -64,7 +64,7 @@ class base_model(ABC):
         raise NotImplementedError("Override with logic checking if others can fetch weights of the model")
 
     @abstractmethod
-    def can_load(self, role, ptr):
+    def can_load(self, role, ptr, version):
         raise NotImplementedError("Override with logic checking if others can load(contribute) this model.")
 
     @abstractmethod

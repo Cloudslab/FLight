@@ -31,15 +31,6 @@ class linear_regression(base_model):
     def add_server(self, ptr):
         pass
 
-    def can_federate(self):
-        return True
-
-    def can_fetch(self, role, ptr):
-        return True
-
-    def can_load(self, role, ptr):
-        return True
-
     def federate(self, fl_algo):
         pass
 
@@ -134,6 +125,16 @@ class linear_regression(base_model):
         router = router_factory.get_default_router()
         addr, remote_id = ptr
         router.send(addr, "push_______c_s_", (self.uuid, remote_id, self.export()))
+
+    def can_load(self, role, ptr, version):
+        remote_id, addr = ptr
+        if role == "client" and ptr in self.client and (remote_id not in self.versions or
+                                                        self.versions[remote_id] < version):
+            return True
+        return False
+
+    def can_federate(self):
+        return len(self.models) >= 3
 
 if __name__ == "__main__":
     pass
