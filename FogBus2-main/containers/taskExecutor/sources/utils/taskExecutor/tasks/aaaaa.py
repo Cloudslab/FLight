@@ -27,19 +27,21 @@ if __name__ == "__main__":
     router_factory.get_router(("127.0.0.1", 12345)).add_handler("fetch_____", fetch_handler())
     router_factory.get_router(("127.0.0.1", 12345)).add_handler("push______", push_handler())
 
-    lr = linear_regression(0, 0, 0.1)
+    lr = linear_regression(0, 0, 0.01)
 
     lr.add_client(("127.0.0.1",12345))
     lr.add_client(("127.0.0.1",12345))
     lr.add_client(("127.0.0.1", 12345))
 
-    while len(lr.client) < 3:
+    while len(lr.client) < 3 and lr.ready_to_train_client < 3:
         sleep(0.1)
     data_warehouse.get(lr.client[0][0]).load_data = one_x
     data_warehouse.get(lr.client[1][0]).load_data = two_x
     data_warehouse.get(lr.client[2][0]).load_data = three_x
-
-    lr.ask_next(500)
+    for i in range(100):
+        while len(lr.client) < 3 and lr.ready_to_train_client < 3:
+            sleep(0.01)
+        lr.ask_next(10)
 
     dd = data_warehouse()
     print("debug")

@@ -15,10 +15,12 @@ class ack_ready_handler:
         data = pickle.loads(conn.recv(1024))
         role, (model_id, remote_id) = data
         model = data_warehouse.get(model_id)
-        if model_type == "_fl_r": # _fl_r is the flag of ack register is ready
+        if model_type == "_fl_r": # _fl_r is the flag of ack register is ready/ ready to train
             if model:
                 if role == "client":
-                    model.client.append((remote_id, addr))
+                    if (remote_id, addr) not in model.client:
+                        model.client.append((remote_id, addr))
+                    model.ready_to_train_client += 1
                 elif role == "server":
                     model.server.append((remote_id, addr))
                 elif role == "peer":
@@ -28,3 +30,8 @@ class ack_ready_handler:
             if model:
                 if role == "client" and (remote_id, addr) in model.client: # ToDo: add more fetch condition
                     model.fetch_client((addr, remote_id))
+
+        if model_type == "_fl_f": # _fl_f is the flag of server get updated, can be fetched
+            if model:
+                if role == "server" and (remote_id, addr) in model.server: # ToDo: add more fetch condition
+                    model.fetch_server((addr, remote_id))

@@ -22,6 +22,7 @@ class linear_regression(base_model):
         self.server = []
         self.peer = []
         self.uuid = data_warehouse.set(self)
+        self.ready_to_train_client = 0
         self.versions = {} # version
         self.models = {} # remote models' local copy
 
@@ -34,13 +35,7 @@ class linear_regression(base_model):
     def fetch_peer(self, peer_id):
         pass
 
-    def fetch_server(self, server_id):
-        pass
-
     def push_peer(self, ptr):
-        pass
-
-    def push_client(self, ptr):
         pass
 
     # ------------------------ pass all line ------------------------------
@@ -84,7 +79,7 @@ class linear_regression(base_model):
     def load(self, data):
         #data = pickle.loads(data)
         if len(data) >= 3:
-            self.w, self.b, self.lr = data
+            self.w, self.b, self.lr = data[:3]
         elif len(data) == 2:
             self.w, self.b = data
         self.version += 1
@@ -114,8 +109,14 @@ class linear_regression(base_model):
         addr, remote_id = ptr
         router.send(addr, "fetch______s_c_", (self.uuid, remote_id))
 
+    def fetch_server(self, ptr):
+        router = router_factory.get_default_router()
+        addr, remote_id = ptr
+        router.send(addr, "fetch______c_s_", (self.uuid, remote_id))
+
     def can_fetch(self, role, ptr):
         if role == "server" and ptr in self.server: return True
+        if role == "client" and ptr in self.client: return True
         return False
 
     def push_server(self, ptr):
@@ -123,11 +124,16 @@ class linear_regression(base_model):
         addr, remote_id = ptr
         router.send(addr, "push_______c_s_", (self.uuid, remote_id, self.export()))
 
+    def push_client(self, ptr):
+        router = router_factory.get_default_router()
+        addr, remote_id = ptr
+        router.send(addr, "push_______s_c_", (self.uuid, remote_id, self.export()))
+
     def can_load(self, role, ptr, version):
         remote_id, addr = ptr
-        if role == "client" and ptr in self.client and (remote_id not in self.versions or
-                                                        self.versions[remote_id] < version):
-            return True
+        if role == "client" and ptr in self.client and (remote_id not in self.versions or self.versions[remote_id] < version): return True
+        if role == "server" and ptr in self.server and (remote_id not in self.versions or self.versions[remote_id] < version): return True
+
         return False
 
     # change this function to achieve synchronous/ asynchronous federated
@@ -142,10 +148,16 @@ class linear_regression(base_model):
         for w_, b_, _, _, _ in self.models.values():
             W.append(w_)
             B.append(b_)
+            self.ready_to_train_client -= 1
 
         self.w = fl_algo(W)
         self.b = fl_algo(B)
         self.version += 1
+        self.models.clear()
+
+        for remote_id, addr in self.client:
+            self.ack_ready("server", (addr, remote_id), "_fl_f")
+
 
 if __name__ == "__main__":
     pass
