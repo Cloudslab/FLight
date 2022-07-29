@@ -71,8 +71,6 @@ class router:
     def _dispatch(self):
         self.socket.listen(5)
         while True:
-            x = 1
-            x.sco()
             conn, _ = self.socket.accept()
             event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
             model_type = conn.recv(MODEL_STRING_LEN).decode("utf-8")
@@ -90,13 +88,13 @@ class router:
     def _send(self):
         while True:
             address, tag, data = self.sendingQueue.get()
-            #try:
-            s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            s.connect(address)
-            s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8") +
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.connect(address)
+                s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8") +
                       pickle.dumps(data))
-            #except Exception as e:
-            #    print(e)
+            except Exception as e:
+                print(e)
 
     def send(self, address, tag, data):
         self.sendingQueue.put((address, tag, data))
