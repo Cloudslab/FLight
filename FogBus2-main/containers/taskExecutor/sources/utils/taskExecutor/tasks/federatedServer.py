@@ -46,14 +46,14 @@ class FederatedServer(BaseTask):
             time.sleep(0.1)
         #
         #
-        #data_warehouse.get(lr.client[0][0]).load_data = one_x
-        #data_warehouse.get(lr.client[1][0]).load_data = two_x
-        #data_warehouse.get(lr.client[2][0]).load_data = three_x
+        data_warehouse.get(lr.client[0][0]).load_data = one_x
+        data_warehouse.get(lr.client[1][0]).load_data = two_x
+        data_warehouse.get(lr.client[2][0]).load_data = three_x
         #
-        #for i in range(100):
-        #    while len(lr.client) < 3 and lr.ready_to_train_client < 3:
-        #        time.sleep(0.01)
-        #    lr.ask_next(10)
+        for i in range(100):
+            while len(lr.client) < 3 and lr.ready_to_train_client < 3:
+                time.sleep(0.01)
+            lr.ask_next(10)
         #
         inputData["Ress"] = {"final_model": lr.export()}
         return inputData
