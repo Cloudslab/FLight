@@ -33,26 +33,27 @@ class FederatedServer(BaseTask):
             return
 
         router_factory.set_router((self.server_addr[0], 54322))
-        router_factory.get_router((self.server_addr[0])).add_handler("add_client", add_client_handler())
-        router_factory.get_router((self.server_addr[0])).add_handler("ack_ready_", ack_ready_handler())
-        router_factory.get_router((self.server_addr[0])).add_handler("ask_next__", ack_next_handler())
-        router_factory.get_router((self.server_addr[0])).add_handler("fetch_____", fetch_handler())
-        router_factory.get_router((self.server_addr[0])).add_handler("push______", push_handler())
+        router_factory.get_router((self.server_addr[0], 54322)).add_handler("add_client", add_client_handler())
+        router_factory.get_router((self.server_addr[0], 54322)).add_handler("ack_ready_", ack_ready_handler())
+        router_factory.get_router((self.server_addr[0], 54322)).add_handler("ask_next__", ack_next_handler())
+        router_factory.get_router((self.server_addr[0], 54322)).add_handler("fetch_____", fetch_handler())
+        router_factory.get_router((self.server_addr[0], 54322)).add_handler("push______", push_handler())
 
         lr = linear_regression(0, 0, 0.01)
-        for (addr, port) in self.worker_addr:
-            lr.add_client((addr, port))
-        while len(lr.client) < 3 and lr.ready_to_train_client < 3:
-            time.sleep(0.1)
-
-        data_warehouse.get(lr.client[0][0]).load_data = one_x
-        data_warehouse.get(lr.client[1][0]).load_data = two_x
-        data_warehouse.get(lr.client[2][0]).load_data = three_x
-
-        for i in range(100):
-            while len(lr.client) < 3 and lr.ready_to_train_client < 3:
-                time.sleep(0.01)
-            lr.ask_next(10)
-
+        #for (addr, port) in self.worker_addr:
+        #    lr.add_client((addr, port))
+        #while len(lr.client) < 3 and lr.ready_to_train_client < 3:
+        #    time.sleep(0.1)
+        #
+        #
+        #data_warehouse.get(lr.client[0][0]).load_data = one_x
+        #data_warehouse.get(lr.client[1][0]).load_data = two_x
+        #data_warehouse.get(lr.client[2][0]).load_data = three_x
+        #
+        #for i in range(100):
+        #    while len(lr.client) < 3 and lr.ready_to_train_client < 3:
+        #        time.sleep(0.01)
+        #    lr.ask_next(10)
+        #
         inputData["Ress"] = {"final_model": lr.export()}
         return inputData
