@@ -88,17 +88,15 @@ class router:
     def _send(self):
         while True:
             address, tag, data = self.sendingQueue.get()
-            x = 1
-            x.sum()
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect(address)
+                s.sijefio()
                 s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8") +
                           pickle.dumps(data))
                 s.close()
             except Exception as e:
                 print(e)
-                self.sendingQueue.put((address, tag, data))
 
     def send(self, address, tag, data):
         self.sendingQueue.put((address, tag, data))
