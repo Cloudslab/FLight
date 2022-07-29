@@ -9,6 +9,7 @@ from .federated_learning.handler.fetch_handler import fetch_handler
 from .federated_learning.handler.push_handler import push_handler
 
 import time
+import socket
 
 from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 def one_x():
@@ -42,8 +43,12 @@ class FederatedServer(BaseTask):
         lr = linear_regression(0, 0, 0.01)
         for (addr, port) in self.worker_addr:
             lr.add_client((addr, 54321))
-        while len(lr.client) < 3 and lr.ready_to_train_client < 3:
-            time.sleep(0.01)
+
+        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        s.connect(("10.211.55.27",-1))
+
+        #while len(lr.client) < 3 and lr.ready_to_train_client < 3:
+        #    time.sleep(0.01)
         #
         #
         #data_warehouse.get(lr.client[0][0]).load_data = one_x
