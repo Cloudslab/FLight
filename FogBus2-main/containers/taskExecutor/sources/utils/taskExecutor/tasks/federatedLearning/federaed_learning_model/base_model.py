@@ -4,7 +4,7 @@ base_model defines common behavior all model involved within federated learning 
 1. step(): a train epoch of current model
 2. federate(fl_algo): perform a federated learning based on a federated algorithm
 3. fetch_server(server_id): ask weights from server
-4. fetch_client(client_id): ask weights from client
+4. fetch_client(ptr): ask weights from client
 5. fetch_peer(peer_id): request weights from peer
 6. export(): export weights
 7. load(data): load weights
@@ -44,8 +44,8 @@ class base_model(ABC):
         raise NotImplementedError("Override with logic of sending request to fetch server model")
 
     @abstractmethod
-    def fetch_client(self, client_id):
-        raise NotImplementedError("Override with logic of fetching child model based on child id")
+    def fetch_client(self, ptr):
+        raise NotImplementedError("Override with logic of fetching child model based on child ptr")
 
     @abstractmethod
     def fetch_peer(self, peer_id):

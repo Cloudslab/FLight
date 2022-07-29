@@ -12,10 +12,10 @@ from ..federaed_learning_model.linear_regression import linear_regression
 class ack_ready_handler:
 
     def __call__(self, conn, addr, model_type, *args, **kwargs):
-        if model_type == "_fl_r":
-            data = pickle.loads(conn.recv(1024))
-            role, (model_id, remote_id) = data
-            model = data_warehouse.get(model_id)
+        data = pickle.loads(conn.recv(1024))
+        role, (model_id, remote_id) = data
+        model = data_warehouse.get(model_id)
+        if model_type == "_fl_r": # _fl_r is the flag of ack register is ready
             if model:
                 if role == "client":
                     model.client.append((remote_id, addr))
@@ -23,3 +23,8 @@ class ack_ready_handler:
                     model.server.append((remote_id, addr))
                 elif role == "peer":
                     model.peer.append((remote_id, addr))
+
+        if model_type == "_fl_t": # _fl_t is the flag of ack train is done, can be fetched
+            if model:
+                if role == "client" and (remote_id, addr) in model.client: # ToDo: add more fetch condition
+                    model.fetch_client((addr, remote_id))

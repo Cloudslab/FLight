@@ -41,9 +41,6 @@ class linear_regression(base_model):
     def federate(self, fl_algo):
         pass
 
-    def fetch_client(self, client_id):
-        pass
-
     def fetch_peer(self, peer_id):
         pass
 
@@ -115,6 +112,11 @@ class linear_regression(base_model):
 
     def can_next(self, ptr):
         return ptr in self.server
+
+    def fetch_client(self, ptr):
+        router = router_factory.get_default_router()
+        addr, remote_id = ptr
+        router.send(addr, "fetch______s_c_", (self.uuid, remote_id))
 
 
 if __name__ == "__main__":
