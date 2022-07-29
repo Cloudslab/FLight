@@ -103,10 +103,10 @@ class linear_regression(base_model):
         router = router_factory.get_default_router()
         router.send(addr, "add_client_lr__", self.export())
 
-    def ack_ready(self, role, ptr):
+    def ack_ready(self, role, ptr, flg):
         router = router_factory.get_default_router()
-        addr, server_uuid = ptr
-        router.send(addr, "ack_ready__fl__", (role, (server_uuid, self.uuid)))
+        addr, remote_id = ptr
+        router.send(addr, "ack_ready_"+flg, (role, (remote_id, self.uuid)))
 
     def ask_next(self, itr_nums):
         router = router_factory.get_default_router()

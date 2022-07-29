@@ -31,7 +31,6 @@ if __name__ == "__main__":
 
     while len(lr.client) < 3:
         sleep(0.1)
-    print("aaa")
     data_warehouse.get(lr.client[0][0]).load_data = one_x
     data_warehouse.get(lr.client[1][0]).load_data = two_x
     data_warehouse.get(lr.client[2][0]).load_data = three_x

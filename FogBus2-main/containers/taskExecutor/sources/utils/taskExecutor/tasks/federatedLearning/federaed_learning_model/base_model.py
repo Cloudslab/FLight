@@ -84,7 +84,7 @@ class base_model(ABC):
         raise NotImplementedError("Override with logic of whether can perform another federated learning.")
 
     @abstractmethod
-    def ack_ready(self, role, ptr):
+    def ack_ready(self, role, ptr, flg):
         raise NotImplementedError("Override with logic of ack model is ready to another model with connection")
 
     @abstractmethod
