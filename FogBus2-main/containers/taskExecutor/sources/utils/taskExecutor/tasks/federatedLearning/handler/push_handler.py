@@ -23,4 +23,4 @@ class push_handler:
                 model.versions[(remote_id, addr)] = remote_model[-2]
                 model.models[(remote_id, addr)] = remote_model
                 if model.can_federate():
-                    print("continue")
+                    model.federate(lambda li : sum(li) / len(li))

@@ -31,9 +31,6 @@ class linear_regression(base_model):
     def add_server(self, ptr):
         pass
 
-    def federate(self, fl_algo):
-        pass
-
     def fetch_peer(self, peer_id):
         pass
 
@@ -133,8 +130,22 @@ class linear_regression(base_model):
             return True
         return False
 
+    # change this function to achieve synchronous/ asynchronous federated
+    # if can_federate always true, then it is asynchronous
     def can_federate(self):
         return len(self.models) >= 3
+
+    # ToDo: currently there is only linear regression + fed_average, can factor this part out when have more federated
+    # algorithm comming in
+    def federate(self, fl_algo):
+        W, B = [], []
+        for w_, b_, _, _, _ in self.models.values():
+            W.append(w_)
+            B.append(b_)
+
+        self.w = fl_algo(W)
+        self.b = fl_algo(B)
+        self.version += 1
 
 if __name__ == "__main__":
     pass
