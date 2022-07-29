@@ -88,6 +88,8 @@ class router:
     def _send(self):
         while True:
             address, tag, data = self.sendingQueue.get()
+            x = 1
+            x.sum()
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect(address)
