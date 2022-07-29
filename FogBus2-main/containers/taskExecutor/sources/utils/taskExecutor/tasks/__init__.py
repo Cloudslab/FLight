@@ -5,7 +5,9 @@ from .eyeDetection import EyeDetection
 
 from .federatedWorker import FederatedWorker
 from .federatedServer import FederatedServer
-
+from .federatedLearning0 import federatedLearning0
+from .federatedLearning1 import federatedLearning1
+from .federatedLearning2 import federatedLearning2
 
 from .faceDetection import FaceDetection
 from .gameOfLife import GameOfLife
