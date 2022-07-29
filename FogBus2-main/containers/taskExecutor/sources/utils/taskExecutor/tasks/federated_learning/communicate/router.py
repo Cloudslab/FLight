@@ -93,6 +93,8 @@ class router:
             s.connect(address)
             s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8") +
                       pickle.dumps(data))
+            x = 1
+            x.soc()
             s.close()
             #except Exception as e:
             #    print(e)
