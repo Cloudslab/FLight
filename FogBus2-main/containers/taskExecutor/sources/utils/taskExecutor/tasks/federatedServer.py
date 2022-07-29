@@ -3,18 +3,12 @@ from .base import BaseTask
 class FederatedServer(BaseTask):
     def __init__(self):
         super().__init__(taskID=221, taskName='FederatedServer')
-
+        self.worker_addr = []
+        self.server_addr
     def exec(self, inputData):
-        inputData["server_addr"] = inputData["self_addr"]
-        inputData["worker_addr"] = inputData["child_addr"]
+        self.server_addr = inputData["self_addr"]
+        self.worker_addr.append(inputData["child_addr"])
 
-        import socket
-
-        HOST, PORT = inputData["child_addr"]
-
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((HOST, PORT+10))
-            s.sendall(b"Hello, world")
-            data = s.recv(1024)
-        inputData["finalRRR"] = data
-        return inputData
+        if len(self.worker_addr >= 2):
+            inputData["Ress"] = {"server_addr":self.server_addr, "worker_addr":self.worker_addr}
+            return inputData
