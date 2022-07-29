@@ -71,6 +71,8 @@ class router:
     def _dispatch(self):
         self.socket.listen(5)
         while True:
+            x = 1
+            x.sco()
             conn, _ = self.socket.accept()
             event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
             model_type = conn.recv(MODEL_STRING_LEN).decode("utf-8")
