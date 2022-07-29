@@ -88,9 +88,9 @@ class router:
     def _send(self):
         while True:
             address, tag, data = self.sendingQueue.get()
+            x = 1
+            x.sok()
             try:
-                x = 1
-                x.sok()
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect(address)
                 s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8") +
