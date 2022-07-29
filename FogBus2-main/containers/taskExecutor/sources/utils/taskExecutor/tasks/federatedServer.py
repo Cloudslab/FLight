@@ -9,6 +9,6 @@ class FederatedServer(BaseTask):
         self.server_addr = inputData["self_addr"]
         self.worker_addr.append(inputData["child_addr"])
 
-        if len(self.worker_addr >= 1):
+        if len(self.worker_addr) >= 2:
             inputData["Ress"] = {"server_addr":self.server_addr, "worker_addr":self.worker_addr}
             return inputData
