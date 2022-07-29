@@ -1,6 +1,6 @@
 from .base import BaseTask
 
-from .federatedLearning.communicate.router import router_factory
+from .federated_learning.communicate.router import router_factory
 from .federated_learning.federaed_learning_model.linear_regression import linear_regression
 from .federated_learning.handler.add_client_handler import add_client_handler
 from .federated_learning.handler.ack_ready_handler import ack_ready_handler
@@ -10,7 +10,7 @@ from .federated_learning.handler.push_handler import push_handler
 
 import time
 
-from federatedLearning.federaed_learning_model.datawarehouse import data_warehouse
+from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 def one_x():
     return ([1,2,3,4,5],[1,2,3,4,5])
 
