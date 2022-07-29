@@ -1,5 +1,5 @@
 from .base import BaseTask
-from federatedLearning.communicate.router import router_factory
+#from federatedLearning.communicate.router import router_factory
 
 class federatedLearning1(BaseTask):
     def __init__(self):
