@@ -88,7 +88,7 @@ class base_model(ABC):
         raise NotImplementedError("Override with logic of ack model is ready to another model with connection")
 
     @abstractmethod
-    def ask_next(self, role, ptr, itr_nums):
+    def ask_next(self, itr_nums):
         raise NotImplementedError("Override with logic of asking a remote model to do training")
 
     @abstractmethod

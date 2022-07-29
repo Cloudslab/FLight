@@ -15,5 +15,5 @@ class add_client_handler:
             data = pickle.loads(conn.recv(1024))
             w, b, lr, version, uuid = data
             model = linear_regression(w, b, lr)
-            model.server.append(uuid)
-            model.ack_ready("client", (addr, model.server[0]))
+            model.server.append((uuid, addr))
+            model.ack_ready("client", (addr, model.server[0][0]))
