@@ -40,10 +40,13 @@ class FederatedServer(BaseTask):
         router_factory.get_router((self.server_addr[0], 54322)).add_handler("fetch_____", fetch_handler())
         router_factory.get_router((self.server_addr[0], 54322)).add_handler("push______", push_handler())
 
+        out = []
         lr = linear_regression(0, 0, 0.01)
         for (addr, port) in self.worker_addr:
+            out.append((addr, 54321))
             lr.add_client((addr, 54321))
-        print("can this work??")
+
+
         #while len(lr.client) < 3 and lr.ready_to_train_client < 3:
         #    time.sleep(0.01)
         #
@@ -57,5 +60,5 @@ class FederatedServer(BaseTask):
         #        time.sleep(0.01)
         #    lr.ask_next(10)
         #
-        inputData["Ress"] = {"final_model": lr.export(), "final_clients":lr.client, "twf": self.worker_addr}
+        inputData["Ress"] = {"final_model": lr.export(), "final_clients":out, "twf": self.worker_addr}
         return inputData
