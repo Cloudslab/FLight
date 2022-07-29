@@ -22,6 +22,8 @@ class linear_regression(base_model):
         self.server = []
         self.peer = []
         self.uuid = data_warehouse.set(self)
+        self.versions = {} # version
+        self.models = {} # remote models' local copy
 
     def add_peer(self, ptr):
         pass
@@ -45,6 +47,12 @@ class linear_regression(base_model):
         pass
 
     def fetch_server(self, server_id):
+        pass
+
+    def push_peer(self, ptr):
+        pass
+
+    def push_client(self, ptr):
         pass
 
     # ------------------------ pass all line ------------------------------
@@ -118,6 +126,14 @@ class linear_regression(base_model):
         addr, remote_id = ptr
         router.send(addr, "fetch______s_c_", (self.uuid, remote_id))
 
+    def can_fetch(self, role, ptr):
+        if role == "server" and ptr in self.server: return True
+        return False
+
+    def push_server(self, ptr):
+        router = router_factory.get_default_router()
+        addr, remote_id = ptr
+        router.send(addr, "push_______c_s_", (self.uuid, remote_id, self.export()))
 
 if __name__ == "__main__":
     pass

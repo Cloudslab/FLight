@@ -95,3 +95,14 @@ class base_model(ABC):
     def can_next(self, ptr):
         raise NotImplementedError("Override with logic of whether a remote model can ask local train")
 
+    @abstractmethod
+    def push_server(self, ptr):
+        raise NotImplementedError("Override with logic of pushing data to remote server")
+
+    @abstractmethod
+    def push_client(self, ptr):
+        raise NotImplementedError("Override with logic of pushing data to remote client")
+
+    @abstractmethod
+    def push_peer(self, ptr):
+        raise NotImplementedError("Override with logic of pushing data to remote peer")

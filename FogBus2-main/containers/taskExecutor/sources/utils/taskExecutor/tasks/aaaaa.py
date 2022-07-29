@@ -6,6 +6,7 @@ from federatedLearning.federaed_learning_model.linear_regression import linear_r
 from federatedLearning.handler.add_client_handler import add_client_handler
 from federatedLearning.handler.ack_ready_handler import ack_ready_handler
 from federatedLearning.handler.ask_next_handler import ack_next_handler
+from federatedLearning.handler.fetch_handler import fetch_handler
 
 from federatedLearning.federaed_learning_model.datawarehouse import data_warehouse
 
@@ -22,6 +23,7 @@ if __name__ == "__main__":
     router_factory.get_router(("127.0.0.1", 12345)).add_handler("add_client", add_client_handler())
     router_factory.get_router(("127.0.0.1", 12345)).add_handler("ack_ready_", ack_ready_handler())
     router_factory.get_router(("127.0.0.1", 12345)).add_handler("ask_next__", ack_next_handler())
+    router_factory.get_router(("127.0.0.1", 12345)).add_handler("fetch_____", fetch_handler())
 
     lr = linear_regression(0, 0, 0.1)
 
