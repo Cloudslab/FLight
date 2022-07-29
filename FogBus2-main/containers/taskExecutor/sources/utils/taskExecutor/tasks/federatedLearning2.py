@@ -15,8 +15,8 @@ class federatedLearning2(BaseTask):
 
     def exec(self, inputData):
         router_factory.get_router((inputData["self_addr"][0], 54323))
-        router_factory.get_router((self.server_addr[0], 54323)).add_handler("add_client", add_client_handler())
-        router_factory.get_router((self.server_addr[0], 54323)).add_handler("ack_ready_", ack_ready_handler())
-        router_factory.get_router((self.server_addr[0], 54323)).add_handler("ask_next__", ack_next_handler())
-        router_factory.get_router((self.server_addr[0], 54323)).add_handler("fetch_____", fetch_handler())
-        router_factory.get_router((self.server_addr[0], 54323)).add_handler("push______", push_handler())
+        router_factory.get_router((inputData["self_addr"][0], 54323)).add_handler("add_client", add_client_handler())
+        router_factory.get_router((inputData["self_addr"][0], 54323)).add_handler("ack_ready_", ack_ready_handler())
+        router_factory.get_router((inputData["self_addr"][0], 54323)).add_handler("ask_next__", ack_next_handler())
+        router_factory.get_router((inputData["self_addr"][0], 54323)).add_handler("fetch_____", fetch_handler())
+        router_factory.get_router((inputData["self_addr"][0], 54323)).add_handler("push______", push_handler())
