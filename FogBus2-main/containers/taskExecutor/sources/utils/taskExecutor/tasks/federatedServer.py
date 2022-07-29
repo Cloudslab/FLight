@@ -42,7 +42,9 @@ class FederatedServer(BaseTask):
 
         lr = linear_regression(0, 0, 0.01)
         #for (addr, port) in self.worker_addr:
-        #    lr.add_client((addr, 54321))
+        lr.add_client((self.server_addr[0], 54321))
+        lr.add_client((self.server_addr[0], 54322))
+        lr.add_client((self.server_addr[0], 54323))
 
 
         #while len(lr.client) < 3 and lr.ready_to_train_client < 3:
