@@ -90,7 +90,6 @@ class router:
             address, tag, data = self.sendingQueue.get()
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-                s.sijefio()
                 s.connect(address)
                 s.sendall(tag.encode('utf-8')+(self.__str__().ljust(ADDRESS_STRING_LEN)).encode("utf-8") +
                           pickle.dumps(data))
