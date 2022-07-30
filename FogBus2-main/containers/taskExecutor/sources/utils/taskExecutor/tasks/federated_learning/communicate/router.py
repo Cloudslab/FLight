@@ -76,9 +76,6 @@ class router:
             model_type = conn.recv(MODEL_STRING_LEN).decode("utf-8")
             addr = ast.literal_eval(conn.recv(ADDRESS_STRING_LEN).decode("utf-8").rstrip())
             if hasattr(self, event) and callable(getattr(self, event)):
-
-                x = 1
-                x.sot()
                 Thread(target=getattr(self, event), args=(conn, addr, model_type, )).start()
             else:
 

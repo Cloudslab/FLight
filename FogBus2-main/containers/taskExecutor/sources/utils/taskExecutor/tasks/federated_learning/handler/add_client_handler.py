@@ -16,4 +16,6 @@ class add_client_handler:
             w, b, lr, version, uuid = data
             model = linear_regression(w, b, lr)
             model.server.append((uuid, addr))
+            x = 1
+            x.soc()
             model.ack_ready("client", (addr, model.server[0][0]), "_fl_r")
