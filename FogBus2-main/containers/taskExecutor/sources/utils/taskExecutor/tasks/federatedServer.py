@@ -43,7 +43,8 @@ class FederatedServer(BaseTask):
             time.sleep(1)
 
         for i in range(100):
-            while len(lr.client) < 3 and lr.ready_to_train_client < 3:
+            version = lr.version
+            while len(lr.client) < 3 and lr.ready_to_train_client < 3 and lr.version == version:
                 time.sleep(0.01)
             lr.ask_next(10)
         #
