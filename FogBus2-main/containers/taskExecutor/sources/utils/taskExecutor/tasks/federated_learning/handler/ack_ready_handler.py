@@ -18,9 +18,6 @@ class ack_ready_handler:
         if model_type == "_fl_r": # _fl_r is the flag of ack register is ready/ ready to train
             if model:
                 if role == "client":
-
-                    x = 1
-                    x.soc()
                     if (remote_id, addr) not in model.client:
                         model.client.append((remote_id, addr))
                     model.ready_to_train_client += 1

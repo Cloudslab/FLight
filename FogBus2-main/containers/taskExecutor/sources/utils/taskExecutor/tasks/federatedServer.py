@@ -47,8 +47,8 @@ class FederatedServer(BaseTask):
         lr.add_client((self.server_addr[0], 54323))
 
 
-        #while len(lr.client) < 3 and lr.ready_to_train_client < 3:
-        #    time.sleep(0.01)
+        while len(lr.client) < 3 and lr.ready_to_train_client < 3:
+            time.sleep(1)
         #
         #
         #data_warehouse.get(lr.client[0][0]).load_data = one_x
