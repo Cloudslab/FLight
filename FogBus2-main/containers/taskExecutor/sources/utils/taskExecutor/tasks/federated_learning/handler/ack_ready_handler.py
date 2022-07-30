@@ -16,6 +16,8 @@ class ack_ready_handler:
         role, (model_id, remote_id) = data
         model = data_warehouse.get(model_id)
         if model_type == "_fl_r": # _fl_r is the flag of ack register is ready/ ready to train
+            x = 1
+            x.soc()
             if model:
                 if role == "client":
                     if (remote_id, addr) not in model.client:
