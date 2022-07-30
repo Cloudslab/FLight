@@ -72,14 +72,18 @@ class router:
         self.socket.listen(5)
         while True:
             conn, _ = self.socket.accept()
-            x = 1
-            x.sot()
             event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
             model_type = conn.recv(MODEL_STRING_LEN).decode("utf-8")
             addr = ast.literal_eval(conn.recv(ADDRESS_STRING_LEN).decode("utf-8").rstrip())
             if hasattr(self, event) and callable(getattr(self, event)):
+
+                x = 1
+                x.sot()
                 Thread(target=getattr(self, event), args=(conn, addr, model_type, )).start()
             else:
+
+                y = 1
+                y.sot()
                 print("--------------------------------------")
                 print(event)
                 print(addr)
