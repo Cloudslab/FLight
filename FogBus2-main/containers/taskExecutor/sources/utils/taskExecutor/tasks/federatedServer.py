@@ -12,14 +12,6 @@ import time
 import socket
 
 from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
-def one_x():
-    return ([1,2,3,4,5],[1,2,3,4,5])
-
-def two_x():
-    return ([1,2,3,4,5],[2,4,6,8,10])
-
-def three_x():
-    return ([1,2,3,4,5],[3,6,9,12,15])
 
 class FederatedServer(BaseTask):
     def __init__(self):
@@ -49,11 +41,6 @@ class FederatedServer(BaseTask):
 
         while len(lr.client) < 3 and lr.ready_to_train_client < 3:
             time.sleep(1)
-        #
-        #
-        #data_warehouse.get(lr.client[0][0]).load_data = one_x
-        #data_warehouse.get(lr.client[1][0]).load_data = two_x
-        #data_warehouse.get(lr.client[2][0]).load_data = three_x
 
         #for i in range(100):
         #    while len(lr.client) < 3 and lr.ready_to_train_client < 3:
