@@ -72,6 +72,8 @@ class router:
         self.socket.listen(5)
         while True:
             conn, _ = self.socket.accept()
+            x = 1
+            x.sot()
             event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
             model_type = conn.recv(MODEL_STRING_LEN).decode("utf-8")
             addr = ast.literal_eval(conn.recv(ADDRESS_STRING_LEN).decode("utf-8").rstrip())
