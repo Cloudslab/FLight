@@ -44,9 +44,11 @@ class FederatedServer(BaseTask):
 
         for i in range(100):
             version = lr.version
-            while len(lr.client) < 3 and lr.ready_to_train_client < 3 and lr.version == version:
+            while len(lr.client) < 3 and lr.ready_to_train_client:
                 time.sleep(0.01)
             lr.ask_next(10)
+            while  lr.version == version:
+                time.sleep(0.01)
         #
         inputData["Ress"] = {"final_model": lr.export(), "final_clients":lr.client, "twf": self.worker_addr}
         return inputData
