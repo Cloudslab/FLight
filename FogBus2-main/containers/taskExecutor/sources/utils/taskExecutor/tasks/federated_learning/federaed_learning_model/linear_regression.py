@@ -45,14 +45,11 @@ class linear_regression(base_model):
         # ToDo: Trash Code
         router = router_factory.get_default_router()
         if router.socket.getsockname()[1] == 54321:
-            x = 1
-            x.soc()
+            return ([1,2,3,4,5],[2,4,6,8,10])
         elif router.socket.getsockname()[1] == 54322:
-            y = 1
-            y.soc()
+            return ([1,2,3,4,5],[1,2,3,4,5])
         elif router.socket.getsockname()[1] == 54323:
-            z = 1
-            z.soc()
+            return ([1,2,3,4,5],[3,6,9,12,15])
 
 
     def step(self, train_data=None):
