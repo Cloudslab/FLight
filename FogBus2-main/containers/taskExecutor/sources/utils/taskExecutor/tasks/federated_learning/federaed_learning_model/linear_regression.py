@@ -40,17 +40,11 @@ class linear_regression(base_model):
 
     # ------------------------ pass all line ------------------------------
 
-    def load_data(self):
-
-        # ToDo: Trash Code
-        router = router_factory.get_default_router()
-        if router.socket.getsockname()[1] == 54321:
-            return ([1,2,3,4,5],[2,4,6,8,10])
-        elif router.socket.getsockname()[1] == 54322:
-            return ([1,2,3,4,5],[1,2,3,4,5])
-        elif router.socket.getsockname()[1] == 54323:
-            return ([1,2,3,4,5],[3,6,9,12,15])
-
+    def load_data(self, info):
+        if info:
+            pass
+        else:
+            return data_warehouse.get_default_data()
 
     def step(self, train_data=None):
         # for large ds, train_data can be necessary information to load dataset

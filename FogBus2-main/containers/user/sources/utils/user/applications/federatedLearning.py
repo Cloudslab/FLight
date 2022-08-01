@@ -27,8 +27,28 @@ class FederatedLearning(ApplicationUserSide):
         self.basicComponent.debugLogger.info(
             'Application is running: %s', self.appName)
 
+        print('worker_1_data_length = ', end='')
+        w1l = int(input())
+        print('worker_1_data_scalar = ', end='')
+        w1s = int(input())
+        print('worker_2_data_length = ', end='')
+        w2l = int(input())
+        print('worker_2_data_scalar = ', end='')
+        w2s = int(input())
+        print('worker_3_data_length = ', end='')
+        w3l = int(input())
+        print('worker_3_data_scalar = ', end='')
+        w3s = int(input())
+
         inputData = {
-            "number": 1,
+            "default_data_param": {
+                "w1l":w1l,
+                "w1s":w1s,
+                "w2l":w2l,
+                "w2s":w2s,
+                "w3l":w3l,
+                "w3s":w3s
+            },
             "tag": "Federated Learning"
         }
 

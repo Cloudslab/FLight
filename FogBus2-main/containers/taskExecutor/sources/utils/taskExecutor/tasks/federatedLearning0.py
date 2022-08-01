@@ -8,6 +8,7 @@ from .federated_learning.handler.ack_ready_handler import ack_ready_handler
 from .federated_learning.handler.ask_next_handler import ack_next_handler
 from .federated_learning.handler.fetch_handler import fetch_handler
 from .federated_learning.handler.push_handler import push_handler
+from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 
 class federatedLearning0(BaseTask):
     def __init__(self):
@@ -20,3 +21,4 @@ class federatedLearning0(BaseTask):
         router_factory.get_router((inputData["self_addr"][0], 54321)).add_handler("ask_next__", ack_next_handler())
         router_factory.get_router((inputData["self_addr"][0], 54321)).add_handler("fetch_____", fetch_handler())
         router_factory.get_router((inputData["self_addr"][0], 54321)).add_handler("push______", push_handler())
+        data_warehouse.set_default_data(inputData["default_data_param"]["w1s"], inputData["default_data_param"]["w1l"])
