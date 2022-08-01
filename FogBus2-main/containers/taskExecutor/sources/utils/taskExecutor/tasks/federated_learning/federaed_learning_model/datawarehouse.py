@@ -49,11 +49,11 @@ class data_warehouse:
     @classmethod
     def set_default_data(cls, scalar: int, length: int):
         if length >= 0:
-            setattr(cls.instance, "default_data_x", [i for i in range(length)])
-            setattr(cls.instance, "default_data_y", [i*scalar for i in range(length)])
+            setattr(cls, "default_data_x", [i for i in range(length)])
+            setattr(cls, "default_data_y", [i*scalar for i in range(length)])
 
     @classmethod
     def get_default_data(cls):
-        if not hasattr(cls.instance, "default_data_x") or not hasattr(cls.instance, "default_data_y"):
+        if not hasattr(cls, "default_data_x") or not hasattr(cls, "default_data_y"):
             cls.set_default_data(0, 0)
-            return getattr(cls.instance, "default_data_x"), getattr(cls.instance, "default_data_y")
+            return getattr(cls, "default_data_x"), getattr(cls, "default_data_y")
