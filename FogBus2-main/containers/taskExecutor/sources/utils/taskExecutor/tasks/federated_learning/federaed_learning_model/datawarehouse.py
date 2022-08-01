@@ -56,4 +56,4 @@ class data_warehouse:
     def get_default_data(cls):
         if not hasattr(cls, "default_data_x") or not hasattr(cls, "default_data_y"):
             cls.set_default_data(0, 0)
-            return getattr(cls, "default_data_x"), getattr(cls, "default_data_y")
+        return getattr(cls, "default_data_x"), getattr(cls, "default_data_y")
