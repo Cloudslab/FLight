@@ -40,7 +40,7 @@ class linear_regression(base_model):
 
     # ------------------------ pass all line ------------------------------
 
-    def load_data(self, info):
+    def load_data(self, info=None):
         if info:
             pass
         else:
