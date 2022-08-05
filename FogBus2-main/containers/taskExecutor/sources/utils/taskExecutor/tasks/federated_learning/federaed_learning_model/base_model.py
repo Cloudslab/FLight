@@ -40,7 +40,7 @@ class base_model(ABC):
         raise NotImplementedError("Override with a federate child logic")
 
     @abstractmethod
-    def fetch_server(self, server_id):
+    def fetch_server(self, ptr):
         raise NotImplementedError("Override with logic of sending request to fetch server model")
 
     @abstractmethod
@@ -48,7 +48,7 @@ class base_model(ABC):
         raise NotImplementedError("Override with logic of fetching child model based on child ptr")
 
     @abstractmethod
-    def fetch_peer(self, peer_id):
+    def fetch_peer(self, ptr):
         raise NotImplementedError("Override with logic of fetching peer model based on peer id")
 
     @abstractmethod

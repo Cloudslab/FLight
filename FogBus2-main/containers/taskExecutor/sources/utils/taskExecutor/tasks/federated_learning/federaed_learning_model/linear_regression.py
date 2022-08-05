@@ -23,8 +23,8 @@ class linear_regression(base_model):
         self.peer = []
         self.uuid = data_warehouse.set(self)
         self.ready_to_train_client = 0
-        self.versions = {} # version
-        self.models = {} # remote models' local copy
+        self.versions = {}  # version
+        self.models = {}  # remote models' local copy
 
     def add_peer(self, ptr):
         pass
@@ -32,7 +32,7 @@ class linear_regression(base_model):
     def add_server(self, ptr):
         pass
 
-    def fetch_peer(self, peer_id):
+    def fetch_peer(self, ptr):
         pass
 
     def push_peer(self, ptr):
@@ -79,7 +79,7 @@ class linear_regression(base_model):
         self.version += 1
 
     def load(self, data):
-        #data = pickle.loads(data)
+        # data = pickle.loads(data)
         if len(data) >= 3:
             self.w, self.b, self.lr = data[:3]
         elif len(data) == 2:
@@ -90,13 +90,14 @@ class linear_regression(base_model):
         return self.w, self.b, self.lr, self.version, self.uuid
 
     def add_client(self, addr):
+        ## ToDo: change addr to ptr: (addr, remote_id). Allow remote_id to be None
         router = router_factory.get_default_router()
         router.send(addr, "add_client_lr__", self.export())
 
     def ack_ready(self, role, ptr, flg):
         router = router_factory.get_default_router()
         addr, remote_id = ptr
-        router.send(addr, "ack_ready_"+flg, (role, (remote_id, self.uuid)))
+        router.send(addr, "ack_ready_" + flg, (role, (remote_id, self.uuid)))
 
     def ask_next(self, itr_nums):
         router = router_factory.get_default_router()
@@ -133,8 +134,10 @@ class linear_regression(base_model):
 
     def can_load(self, role, ptr, version):
         remote_id, addr = ptr
-        if role == "client" and ptr in self.client and (remote_id not in self.versions or self.versions[remote_id] < version): return True
-        if role == "server" and ptr in self.server and (remote_id not in self.versions or self.versions[remote_id] < version): return True
+        if role == "client" and ptr in self.client and (
+                remote_id not in self.versions or self.versions[remote_id] < version): return True
+        if role == "server" and ptr in self.server and (
+                remote_id not in self.versions or self.versions[remote_id] < version): return True
 
         return False
 
