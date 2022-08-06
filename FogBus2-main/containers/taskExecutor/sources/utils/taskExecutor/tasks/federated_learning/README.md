@@ -329,3 +329,4 @@ Pass any information required for authorization check by parameters
 
 ----
 ## Walk through Example
+- [Linear Regression Example](working_examples/linear_regression.md)
