@@ -100,14 +100,15 @@ class TaskExecutorMessageHandler:
             if len(self.registrationManager.childrenAddresses.keys()):
                 intermediateData["child_addr"] = intermediateData["self_addr"]
                 data['intermediateData'] = intermediateData
-                for addr in self.registrationManager.childrenAddresses.values():
-                    child = Component(addr=addr)
-                    self.basicComponent.sendMessage(
-                        messageType=MessageType.DATA,
-                        messageSubType=MessageSubType.INTERMEDIATE_DATA,
-                        data=data,
-                        destination=child)
-                self.task.exec(intermediateData)
+
+                if self.task.exec(intermediateData):
+                    for addr in self.registrationManager.childrenAddresses.values():
+                        child = Component(addr=addr)
+                        self.basicComponent.sendMessage(
+                            messageType=MessageType.DATA,
+                            messageSubType=MessageSubType.INTERMEDIATE_DATA,
+                            data=data,
+                            destination=child)
                 return
         """
         if "tag" in intermediateData and intermediateData["tag"] == "Federated Learning" and \

@@ -24,3 +24,5 @@ class federatedLearning2(BaseTask):
         router_factory.get_router(inputData["self_addr"]).add_handler("push______", push_handler())
         data_warehouse.set_default_data(inputData["participants"][self.taskName]["data"]["default_data_scalar"],
                                         inputData["participants"][self.taskName]["data"]["default_data_len"])
+
+        return True

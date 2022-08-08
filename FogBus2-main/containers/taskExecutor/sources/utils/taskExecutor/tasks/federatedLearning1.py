@@ -15,7 +15,6 @@ class federatedLearning1(BaseTask):
         super().__init__(taskID=232, taskName='FederatedLearning1')
 
     def exec(self, inputData):
-
         router_factory.get_router(inputData["self_addr"])
         router_factory.get_router(inputData["self_addr"]).add_handler("add_client", add_client_handler())
         router_factory.get_router(inputData["self_addr"]).add_handler("ack_ready_", ack_ready_handler())
@@ -24,3 +23,5 @@ class federatedLearning1(BaseTask):
         router_factory.get_router(inputData["self_addr"]).add_handler("push______", push_handler())
         data_warehouse.set_default_data(inputData["participants"][self.taskName]["data"]["default_data_scalar"],
                                         inputData["participants"][self.taskName]["data"]["default_data_len"])
+
+        return True
