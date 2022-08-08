@@ -25,5 +25,5 @@ class NaiveFormula3(BaseTask):
         inputData['resultPart0'] = self.resultPart0
         inputData['resultPart1'] = self.resultPart1
         inputData['resultPart2'] = self.resultPart2
-        inputData['finalResult'] = finalResult
+        inputData['finalResult'] = 12345
         return inputData
