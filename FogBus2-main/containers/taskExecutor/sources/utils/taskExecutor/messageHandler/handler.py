@@ -92,11 +92,13 @@ class TaskExecutorMessageHandler:
         # NEW codes added for Federated Learning @ Wuji Zhu
         if "tag" in intermediateData and intermediateData["tag"] == "Federated Learning":
 
-            intermediateData["self_addr"] = self.basicComponent.addr
+            intermediateData["self_addr"] = self.basicComponent.addr[0], \
+                                            intermediateData["participants"][self.task.taskName]["data"]["port"]
+
 
 
             if len(self.registrationManager.childrenAddresses.keys()):
-                intermediateData["child_addr"] = self.basicComponent.addr
+                intermediateData["child_addr"] = intermediateData["self_addr"]
                 data['intermediateData'] = intermediateData
                 for addr in self.registrationManager.childrenAddresses.values():
                     child = Component(addr=addr)

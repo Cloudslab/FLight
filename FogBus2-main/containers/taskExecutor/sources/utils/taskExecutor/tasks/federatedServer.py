@@ -32,18 +32,20 @@ class FederatedServer(BaseTask):
         if len(self.worker_addr) < self.num_clients:
             return
 
-        router_factory.set_router((self.server_addr[0], 54324))
-        router_factory.get_router((self.server_addr[0], 54324)).add_handler("add_client", add_client_handler())
-        router_factory.get_router((self.server_addr[0], 54324)).add_handler("ack_ready_", ack_ready_handler())
-        router_factory.get_router((self.server_addr[0], 54324)).add_handler("ask_next__", ack_next_handler())
-        router_factory.get_router((self.server_addr[0], 54324)).add_handler("fetch_____", fetch_handler())
-        router_factory.get_router((self.server_addr[0], 54324)).add_handler("push______", push_handler())
+        address = self.server_addr[0]
+        port = inputData["participants"][self.taskName]["data"]["port"]
+
+        router_factory.set_router((address, port))
+        router_factory.get_router((address, port)).add_handler("add_client", add_client_handler())
+        router_factory.get_router((address, port)).add_handler("ack_ready_", ack_ready_handler())
+        router_factory.get_router((address, port)).add_handler("ask_next__", ack_next_handler())
+        router_factory.get_router((address, port)).add_handler("fetch_____", fetch_handler())
+        router_factory.get_router((address, port)).add_handler("push______", push_handler())
 
         lr = linear_regression(0, 0, 0.01)
         #for (addr, port) in self.worker_addr:
-        lr.add_client((self.server_addr[0], 54321))
-        lr.add_client((self.server_addr[0], 54322))
-        lr.add_client((self.server_addr[0], 54323))
+        for addr in self.worker_addr:
+            lr.add_client(addr)
 
 
         while len(lr.client) < self.num_clients and lr.ready_to_train_client < self.num_clients:

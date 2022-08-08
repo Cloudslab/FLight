@@ -44,7 +44,8 @@ class FederatedLearning(ApplicationUserSide):
             "role": "client",
             "data": {
                 "default_data_len":w1l,
-                "default_data_scalar":w1s
+                "default_data_scalar":w1s,
+                "port":54321
             }
         }
 
@@ -52,7 +53,8 @@ class FederatedLearning(ApplicationUserSide):
             "role": "client",
             "data": {
                 "default_data_len": w2l,
-                "default_data_scalar": w2s
+                "default_data_scalar": w2s,
+                "port":54322
             }
         }
 
@@ -60,14 +62,16 @@ class FederatedLearning(ApplicationUserSide):
             "role": "client",
             "data": {
                 "default_data_len": w3l,
-                "default_data_scalar": w3s
+                "default_data_scalar": w3s,
+                "port":54323
             }
         }
 
         federatedServer = {
             "role": "server",
             "data": {
-                "client_num": 3
+                "client_num": 3,
+                "port": 54324
             }
         }
 
