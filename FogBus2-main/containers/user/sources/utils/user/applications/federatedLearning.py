@@ -74,10 +74,10 @@ class FederatedLearning(ApplicationUserSide):
 
         inputData = {
             "participants":{
-                "federatedWorker0": federatedWorker0,
-                "federatedWorker1": federatedWorker1,
-                "federatedWorker2": federatedWorker2,
-                "federatedServer": federatedServer
+                "FederatedLearning0": federatedWorker0,
+                "FederatedLearning1": federatedWorker1,
+                "FederatedLearning2": federatedWorker2,
+                "FederatedServer": federatedServer
             },
             "tag": "Federated Learning"
         }
