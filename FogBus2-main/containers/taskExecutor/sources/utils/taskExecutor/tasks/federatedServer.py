@@ -59,4 +59,8 @@ class FederatedServer(BaseTask):
         #
         inputData["Ress"] = {"final_model": lr.export(), "final_clients":lr.client, "twf": self.worker_addr}
         """
-        return inputData
+        i = {}
+        i["self"] = inputData["self_addr"]
+        i["name"] = self.taskName
+        i["child"] = self.worker_addr
+        return i
