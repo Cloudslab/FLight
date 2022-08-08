@@ -21,4 +21,5 @@ class federatedLearning0(BaseTask):
         router_factory.get_router((inputData["self_addr"][0], 54321)).add_handler("ask_next__", ack_next_handler())
         router_factory.get_router((inputData["self_addr"][0], 54321)).add_handler("fetch_____", fetch_handler())
         router_factory.get_router((inputData["self_addr"][0], 54321)).add_handler("push______", push_handler())
-        data_warehouse.set_default_data(inputData["default_data_param"]["w1s"], inputData["default_data_param"]["w1l"])
+        data_warehouse.set_default_data(inputData["participants"][self.taskName]["data"]["default_data_scalar"],
+                                        inputData["participants"][self.taskName]["data"]["default_data_len"])

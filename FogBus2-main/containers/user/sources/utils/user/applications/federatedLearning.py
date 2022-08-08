@@ -40,14 +40,44 @@ class FederatedLearning(ApplicationUserSide):
         print('worker_3_data_scalar = ', end='')
         w3s = int(input())
 
+        federatedWorker0 = {
+            "role": "client",
+            "data": {
+                "default_data_len":w1l,
+                "default_data_scalar":w1s
+            }
+        }
+
+        federatedWorker1 = {
+            "role": "client",
+            "data": {
+                "default_data_len": w2l,
+                "default_data_scalar": w2s
+            }
+        }
+
+        federatedWorker2 = {
+            "role": "client",
+            "data": {
+                "default_data_len": w3l,
+                "default_data_scalar": w3s
+            }
+        }
+
+        federatedServer = {
+            "role": "server",
+            "data": {
+                "client_num": 3
+            }
+        }
+
+
         inputData = {
-            "default_data_param": {
-                "w1l":w1l,
-                "w1s":w1s,
-                "w2l":w2l,
-                "w2s":w2s,
-                "w3l":w3l,
-                "w3s":w3s
+            "participants":{
+                "federatedWorker0": federatedWorker0,
+                "federatedWorker1": federatedWorker1,
+                "federatedWorker2": federatedWorker2,
+                "federatedServer": federatedServer
             },
             "tag": "Federated Learning"
         }
