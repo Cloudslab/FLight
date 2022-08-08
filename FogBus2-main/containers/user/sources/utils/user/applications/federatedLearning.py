@@ -79,7 +79,7 @@ class FederatedLearning(ApplicationUserSide):
                 "FederatedLearning2": federatedWorker2,
                 "FederatedServer": federatedServer
             },
-            "tagg": "Federated Learning"
+            "tag": "Federated Learning"
         }
 
         # put it in to data uploading queue

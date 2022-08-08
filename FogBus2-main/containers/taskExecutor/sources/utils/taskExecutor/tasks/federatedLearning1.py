@@ -25,8 +25,4 @@ class federatedLearning1(BaseTask):
         data_warehouse.set_default_data(inputData["participants"][self.taskName]["data"]["default_data_scalar"],
                                         inputData["participants"][self.taskName]["data"]["default_data_len"])
         """
-
-        i = {}
-        i["self"] = inputData["self_addr"]
-        i["name"] = self.taskName
-        return i
+        return inputData
