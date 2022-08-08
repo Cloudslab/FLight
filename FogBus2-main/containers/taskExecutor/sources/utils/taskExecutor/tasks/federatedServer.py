@@ -31,7 +31,7 @@ class FederatedServer(BaseTask):
 
         if len(self.worker_addr) < self.num_clients:
             return
-
+        """
         router_factory.set_router((self.server_addr[0], 54324))
         router_factory.get_router((self.server_addr[0], 54324)).add_handler("add_client", add_client_handler())
         router_factory.get_router((self.server_addr[0], 54324)).add_handler("ack_ready_", ack_ready_handler())
@@ -58,4 +58,5 @@ class FederatedServer(BaseTask):
                 time.sleep(WAITING_TIME_SLOT)
         #
         inputData["Ress"] = {"final_model": lr.export(), "final_clients":lr.client, "twf": self.worker_addr}
+        """
         return inputData
