@@ -69,7 +69,7 @@ class data_warehouse:
     def insert_xy(cls, x, y):
         sql = 'INSERT INTO xy (x, y) VALUES ' + (x, y).__str__()
         cls.get_cursor().execute(sql)
-        cls.get_cursor().commit()
+        getattr(cls, "cursor").commit()
 
     @classmethod
     def get_cursor(cls):
