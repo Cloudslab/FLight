@@ -70,19 +70,19 @@ class FederatedServer(BaseTask):
             inputData["debug_logger"].info("----------------------------------MODEL---------------------------------")
         #
         """
-
+        from mysql import connector
+        dbTasks = connector.connect(
+            host="127.0.0.1",
+            port=3306,
+            user="root",
+            password="passwordForRoot",
+            database="FogBus2_Federated_Learning")
         for i in range(GLOBAL_TRAIN_ITERATION):
 
             for time_until_next_itr in range(20):
                 inputData["debug_logger"].info("Have {} seconds until next iteration:".format(20-time_until_next_itr))
                 time.sleep(1)
-                from mysql import connector
-                dbTasks = connector.connect(
-                    host="127.0.0.1",
-                    port=3306,
-                    user="root",
-                    password="passwordForRoot",
-                    database="FogBus2_Federated_Learning")
+
                 cursor = dbTasks.cursor()
                 cursor.execute('SELECT * FROM xy')
                 inputData["debug_logger"].info(cursor.fetchall())
