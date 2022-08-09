@@ -44,7 +44,14 @@ class linear_regression(base_model):
         if info:
             pass
         else:
-            return data_warehouse.get_default_data()
+            xy = data_warehouse.read_from_database("xy")
+            X = []
+            Y = []
+            for _, x, y in xy:
+                X.append(x)
+                Y.append(y)
+            return X, Y
+            #return data_warehouse.get_default_data()
 
     def step(self, train_data=None):
         # for large ds, train_data can be necessary information to load dataset

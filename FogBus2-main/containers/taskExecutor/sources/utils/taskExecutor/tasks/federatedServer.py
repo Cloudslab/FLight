@@ -31,7 +31,7 @@ class FederatedServer(BaseTask):
 
         if len(self.worker_addr) < self.num_clients:
             return
-        """
+
         address = self.server_addr[0]
         port = inputData["participants"][self.taskName]["data"]["port"]
 
@@ -61,26 +61,4 @@ class FederatedServer(BaseTask):
         #
         
         inputData = {"final_model": lr.export(), "twf": self.worker_addr}
-        """
-        from mysql import connector
-        dbTasks = connector.connect(
-            host="127.0.0.1",
-            port=3306,
-            user="root",
-            password="passwordForRoot",
-            database="FogBus2_Federated_Learning")
-        cursor = dbTasks.cursor()
-        cursor.execute('SELECT * FROM xy')
-        result = cursor.fetchall()
-        inputData["RES1"] = result
-
-        cursor.execute('INSERT INTO xy (x, y) VALUES (1, 1)')
-        cursor.execute('SELECT * FROM xy')
-        result = cursor.fetchall()
-        inputData["RES2"] = result
-
-        cursor.execute('INSERT INTO xy (x, y) VALUES (2, 2)')
-        cursor.execute('SELECT * FROM xy')
-        result = cursor.fetchall()
-        inputData["RES2"] = result
         return inputData
