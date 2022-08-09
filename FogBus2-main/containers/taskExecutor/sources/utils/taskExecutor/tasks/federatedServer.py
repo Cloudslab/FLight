@@ -44,7 +44,7 @@ class FederatedServer(BaseTask):
 
         lr = linear_regression(0, 0, 0.01)
 
-        data_warehouse.insert_xy(2,2)
+        data_warehouse.insert_xy(3,3)
         inputData["debug_logger"].info(data_warehouse.read_from_database("xy"))
         #for (addr, port) in self.worker_addr:
         for addr in self.worker_addr:
