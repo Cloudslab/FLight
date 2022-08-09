@@ -54,7 +54,7 @@ class FederatedServer(BaseTask):
         for i in range(GLOBAL_TRAIN_ITERATION):
 
             for time_until_next_itr in range(20):
-                print("Have {} seconds until next iteration:".format(20-time_until_next_itr))
+                inputData["debug_logger"].info("Have {} seconds until next iteration:".format(20-time_until_next_itr))
                 time.sleep(1)
 
             version = lr.version
