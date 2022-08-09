@@ -70,7 +70,7 @@ class linear_regression(base_model):
                 grad_B += grad_b
                 grad_W += grad_w
 
-            return grad_B / len(x_list), grad_W / len(x_list)
+            return grad_B / (len(x_list)*len(x_list)*len(x_list)), grad_W / (len(x_list) * len(x_list)*len(x_list))
 
         grad_B, grad_W = grad_all(x, y)
 
