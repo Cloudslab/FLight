@@ -29,12 +29,6 @@ CREATE TABLE `xy` (
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-LOCK TABLES `xy` WRITE;
-INSERT INTO `xy` VALUES (x,y) (0,0);
-INSERT INTO `xy` VALUES (x,y) (1,3);
-INSERT INTO `xy` VALUES (x,y) (2,6);
-INSERT INTO `xy` VALUES (x,y) (3,9);
-UNLOCK TABLES;
 /*
 End Wuji Zhu
 */
