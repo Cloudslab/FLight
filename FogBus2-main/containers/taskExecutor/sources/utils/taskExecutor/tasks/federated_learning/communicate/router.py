@@ -21,6 +21,8 @@ class router_factory:
                 new_router.start()
                 cls.routers[addr] = new_router
             except Exception as e:
+                x = 1
+                x.sox()
                 print(e)
                 print("Router Creation Fail")
                 pass
