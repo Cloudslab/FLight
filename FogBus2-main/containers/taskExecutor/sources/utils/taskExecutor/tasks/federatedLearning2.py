@@ -16,7 +16,7 @@ class federatedLearning2(BaseTask):
 
     def exec(self, inputData):
 
-        router_factory.get_router(inputData["self_addr"])
+        router_factory.set_router(inputData["self_addr"])
         router_factory.get_router(inputData["self_addr"]).add_handler("add_client", add_client_handler())
         router_factory.get_router(inputData["self_addr"]).add_handler("ack_ready_", ack_ready_handler())
         router_factory.get_router(inputData["self_addr"]).add_handler("ask_next__", ack_next_handler())
