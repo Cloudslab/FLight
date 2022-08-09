@@ -67,10 +67,10 @@ class linear_regression(base_model):
             grad_B, grad_W = 0, 0
             for x_ele, y_ele in zip(x_list, y_list):
                 grad_b, grad_w = grad(x_ele, y_ele)
-                grad_B += grad_b
-                grad_W += grad_w
+                grad_B += grad_b / len(x_list)
+                grad_W += grad_w / len(x_list)
 
-            return grad_B / len(x_list), grad_W / len(x_list)
+            return grad_B, grad_W
 
         grad_B, grad_W = grad_all(x, y)
 
