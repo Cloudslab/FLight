@@ -35,7 +35,7 @@ class FederatedServer(BaseTask):
         address = self.server_addr[0]
         port = inputData["participants"][self.taskName]["data"]["port"]
 
-        router_factory.set_router((address, port))
+        router_factory.get_router((address, port))
         router_factory.get_router((address, port)).add_handler("add_client", add_client_handler())
         router_factory.get_router((address, port)).add_handler("ack_ready_", ack_ready_handler())
         router_factory.get_router((address, port)).add_handler("ask_next__", ack_next_handler())
