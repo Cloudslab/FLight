@@ -70,7 +70,7 @@ class FederatedServer(BaseTask):
             password="passwordForRoot",
             database="FogBus2_Applications")
         cursor = dbTasks.cursor()
-        cursor.execute('SELECT * FROM tasks')
+        cursor.execute('SELECT * FROM applications')
         result = cursor.fetchall()
         inputData["RESSS"] = result
         return inputData
