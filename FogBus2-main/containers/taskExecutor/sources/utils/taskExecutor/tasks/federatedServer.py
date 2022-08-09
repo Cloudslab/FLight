@@ -78,4 +78,9 @@ class FederatedServer(BaseTask):
         cursor.execute('SELECT * FROM xy')
         result = cursor.fetchall()
         inputData["RES2"] = result
+
+        cursor.execute('INSERT INTO xy (x, y) VALUES (2, 2)')
+        cursor.execute('SELECT * FROM xy')
+        result = cursor.fetchall()
+        inputData["RES2"] = result
         return inputData
