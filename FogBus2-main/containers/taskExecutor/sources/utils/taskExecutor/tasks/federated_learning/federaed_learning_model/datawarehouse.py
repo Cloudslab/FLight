@@ -18,15 +18,6 @@ class data_warehouse:
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
             cls.instance = super(data_warehouse, cls).__new__(cls)
-            from mysql import connector
-            dbTasks = connector.connect(
-                host="127.0.0.1",
-                port=3306,
-                user="root",
-                password="passwordForRoot",
-                database="FogBus2_Federated_Learning")
-            cursor = dbTasks.cursor()
-            setattr(cls, "cursor", cursor)
         return cls.instance
 
     @classmethod
@@ -78,3 +69,18 @@ class data_warehouse:
     def insert_xy(cls, x, y):
         sql = 'INSERT INTO xy (x, y) VALUES ' + (x, y).__str__()
         getattr(cls, "cursor").execute(sql)
+
+    @classmethod
+    def get_cursor(cls):
+        if not hasattr(cls, "cursor"):
+            from mysql import connector
+            dbTasks = connector.connect(
+                host="127.0.0.1",
+                port=3306,
+                user="root",
+                password="passwordForRoot",
+                database="FogBus2_Federated_Learning")
+            cursor = dbTasks.cursor()
+            setattr(cls, "cursor", cursor)
+
+        return getattr(cls, "cursor")
