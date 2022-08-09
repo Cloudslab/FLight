@@ -13,6 +13,7 @@ different update method
 
 import uuid
 
+from mysql import connector
 
 class data_warehouse:
     def __new__(cls, *args, **kwargs):
@@ -62,27 +63,29 @@ class data_warehouse:
     def read_from_database(cls, db_name):
 
         sql = 'SELECT * FROM '+db_name
-        cls.get_cursor().execute(sql)
-        return cls.get_cursor().fetchall()
+        conn, cursor = cls.get_cursor()
+        cursor.execute(sql)
+        res = cursor.fetchall()
+        conn.close()
+        return res
 
     @classmethod
     def insert_xy(cls, x, y):
         sql = 'INSERT INTO xy (x, y) VALUES ' + (x, y).__str__()
-        cls.get_cursor().execute(sql)
-        getattr(cls, "db").commit()
+        conn, cursor = cls.get_cursor()
+        cursor.execute(sql)
+
+        conn.commit()
+        conn.close()
 
     @classmethod
     def get_cursor(cls):
-        if not hasattr(cls, "cursor"):
-            from mysql import connector
-            dbTasks = connector.connect(
-                host="127.0.0.1",
-                port=3306,
-                user="root",
-                password="passwordForRoot",
-                database="FogBus2_Federated_Learning")
-            cursor = dbTasks.cursor()
-            setattr(cls, "cursor", cursor)
-            setattr(cls, "db", dbTasks)
+        dbTasks = connector.connect(
+            host="127.0.0.1",
+            port=3306,
+            user="root",
+            password="passwordForRoot",
+            database="FogBus2_Federated_Learning")
+        cursor = dbTasks.cursor()
 
-        return getattr(cls, "cursor")
+        return dbTasks, cursor
