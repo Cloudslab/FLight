@@ -94,6 +94,7 @@ class TaskExecutorMessageHandler:
 
             intermediateData["self_addr"] = self.basicComponent.addr[0], \
                                             intermediateData["participants"][self.task.taskName]["data"]["port"]
+            intermediateData["debug_logger"] = self.basicComponent.debugLogger
 
 
 

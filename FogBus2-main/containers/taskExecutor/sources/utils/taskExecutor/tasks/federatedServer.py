@@ -52,6 +52,7 @@ class FederatedServer(BaseTask):
             time.sleep(WAITING_TIME_SLOT)
 
         for i in range(GLOBAL_TRAIN_ITERATION):
+            inputData["debug_logger"].info("almosttttttttt")
             version = lr.version
             while len(lr.client) < self.num_clients and lr.ready_to_train_client < self.num_clients:
                 time.sleep(WAITING_TIME_SLOT)
