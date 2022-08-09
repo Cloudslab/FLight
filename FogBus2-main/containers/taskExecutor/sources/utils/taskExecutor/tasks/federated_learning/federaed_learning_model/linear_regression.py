@@ -67,7 +67,8 @@ class linear_regression(base_model):
             return l, l * x_ele
 
         def grad_all(x_list, y_list):
-            if len(x_list) != len(y_list) or len(x_list) == 0:
+            #if len(x_list) != len(y_list) or len(x_list) == 0:
+            if len(x_list) == 0:
                 # should be an error here
                 return 0, 0
 
