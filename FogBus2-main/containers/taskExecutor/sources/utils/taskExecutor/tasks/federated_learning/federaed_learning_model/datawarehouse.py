@@ -62,7 +62,7 @@ class data_warehouse:
     def read_from_database(cls, db_name):
 
         sql = 'SELECT * FROM '+db_name
-        getattr(cls, "cursor").execute(sql)
+        cls.get_cursor().execute(sql)
         return cls.get_cursor().fetch_all()
 
     @classmethod
