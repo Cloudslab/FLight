@@ -82,5 +82,6 @@ class data_warehouse:
                 database="FogBus2_Federated_Learning")
             cursor = dbTasks.cursor()
             setattr(cls, "cursor", cursor)
+            setattr(cls, "db", dbTasks)
 
         return getattr(cls, "cursor")
