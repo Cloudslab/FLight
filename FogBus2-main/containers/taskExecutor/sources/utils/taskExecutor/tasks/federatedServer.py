@@ -42,7 +42,7 @@ class FederatedServer(BaseTask):
         r.add_handler("fetch_____", fetch_handler())
         r.add_handler("push______", push_handler())
 
-        lr = linear_regression(0, 0, 0.01)
+        lr = linear_regression(0, 0, 0.0001)
 
         #for (addr, port) in self.worker_addr:
         for addr in self.worker_addr:
