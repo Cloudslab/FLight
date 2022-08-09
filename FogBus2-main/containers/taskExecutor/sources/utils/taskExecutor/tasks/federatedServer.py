@@ -43,6 +43,8 @@ class FederatedServer(BaseTask):
         r.add_handler("push______", push_handler())
 
         lr = linear_regression(0, 0, 0.01)
+
+        data_warehouse.insert_xy(1,1)
         #for (addr, port) in self.worker_addr:
         for addr in self.worker_addr:
             lr.add_client(addr)
@@ -52,10 +54,11 @@ class FederatedServer(BaseTask):
             time.sleep(WAITING_TIME_SLOT)
 
         for i in range(GLOBAL_TRAIN_ITERATION):
-
+            """
             for time_until_next_itr in range(20):
                 inputData["debug_logger"].info("Have {} seconds until next iteration:".format(20-time_until_next_itr))
                 time.sleep(1)
+            """
 
             version = lr.version
             while len(lr.client) < self.num_clients and lr.ready_to_train_client < self.num_clients:
