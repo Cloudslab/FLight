@@ -68,9 +68,9 @@ class FederatedServer(BaseTask):
             port=3306,
             user="root",
             password="passwordForRoot",
-            database="FogBus2_Applications")
+            database="FogBus2_Federated_Learning")
         cursor = dbTasks.cursor()
-        cursor.execute('SELECT * FROM applications')
+        cursor.execute('SELECT * FROM xy')
         result = cursor.fetchall()
         inputData["RESSS"] = result
         return inputData

@@ -15,6 +15,29 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
+/* Files Changed By Wuji Zhu
+
+*/
+CREATE DATABASE `FogBus2_Federated_Learning`;
+USE `FogBus2_Federated_Learning`;
+DROP TABLE IF EXISTS `xy`;
+
+CREATE TABLE `xy` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `x` int NOT NULL,
+    `y` int NOT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+LOCK TABLES `xy` WRITE;
+INSERT INTO `xy` VALUES (0,0);
+INSERT INTO `xy` VALUES (1,3);
+INSERT INTO `xy` VALUES (2,6);
+INSERT INTO `xy` VALUES (3,9);
+UNLOCK TABLES;
+/*
+End Wuji Zhu
+*/
 --
 -- Current Database: `FogBus2_Applications`
 --
