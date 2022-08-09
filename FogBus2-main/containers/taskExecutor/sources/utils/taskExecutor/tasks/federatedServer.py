@@ -14,7 +14,7 @@ import socket
 from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 
 LOCAL_TRAIN_ITERATION = 10
-GLOBAL_TRAIN_ITERATION = 100
+GLOBAL_TRAIN_ITERATION = 1
 WAITING_TIME_SLOT = 0.01
 
 class FederatedServer(BaseTask):
