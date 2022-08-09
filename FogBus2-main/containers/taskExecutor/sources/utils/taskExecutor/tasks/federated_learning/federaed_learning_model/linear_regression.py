@@ -74,10 +74,8 @@ class linear_regression(base_model):
 
         grad_B, grad_W = grad_all(x, y)
 
-        #self.b = self.b - self.lr * grad_B
-        #self.w = self.w - self.lr * grad_W
-        self.b = sum(x)
-        self.w = sum(y)
+        self.b = self.b - self.lr * grad_B
+        self.w = self.w - self.lr * grad_W
 
         self.version += 1
 
