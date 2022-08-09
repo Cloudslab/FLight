@@ -63,12 +63,12 @@ class data_warehouse:
 
         sql = 'SELECT * FROM '+db_name
         getattr(cls, "cursor").execute(sql)
-        return getattr(cls, "cursor").fetch_all()
+        return cls.get_cursor().fetch_all()
 
     @classmethod
     def insert_xy(cls, x, y):
         sql = 'INSERT INTO xy (x, y) VALUES ' + (x, y).__str__()
-        getattr(cls, "cursor").execute(sql)
+        cls.get_cursor().execute(sql)
 
     @classmethod
     def get_cursor(cls):
