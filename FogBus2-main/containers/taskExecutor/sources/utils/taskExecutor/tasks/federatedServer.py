@@ -35,12 +35,12 @@ class FederatedServer(BaseTask):
         address = self.server_addr[0]
         port = inputData["participants"][self.taskName]["data"]["port"]
 
-        router_factory.get_router((address, port))
-        router_factory.get_router((address, port)).add_handler("add_client", add_client_handler())
-        router_factory.get_router((address, port)).add_handler("ack_ready_", ack_ready_handler())
-        router_factory.get_router((address, port)).add_handler("ask_next__", ack_next_handler())
-        router_factory.get_router((address, port)).add_handler("fetch_____", fetch_handler())
-        router_factory.get_router((address, port)).add_handler("push______", push_handler())
+        addr, r = router_factory.get_router((address, port))
+        r.add_handler("add_client", add_client_handler())
+        r.add_handler("ack_ready_", ack_ready_handler())
+        r.add_handler("ask_next__", ack_next_handler())
+        r.add_handler("fetch_____", fetch_handler())
+        r.add_handler("push______", push_handler())
 
         lr = linear_regression(0, 0, 0.01)
         #for (addr, port) in self.worker_addr:

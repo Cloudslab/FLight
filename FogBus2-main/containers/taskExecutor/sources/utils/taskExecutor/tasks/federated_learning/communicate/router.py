@@ -20,20 +20,18 @@ class router_factory:
                 new_router = router(addr[0], addr[1])
                 new_router.start()
                 cls.routers[addr] = new_router
+                return addr
             except Exception as e:
-                x = 1
-                x.sox()
-                print(e)
-                print("Router Creation Fail")
-                pass
+                return cls.set_router((addr[0], addr[1]+3))
 
     @classmethod
     def get_router(cls, addr):
         if addr in cls.routers:
-            return cls.routers[addr]
+            return addr, cls.routers[addr]
         else:
-            cls.set_router(addr)
-            return cls.routers[addr]
+
+            addr = cls.set_router(addr)
+            return addr, cls.routers[addr]
 
     @classmethod
     def get_default_router(cls):

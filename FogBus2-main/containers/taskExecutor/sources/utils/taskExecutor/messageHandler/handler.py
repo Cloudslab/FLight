@@ -98,10 +98,10 @@ class TaskExecutorMessageHandler:
 
 
             if len(self.registrationManager.childrenAddresses.keys()):
-                intermediateData["child_addr"] = intermediateData["self_addr"]
+                task_executor_router_address = self.task.exec(intermediateData)
+                intermediateData["child_addr"] = task_executor_router_address
                 data['intermediateData'] = intermediateData
-
-                if self.task.exec(intermediateData):
+                if task_executor_router_address:
                     for addr in self.registrationManager.childrenAddresses.values():
                         child = Component(addr=addr)
                         self.basicComponent.sendMessage(

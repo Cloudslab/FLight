@@ -15,13 +15,13 @@ class federatedLearning1(BaseTask):
         super().__init__(taskID=232, taskName='FederatedLearning1')
 
     def exec(self, inputData):
-        router_factory.get_router(inputData["self_addr"])
-        router_factory.get_router(inputData["self_addr"]).add_handler("add_client", add_client_handler())
-        router_factory.get_router(inputData["self_addr"]).add_handler("ack_ready_", ack_ready_handler())
-        router_factory.get_router(inputData["self_addr"]).add_handler("ask_next__", ack_next_handler())
-        router_factory.get_router(inputData["self_addr"]).add_handler("fetch_____", fetch_handler())
-        router_factory.get_router(inputData["self_addr"]).add_handler("push______", push_handler())
+        addr, r = router_factory.get_router(inputData["self_addr"])
+        r.add_handler("add_client", add_client_handler())
+        r.add_handler("ack_ready_", ack_ready_handler())
+        r.add_handler("ask_next__", ack_next_handler())
+        r.add_handler("fetch_____", fetch_handler())
+        r.add_handler("push______", push_handler())
         data_warehouse.set_default_data(inputData["participants"][self.taskName]["data"]["default_data_scalar"],
                                         inputData["participants"][self.taskName]["data"]["default_data_len"])
 
-        return True
+        return addr
