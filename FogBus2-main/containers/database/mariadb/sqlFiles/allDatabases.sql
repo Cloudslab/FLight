@@ -18,7 +18,7 @@
 /* Files Changed By Wuji Zhu
 
 */
-CREATE DATABASE /*!32312 IF NOT EXISTS*/ `FogBus2_Federated_Learning` /*!40100 DEFAULT CHARACTER SET utf8mb4 */;
+CREATE DATABASE IF NOT EXISTS `FogBus2_Federated_Learning`;
 USE `FogBus2_Federated_Learning`;
 DROP TABLE IF EXISTS `xy`;
 
