@@ -1,5 +1,14 @@
 from federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 
+
+def scale(x_data, y_data):
+    if x_data == 0 and y_data == 0:
+        return x_data, y_data
+
+    m = max(abs(x), abs(y))
+    return x_data/m, y_data/m
+
+
 while True:
     print(""
           "[i] input data\n"
@@ -12,9 +21,11 @@ while True:
 
     if k == "i":
         print("x: ", end="")
-        x = input()
+        x = float(input())
         print("y: ", end="")
-        y = input()
+        y = float(input())
+
+        x, y = scale(x, y)
         data_warehouse.insert_xy(x, y)
     elif k == "x":
         data_warehouse.clear()
@@ -22,4 +33,4 @@ while True:
     elif k == "s":
         print(data_warehouse.read_from_database("xy"))
     elif k == "e":
-        break;
+        break
