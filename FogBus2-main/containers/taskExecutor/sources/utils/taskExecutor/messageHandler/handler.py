@@ -95,9 +95,6 @@ class TaskExecutorMessageHandler:
             intermediateData["self_addr"] = self.basicComponent.addr[0], \
                                             intermediateData["participants"][self.task.taskName]["data"]["port"]
             intermediateData["debug_logger"] = self.basicComponent.debugLogger
-
-
-
             if len(self.registrationManager.childrenAddresses.keys()):
                 task_executor_router_address = self.task.exec(intermediateData)
                 intermediateData["child_addr"] = task_executor_router_address
@@ -111,21 +108,6 @@ class TaskExecutorMessageHandler:
                             data=data,
                             destination=child)
                 return
-        """
-        if "tag" in intermediateData and intermediateData["tag"] == "Federated Learning" and \
-                len(self.registrationManager.childrenAddresses.keys()):
-            data['intermediateData'] = {"child_addr": self.basicComponent.addr}
-            for addr in self.registrationManager.childrenAddresses.values():
-                child = Component(addr=addr)
-                self.basicComponent.sendMessage(
-                    messageType=MessageType.DATA,
-                    messageSubType=MessageSubType.INTERMEDIATE_DATA,
-                    data=data,
-                    destination=child)
-
-            self.task.exec(intermediateData)
-            return
-        """
 
         # End of codes added for Federated Learning
 

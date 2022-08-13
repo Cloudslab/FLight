@@ -1,5 +1,8 @@
 from time import time
 from pprint import pformat
+
+from numpy.core.defchararray import isnumeric
+
 from .base import ApplicationUserSide
 from ...component.basic import BasicComponent
 
@@ -27,24 +30,54 @@ class FederatedLearning(ApplicationUserSide):
         self.basicComponent.debugLogger.info(
             'Application is running: %s', self.appName)
 
-        print('worker_1_data_length = ', end='')
-        w1l = int(input())
-        print('worker_1_data_scalar = ', end='')
-        w1s = int(input())
-        print('worker_2_data_length = ', end='')
-        w2l = int(input())
-        print('worker_2_data_scalar = ', end='')
-        w2s = int(input())
-        print('worker_3_data_length = ', end='')
-        w3l = int(input())
-        print('worker_3_data_scalar = ', end='')
-        w3s = int(input())
+        print("FogBus2 -- Federated Learning")
+        print("Set Up:")
+        print("---------------------------------------------------")
+        print("3 Workers, 1 Server, 0 Peer Connection")
+        print("---------------------------------------------------")
+        print("Workers: federatedWorker0, federatedWorker1, federatedWorker2")
+        print("---------------------------------------------------")
+        print("Server: federatedServer")
+        print("---------------------------------------------------")
+        print("federatedWorker0 --> federatedServer")
+        print("federatedWorker1 --> federatedServer")
+        print("federatedWorker1 --> federatedServer")
+        print("---------------------------------------------------")
+
+        # aggregate iteration
+        print("Aggregate Iteration on federatedServer: (itr_server > 0)")
+        itr_server = int(input())
+        assert (itr_server > 0)
+        print("Aggregate Iteration on federatedWorkers: (itr_client > 0)")
+        itr_client = int(input())
+        assert (itr_client > 0)
+
+        # time between each aggregation
+        print("Waiting time between each federated training: (tim >= 0)")
+        tim = int(input())
+        assert (tim >= 0)
+
+        # linear regression
+        print("Select Model: \n [0] linear regression")
+        model = None
+        if input() == 0:
+            model = 'lr'
+        else:
+            return
+
+        # parameter for lr
+        print("Linear Regression: Y = Wx + B")
+        print("Initial W value:")
+        w = float(input())
+        print("Initial B value:")
+        b = float(input())
+        print("Initial learning rate:")
+        lr = float(input())
+
 
         federatedWorker0 = {
             "role": "client",
             "data": {
-                "default_data_len":w1l,
-                "default_data_scalar":w1s,
                 "port":54321
             }
         }
@@ -52,8 +85,6 @@ class FederatedLearning(ApplicationUserSide):
         federatedWorker1 = {
             "role": "client",
             "data": {
-                "default_data_len": w2l,
-                "default_data_scalar": w2s,
                 "port":54322
             }
         }
@@ -61,8 +92,6 @@ class FederatedLearning(ApplicationUserSide):
         federatedWorker2 = {
             "role": "client",
             "data": {
-                "default_data_len": w3l,
-                "default_data_scalar": w3s,
                 "port":54323
             }
         }
@@ -71,7 +100,14 @@ class FederatedLearning(ApplicationUserSide):
             "role": "server",
             "data": {
                 "client_num": 3,
-                "port": 54324
+                "port": 54324,
+                "tim": tim,
+                "itr_client": itr_client,
+                "itr_server": itr_server,
+                "lr": lr,
+                "b": b,
+                "w": w,
+                "model": model
             }
         }
 

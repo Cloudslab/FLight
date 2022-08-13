@@ -1,8 +1,6 @@
 from .base import BaseTask
-from .federated_learning.communicate.router import router_factory
 
 from .federated_learning.communicate.router import router_factory
-from .federated_learning.federaed_learning_model.linear_regression import linear_regression
 from .federated_learning.handler.add_client_handler import add_client_handler
 from .federated_learning.handler.ack_ready_handler import ack_ready_handler
 from .federated_learning.handler.ask_next_handler import ack_next_handler

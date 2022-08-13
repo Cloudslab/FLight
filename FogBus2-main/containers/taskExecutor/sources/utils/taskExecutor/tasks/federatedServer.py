@@ -9,12 +9,7 @@ from .federated_learning.handler.fetch_handler import fetch_handler
 from .federated_learning.handler.push_handler import push_handler
 
 import time
-import socket
 
-from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
-
-LOCAL_TRAIN_ITERATION = 10
-GLOBAL_TRAIN_ITERATION = 100
 WAITING_TIME_SLOT = 0.01
 
 class FederatedServer(BaseTask):
@@ -32,6 +27,7 @@ class FederatedServer(BaseTask):
         if len(self.worker_addr) < self.num_clients:
             return
 
+        # set up router
         address = self.server_addr[0]
         port = inputData["participants"][self.taskName]["data"]["port"]
 
@@ -42,33 +38,41 @@ class FederatedServer(BaseTask):
         r.add_handler("fetch_____", fetch_handler())
         r.add_handler("push______", push_handler())
 
-        lr = linear_regression(0, 0, 0.0001)
+        # set up model
 
-        #for (addr, port) in self.worker_addr:
+        model = inputData["participants"][self.taskName]["data"]["model"]
+        if model == "lr":
+            model = linear_regression(
+                inputData["participants"][self.taskName]["data"]["w"],
+                inputData["participants"][self.taskName]["data"]["b"],
+                inputData["participants"][self.taskName]["data"]["lr"]
+            )
+        tim = inputData["participants"][self.taskName]["data"]["tim"]
+        itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
+        itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
+
         for addr in self.worker_addr:
-            lr.add_client(addr)
+            model.add_client(addr)
 
-
-        while len(lr.client) < self.num_clients and lr.ready_to_train_client < self.num_clients:
+        while len(model.client) < self.num_clients and model.ready_to_train_client < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
 
-        for i in range(GLOBAL_TRAIN_ITERATION):
+        for i in range(itr_server):
 
-            for time_until_next_itr in range(20):
-                inputData["debug_logger"].info("Have {} seconds until next iteration:".format(20-time_until_next_itr))
+            for time_until_next_itr in range(tim):
+                inputData["debug_logger"].info("Have {} seconds until next iteration:".format(tim-time_until_next_itr))
                 time.sleep(1)
 
-
-            version = lr.version
-            while len(lr.client) < self.num_clients and lr.ready_to_train_client < self.num_clients:
+            version = model.version
+            while len(model.client) < self.num_clients and model.ready_to_train_client < self.num_clients:
                 time.sleep(WAITING_TIME_SLOT)
-            lr.ask_next(LOCAL_TRAIN_ITERATION)
-            while  lr.version == version:
+            model.ask_next(itr_client)
+            while model.version == version:
                 time.sleep(WAITING_TIME_SLOT)
             inputData["debug_logger"].info("----------------------------------MODEL---------------------------------")
-            inputData["debug_logger"].info(lr.export())
+            inputData["debug_logger"].info(model.export())
             inputData["debug_logger"].info("----------------------------------MODEL---------------------------------")
         #
 
-        inputData = {"final_model": lr.export(), "twf": self.worker_addr}
+        inputData = {"final_model": model.export(), "twf": self.worker_addr}
         return inputData

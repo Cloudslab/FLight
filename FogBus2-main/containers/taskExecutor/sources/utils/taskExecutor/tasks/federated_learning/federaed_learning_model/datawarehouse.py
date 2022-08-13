@@ -89,3 +89,11 @@ class data_warehouse:
         cursor = dbTasks.cursor()
 
         return dbTasks, cursor
+
+    @classmethod
+    def clear(cls):
+        conn, cursor = cls.get_cursor()
+        sql = 'DELETE from xy'
+        cursor.execute(sql)
+        conn.commit()
+        conn.close()
