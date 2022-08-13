@@ -4,12 +4,16 @@ while True:
     print(""
           "[i] input data\n"
           "[x] clear data\n"
-          "[s] show data"
+          "[s] show data\n"
+          "[e] exit"
           "")
+    print ("Selection: ", end="")
     k = input()
 
     if k == "i":
+        print("x: ", end="")
         x = input()
+        print("y: ", end="")
         y = input()
         data_warehouse.insert_xy(x, y)
     elif k == "x":
@@ -17,3 +21,5 @@ while True:
 
     elif k == "s":
         print(data_warehouse.read_from_database("xy"))
+    elif k == "e":
+        break;

@@ -45,20 +45,20 @@ class FederatedLearning(ApplicationUserSide):
         print("---------------------------------------------------")
 
         # aggregate iteration
-        print("Aggregate Iteration on federatedServer: (itr_server > 0)")
+        print("Aggregate Iteration on federatedServer, (itr_server > 0): ", end="")
         itr_server = int(input())
         assert (itr_server > 0)
-        print("Aggregate Iteration on federatedWorkers: (itr_client > 0)")
+        print("Aggregate Iteration on federatedWorkers, (itr_client > 0): ", end="")
         itr_client = int(input())
         assert (itr_client > 0)
 
         # time between each aggregation
-        print("Waiting time between each federated training: (tim >= 0)")
+        print("Waiting time between each federated training, (tim >= 0)", end="")
         tim = int(input())
         assert (tim >= 0)
 
         # linear regression
-        print("Select Model: \n [0] linear regression")
+        print("Select Model \n [0] linear regression \n Your Selection: ", end="")
         model = None
         if input() == "0":
             model = 'lr'
@@ -67,11 +67,11 @@ class FederatedLearning(ApplicationUserSide):
 
         # parameter for lr
         print("Linear Regression: Y = Wx + B")
-        print("Initial W value:")
+        print("Initial W value: ", end="")
         w = float(input())
         print("Initial B value:")
         b = float(input())
-        print("Initial learning rate:")
+        print("Initial learning rate:", end="")
         lr = float(input())
 
 
