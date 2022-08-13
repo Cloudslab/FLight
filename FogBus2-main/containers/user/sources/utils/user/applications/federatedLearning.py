@@ -60,7 +60,7 @@ class FederatedLearning(ApplicationUserSide):
         # linear regression
         print("Select Model: \n [0] linear regression")
         model = None
-        if input() == 0:
+        if input() == "0":
             model = 'lr'
         else:
             return
