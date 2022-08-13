@@ -70,7 +70,13 @@ class FederatedServer(BaseTask):
             while model.version == version:
                 time.sleep(WAITING_TIME_SLOT)
             inputData["debug_logger"].info("----------------------------------MODEL---------------------------------")
-            inputData["debug_logger"].info(model.export())
+            w, b, lr, version, id = model.export()
+
+            inputData["debug_logger"].info("w: {}".format(w))
+            inputData["debug_logger"].info("b: {}".format(b))
+            inputData["debug_logger"].info("lr: {}".format(lr))
+            inputData["debug_logger"].info("version: {}".format(version))
+            inputData["debug_logger"].info("id: {}".format(id))
             inputData["debug_logger"].info("----------------------------------MODEL---------------------------------")
         #
 

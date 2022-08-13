@@ -53,7 +53,7 @@ class FederatedLearning(ApplicationUserSide):
         assert (itr_client > 0)
 
         # time between each aggregation
-        print("Waiting time between each federated training, (tim >= 0)", end="")
+        print("Waiting time between each federated training, (tim >= 0): ", end="")
         tim = int(input())
         assert (tim >= 0)
 
@@ -69,9 +69,9 @@ class FederatedLearning(ApplicationUserSide):
         print("Linear Regression: Y = Wx + B")
         print("Initial W value: ", end="")
         w = float(input())
-        print("Initial B value:")
+        print("Initial B value: ", end="")
         b = float(input())
-        print("Initial learning rate:", end="")
+        print("Initial learning rate: ", end="")
         lr = float(input())
 
 
