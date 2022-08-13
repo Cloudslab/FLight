@@ -19,7 +19,5 @@ class federatedLearning1(BaseTask):
         r.add_handler("ask_next__", ack_next_handler())
         r.add_handler("fetch_____", fetch_handler())
         r.add_handler("push______", push_handler())
-        data_warehouse.set_default_data(inputData["participants"][self.taskName]["data"]["default_data_scalar"],
-                                        inputData["participants"][self.taskName]["data"]["default_data_len"])
 
         return addr
