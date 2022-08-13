@@ -24,8 +24,8 @@ DROP TABLE IF EXISTS `xy`;
 
 CREATE TABLE `xy` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
-    `x` int NOT NULL,
-    `y` int NOT NULL,
+    `x` double NOT NULL,
+    `y` double NOT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
