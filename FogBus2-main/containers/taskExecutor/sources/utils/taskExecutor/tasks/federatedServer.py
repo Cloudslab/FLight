@@ -9,7 +9,7 @@ from .federated_learning.handler.fetch_handler import fetch_handler
 from .federated_learning.handler.push_handler import push_handler
 
 from .federated_learning.handler.relationship_handler import relationship_handler
-from .federated_learning.federaed_learning_model.linear_regression import base_model
+from .federated_learning.federaed_learning_model.base import base_model
 
 import time
 
