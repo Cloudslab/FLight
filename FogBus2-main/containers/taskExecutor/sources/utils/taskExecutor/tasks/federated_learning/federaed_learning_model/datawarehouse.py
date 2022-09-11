@@ -15,6 +15,32 @@ import uuid
 
 from mysql import connector
 
+
+class model_warehouse:
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, "instance"):
+            setattr(cls, "instance", super(model_warehouse, cls).__new__(cls))
+        return getattr(cls, "instance")
+
+    def _generate_id(cls):
+        return uuid.uuid1()
+
+    def set(self, model, model_id=None):
+        if not model_id:
+            model_id = str(self._generate_id())
+            while hasattr(self, model_id):
+                model_id = str(self._generate_id())
+                setattr(self, str(model_id), model)
+        elif hasattr(self, model_id):
+            return None
+        return str(model_id)
+
+    def get(self, model_id):
+        if hasattr(self, str(model_id)):
+            return getattr(self, model_id)
+        return None
+
+
 class data_warehouse:
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
@@ -51,7 +77,7 @@ class data_warehouse:
     def set_default_data(cls, scalar: int, length: int):
         if length >= 0:
             setattr(cls, "default_data_x", [i for i in range(length)])
-            setattr(cls, "default_data_y", [i*scalar for i in range(length)])
+            setattr(cls, "default_data_y", [i * scalar for i in range(length)])
 
     @classmethod
     def get_default_data(cls):
@@ -62,7 +88,7 @@ class data_warehouse:
     @classmethod
     def read_from_database(cls, db_name):
 
-        sql = 'SELECT * FROM '+db_name
+        sql = 'SELECT * FROM ' + db_name
         conn, cursor = cls.get_cursor()
         cursor.execute(sql)
         res = cursor.fetchall()

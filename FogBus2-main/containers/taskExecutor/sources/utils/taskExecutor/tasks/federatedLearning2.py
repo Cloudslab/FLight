@@ -15,10 +15,10 @@ class federatedLearning2(BaseTask):
     def exec(self, inputData):
 
         addr, r = router_factory.get_router(inputData["self_addr"])
-        r.add_handler("add_client", add_client_handler())
-        r.add_handler("ack_ready_", ack_ready_handler())
-        r.add_handler("ask_next__", ack_next_handler())
-        r.add_handler("fetch_____", fetch_handler())
-        r.add_handler("push______", push_handler())
+        #r.add_handler("add_client", add_client_handler())
+        #r.add_handler("ack_ready_", ack_ready_handler())
+        #r.add_handler("ask_next__", ack_next_handler())
+        #r.add_handler("fetch_____", fetch_handler())
+        #r.add_handler("push______", push_handler())
 
         return addr

@@ -26,7 +26,6 @@ class FederatedServer(BaseTask):
 
         if len(self.potential_client_addr) < self.num_clients:
             return
-
         inputData = {"self_addr": self.addr, "potential_client_addr": self.potential_client_addr}
         return inputData
 

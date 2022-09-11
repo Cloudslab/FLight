@@ -73,10 +73,10 @@ class router:
         while True:
             conn, _ = self.socket.accept()
             event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
-            model_type = conn.recv(MODEL_STRING_LEN).decode("utf-8")
+            sub_event = conn.recv(MODEL_STRING_LEN).decode("utf-8")
             addr = ast.literal_eval(conn.recv(ADDRESS_STRING_LEN).decode("utf-8").rstrip())
             if hasattr(self, event) and callable(getattr(self, event)):
-                Thread(target=getattr(self, event), args=(conn, addr, model_type, )).start()
+                Thread(target=getattr(self, event), args=(conn, addr, sub_event, )).start()
             else:
 
                 y = 1
@@ -84,7 +84,7 @@ class router:
                 print("--------------------------------------")
                 print(event)
                 print(addr)
-                print(model_type)
+                print(sub_event)
                 print(pickle.loads(conn.recv(1000)))
                 conn.close()
 
@@ -99,5 +99,5 @@ class router:
             except Exception as e:
                 print(e)
 
-    def send(self, address, tag, data):
-        self.sendingQueue.put((address, tag, data))
+    def send(self, address, event, data):
+        self.sendingQueue.put((address, event, data))
