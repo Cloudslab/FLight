@@ -47,5 +47,5 @@ class base_model_abstract(ABC):
         pass
 
     @abstractmethod
-    def _ack_add(self, remote_ptr):
+    def ack_add(self, remote_ptr):
         pass
