@@ -9,11 +9,11 @@ class base_model(base_model_abstract):
         self.uuid = model_warehouse().set(self)
         self.version = 1
         self.client = []
-        self.client_waiting_list = []
+        self._client_waiting_list = []
         self.server = []
-        self.server_waiting_list = []
+        self._server_waiting_list = []
         self.peer = []
-        self.peer_waiting_list = []
+        self._peer_waiting_list = []
 
     def export(self):
         return self.__dict__
@@ -59,6 +59,6 @@ class base_model(base_model_abstract):
     def ack_add(self, remote_ptr):
         router = router_factory.get_default_router()
         addr, model_id, version = remote_ptr
-        router.send(addr, "relation__cc___", (self.uuid, self.version, model_id))
+        router.send(addr, "relation__cc___", (self.uuid, self.version, model_id, self.export()))
 
 
