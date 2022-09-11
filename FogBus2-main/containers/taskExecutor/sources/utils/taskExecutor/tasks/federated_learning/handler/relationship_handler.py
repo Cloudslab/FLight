@@ -18,6 +18,6 @@ class relationship_handler:
             remote_id, remote_version, local_model_id = pickle.loads(conn.recv(1024))
             model = model_warehouse().get(local_model_id)
             ptr = addr, remote_id, remote_version
-            if model & model.can_add(ptr, sub_event[1]):
+            if model and model.can_add(ptr, sub_event[1]):
                 model.add_ptr(ptr, sub_event[1])
 

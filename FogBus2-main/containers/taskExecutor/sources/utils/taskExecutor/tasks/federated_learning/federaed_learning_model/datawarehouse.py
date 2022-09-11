@@ -30,9 +30,10 @@ class model_warehouse:
             model_id = str(self._generate_id())
             while hasattr(self, model_id):
                 model_id = str(self._generate_id())
-                setattr(self, str(model_id), model)
         elif hasattr(self, model_id):
             return None
+
+        setattr(self, str(model_id), model)
         return str(model_id)
 
     def get(self, model_id):
