@@ -32,10 +32,12 @@ class base_model(base_model_abstract):
         router.send(client_addr, "relation__as" + self._name, (self.uuid, self.version))
 
     def add_server(self, server_addr):
-        pass
+        router = router_factory.get_default_router()
+        router.send(server_addr, "relation__ac" + self._name, (self.uuid, self.version))
 
     def add_peer(self, peer_addr):
-        pass
+        router = router_factory.get_default_router()
+        router.send(peer_addr, "relation__ap" + self._name, (self.uuid, self.version))
 
     def can_add(self, remote_ptr, role):
         return True
