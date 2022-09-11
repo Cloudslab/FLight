@@ -31,7 +31,7 @@ class FederatedServer(BaseTask):
             return
         # set up router
 
-        address, port = self.server_addr[0], inputData["participants"][self.taskName]["data"]["port"]
+        address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
         addr, r = router_factory.get_router((address, port))
         r.add_handler("relation__", relationship_handler())
 
