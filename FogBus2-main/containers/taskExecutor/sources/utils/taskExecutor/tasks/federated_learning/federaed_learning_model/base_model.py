@@ -15,9 +15,9 @@ base_model defines common behavior all model involved within federated learning 
     if ptr only contain address, then request a new model on address side
 11. can_federate(): condition for next federation:
     always true:
-        - asynchronous fl
+        - asynchronous model
     need all/ proportion of client update
-        - synchronous fl
+        - synchronous model
 12. ack_ready(role, ptr):
     tell other this model finish update
 13. ask_next(role, ptr):

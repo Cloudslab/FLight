@@ -15,6 +15,27 @@ WAITING_TIME_SLOT = 0.01
 class FederatedServer(BaseTask):
     def __init__(self):
         super().__init__(taskID=221, taskName='FederatedServer')
+        self.potential_client_addr = []
+        self.addr = None
+        self.num_clients = 0
+
+    def exec(self, inputData):
+        self.addr = inputData["self_addr"]
+        self.potential_client_addr.append(inputData["child_addr"])
+        self.num_clients = inputData["participants"][self.taskName]["data"]["client_num"]
+
+        if len(self.potential_client_addr) < self.num_clients:
+            return
+
+        inputData = {"self_addr": self.addr, "potential_client_addr": self.potential_client_addr}
+        return inputData
+
+
+
+
+    """
+    def __init__(self):
+        super().__init__(taskID=221, taskName='FederatedServer')
         self.worker_addr = []
         self.server_addr = None
         self.num_clients = 0
@@ -82,3 +103,4 @@ class FederatedServer(BaseTask):
 
         inputData = {"final_model": model.export(), "twf": self.worker_addr}
         return inputData
+        """
