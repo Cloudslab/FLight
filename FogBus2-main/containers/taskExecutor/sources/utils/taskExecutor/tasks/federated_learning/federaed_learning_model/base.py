@@ -48,7 +48,7 @@ class base_model(base_model_abstract):
             self._add_peer(remote_ptr)
 
     def _add_client(self, client_ptr):
-        pass
+        self.client.append(client_ptr)
 
     def _add_server(self, server_ptr):
         self.server.append(server_ptr)
