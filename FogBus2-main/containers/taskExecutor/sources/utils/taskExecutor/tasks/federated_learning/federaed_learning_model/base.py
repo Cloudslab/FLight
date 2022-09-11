@@ -62,4 +62,4 @@ class base_model(base_model_abstract):
     def ack_add(self, remote_ptr, role):
         router = router_factory.get_default_router()
         addr, model_id, version = remote_ptr
-        router.send(addr, "relation__c" + role + "___", (self.uuid, self.version, model_id, self.export()))
+        router.send(addr, "relation__c" + role + "___", (self.uuid, self.version, model_id))

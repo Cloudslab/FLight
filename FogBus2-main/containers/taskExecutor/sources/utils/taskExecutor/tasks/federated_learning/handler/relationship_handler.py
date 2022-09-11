@@ -16,9 +16,9 @@ class relationship_handler:
             model.ack_add(ptr, remote_role_to_self_role[sub_event[1]])
 
         if sub_event[0] == "c": # handle remote confirm a relationship
-            remote_id, remote_version, local_model_id, model_data = pickle.loads(conn.recv(4096))
+            remote_id, remote_version, local_model_id = pickle.loads(conn.recv(4096))
             model = model_warehouse().get(local_model_id)
             ptr = addr, remote_id, remote_version
             if model and model.can_add(ptr, sub_event[1]):
-                model.add_ptr(model_data, sub_event[1])
+                model.add_ptr(remote_id, sub_event[1])
 

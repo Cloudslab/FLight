@@ -38,9 +38,9 @@ class FederatedServer(BaseTask):
         # set up model
         model = base_model()
         for addr in self.potential_client_addr:
-            model.add_peer(addr)
+            model.add_client(addr)
 
-        while len(model.peer) < self.num_clients:
+        while len(model.client) < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
 
         inputData = {"final_model": model.export()}
