@@ -2,6 +2,7 @@ from .base_model_abstract import base_model_abstract
 from .datawarehouse import model_warehouse
 from ..communicate.router import router_factory
 
+
 class base_model(base_model_abstract):
 
     def __init__(self):
@@ -26,9 +27,9 @@ class base_model(base_model_abstract):
     4. _add_client/_add_server/_add_peer
     """
 
-    def add_client(self, remote_addr):
+    def add_client(self, client_addr):
         router = router_factory.get_default_router()
-        router.send(remote_addr, "relation__as"+self._name, (self.uuid, self.version))
+        router.send(client_addr, "relation__as" + self._name, (self.uuid, self.version))
 
     def add_server(self, server_addr):
         pass
@@ -54,11 +55,9 @@ class base_model(base_model_abstract):
         self.server.append(server_ptr)
 
     def _add_peer(self, peer_ptr):
-        pass
+        self.peer.append(peer_ptr)
 
-    def ack_add(self, remote_ptr):
+    def ack_add(self, remote_ptr, role):
         router = router_factory.get_default_router()
         addr, model_id, version = remote_ptr
-        router.send(addr, "relation__cc___", (self.uuid, self.version, model_id, self.export()))
-
-
+        router.send(addr, "relation__c" + role + "___", (self.uuid, self.version, model_id, self.export()))

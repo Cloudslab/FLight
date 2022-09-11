@@ -12,7 +12,8 @@ class relationship_handler:
             remote_id, remote_version = pickle.loads(conn.recv(1024))
             ptr = addr, remote_id, remote_version
             model.add_ptr(ptr, sub_event[1]) # add as server, add as client or add as peer
-            model.ack_add(ptr)
+            remote_role_to_self_role = {"s": "c", "c": "s", "p": "p"}
+            model.ack_add(ptr, remote_role_to_self_role[sub_event[1]])
 
         if sub_event[0] == "c": # handle remote confirm a relationship
             remote_id, remote_version, local_model_id, model_data = pickle.loads(conn.recv(4096))

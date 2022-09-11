@@ -15,7 +15,7 @@ class base_model_abstract(ABC):
     4. _add_client/_add_server/_add_peer
     """
     @abstractmethod
-    def add_client(self, remote_addr):
+    def add_client(self, client_addr):
         pass
 
     @abstractmethod
@@ -47,5 +47,5 @@ class base_model_abstract(ABC):
         pass
 
     @abstractmethod
-    def ack_add(self, remote_ptr):
+    def ack_add(self, remote_ptr, role):
         pass
