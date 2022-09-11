@@ -56,7 +56,7 @@ class base_model(base_model_abstract):
     def _add_peer(self, peer_ptr):
         pass
 
-    def _ack_add(self, remote_ptr):
+    def ack_add(self, remote_ptr):
         router = router_factory.get_default_router()
         addr, model_id, version = remote_ptr
         router.send(addr, "relation__cc___", (self.uuid, self.version, model_id))
