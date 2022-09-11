@@ -8,6 +8,9 @@ from .federated_learning.handler.ask_next_handler import ack_next_handler
 from .federated_learning.handler.fetch_handler import fetch_handler
 from .federated_learning.handler.push_handler import push_handler
 
+from .federated_learning.handler.relationship_handler import relationship_handler
+from .federated_learning.federaed_learning_model.linear_regression import base_model
+
 import time
 
 WAITING_TIME_SLOT = 0.01
@@ -26,7 +29,22 @@ class FederatedServer(BaseTask):
 
         if len(self.potential_client_addr) < self.num_clients:
             return
-        inputData = {"self_addr": self.addr, "potential_client_addr": self.potential_client_addr}
+        # set up router
+
+        address, port = self.server_addr[0], inputData["participants"][self.taskName]["data"]["port"]
+        addr, r = router_factory.get_router((address, port))
+        r.add_handler("relation__", relationship_handler())
+
+        # set up model
+        model = base_model()
+        for addr in self.potential_client_addr:
+            model.add_client(addr)
+
+        while len(model.client) < self.num_clients:
+            time.sleep(WAITING_TIME_SLOT)
+
+        inputData = {"final_model": model.export()}
+
         return inputData
 
 
