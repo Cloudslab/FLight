@@ -8,7 +8,7 @@ model_handbook = {
 class relationship_handler:
     def __call__(self, conn, addr, sub_event, *args, **kwargs):
         if sub_event[0] == "a": # add a relationship
-            model = model_handbook[sub_event[0:]]()
+            model = model_handbook[sub_event[2:]]()
             remote_id, remote_version = pickle.loads(conn.recv(1024))
             ptr = addr, remote_id, remote_version
             model.add_ptr(ptr, sub_event[1]) # add as server, add as client or add as peer
