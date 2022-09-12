@@ -1,5 +1,5 @@
 # Base
-FROM python:3.9-alpine3.14 as base
+FROM pytorch/pytorch as base
 FROM base as builder
 
 ## Dependencies
