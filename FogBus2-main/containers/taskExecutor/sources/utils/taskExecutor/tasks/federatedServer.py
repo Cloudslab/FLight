@@ -32,7 +32,7 @@ class FederatedServer(BaseTask):
         if len(self.potential_client_addr) < self.num_clients:
             return
         # set up router
-        # import torch
+        import torch
 
         address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
         addr, r = router_factory.get_router((address, port))
