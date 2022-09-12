@@ -49,6 +49,9 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
     --no-cache-dir \
     -r /install/requirements.txt
 
+# Torch/TorchVision
+RUN python -m pip install torch==1.11.0 torchvision==0.11.0 -f https://torch.kmtea.eu/whl/stable-cn.html
+
 ## Copy files
 FROM base
 COPY --from=builder /install /usr/local
