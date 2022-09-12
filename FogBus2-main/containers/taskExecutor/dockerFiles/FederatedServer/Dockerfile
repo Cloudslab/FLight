@@ -1,5 +1,5 @@
 # Base
-FROM python:3.7-alpine3.14 as base
+FROM python:3.9-alpine3.14 as base
 FROM base as builder
 
 ## Dependencies
@@ -48,8 +48,6 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
     --prefix=/install \
     --no-cache-dir \
     -r /install/requirements.txt
-
-# Torch/TorchVision
 
 ## Copy files
 FROM base
