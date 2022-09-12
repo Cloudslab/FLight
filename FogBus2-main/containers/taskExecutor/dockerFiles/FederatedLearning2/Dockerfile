@@ -1,5 +1,5 @@
 # Base
-FROM armswdev/pytorch-arm-neoverse as base
+FROM python:3.9-alpine3.14 as base
 FROM base as builder
 
 ## Dependencies
