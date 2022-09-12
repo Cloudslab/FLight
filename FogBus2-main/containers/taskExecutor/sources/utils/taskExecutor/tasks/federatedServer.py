@@ -33,6 +33,8 @@ class FederatedServer(BaseTask):
             return
         # set up router
         import torch
+        nn = torch.nn.Conv2d(1,32,3,1)
+
 
         address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
         addr, r = router_factory.get_router((address, port))
@@ -46,7 +48,7 @@ class FederatedServer(BaseTask):
         while len(model.client) < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
 
-        inputData = {"final_model": model.export()}
+        inputData = {"final_model": model.export(), "nn": nn.__repr__()}
 
         return inputData
 
