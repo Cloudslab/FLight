@@ -10,7 +10,7 @@ RUN apk add --no-cache \
     libgcc libxml2-dev libxslt-dev linux-headers \
     make musl musl-dev openjpeg-dev openssl-dev \
     zlib-dev curl freetype gcc6 jpeg libjpeg \
-    openjpeg tesseract-ocr zlib unzip openjpeg-tools
+    openjpeg tesseract-ocr zlib unzip openjpeg-tools meson
 
 RUN python -m pip install --retries 100 --default-timeout=600  --no-cache-dir --upgrade pip
 RUN python -m pip install --retries 100 --default-timeout=600  numpy==1.22.2 --no-cache-dir
