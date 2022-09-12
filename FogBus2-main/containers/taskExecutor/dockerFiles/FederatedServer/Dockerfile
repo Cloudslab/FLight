@@ -50,7 +50,7 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
     -r /install/requirements.txt
 
 # Torch/TorchVision
-RUN python -m pip install torch torchvision -f https://download.pytorch.org/whl/torch_stable.html
+# RUN python -m pip install torch torchvision -f https://download.pytorch.org/whl/torch_stable.html
 
 ## Copy files
 FROM base
