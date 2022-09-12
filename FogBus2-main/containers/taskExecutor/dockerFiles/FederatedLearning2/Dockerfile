@@ -1,16 +1,16 @@
 # Base
-FROM python:3.9-alpine3.14 as base
+FROM python:3.9 as base
 FROM base as builder
 
 ## Dependencies
-RUN apt-get update
-RUN apt-get install \
-    build-base clang clang-dev ninja cmake ffmpeg-dev \
-    freetype-dev g++ jpeg-dev lcms2-dev libffi-dev \
-    libgcc libxml2-dev libxslt-dev linux-headers \
-    make musl musl-dev openjpeg-dev openssl-dev \
-    zlib-dev curl freetype gcc6 jpeg libjpeg \
-    openjpeg tesseract-ocr zlib unzip openjpeg-tools
+#RUN apt-get update
+#RUN apt-get install \
+#    build-base clang clang-dev ninja cmake ffmpeg-dev \
+#    freetype-dev g++ jpeg-dev lcms2-dev libffi-dev \
+#    libgcc libxml2-dev libxslt-dev linux-headers \
+#    make musl musl-dev openjpeg-dev openssl-dev \
+#    zlib-dev curl freetype gcc6 jpeg libjpeg \
+ #   openjpeg tesseract-ocr zlib unzip openjpeg-tools
 
 RUN python -m pip install --retries 100 --default-timeout=600  --no-cache-dir --upgrade pip
 RUN python -m pip install --retries 100 --default-timeout=600  numpy==1.22.2 --no-cache-dir
