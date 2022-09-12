@@ -50,7 +50,7 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
     -r /install/requirements.txt
 
 ## TF
-RUN python -m pip install tensorflow -f https://github.com/KumaTea/tensorflow-aarch64/releases/download/v2.7/tensorflow-2.7.0-cp39-cp39-linux_aarch64.whl
+RUN python -m pip install https://github.com/KumaTea/tensorflow-aarch64/releases/download/v2.6/tensorflow-2.6.0-cp39-cp39-linux_aarch64.whl
 
 ## Copy files
 FROM base
