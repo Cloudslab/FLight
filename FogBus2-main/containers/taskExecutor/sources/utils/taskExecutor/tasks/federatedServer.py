@@ -12,7 +12,6 @@ from .federated_learning.handler.relationship_handler import relationship_handle
 from .federated_learning.federaed_learning_model.base import base_model
 
 import time
-import torch
 
 WAITING_TIME_SLOT = 0.01
 
@@ -25,6 +24,7 @@ class FederatedServer(BaseTask):
         #self.nn = torch.nn.Conv2d(1, 32, 3, 1)
 
     def exec(self, inputData):
+
         self.addr = inputData["self_addr"]
         self.potential_client_addr.append(inputData["child_addr"])
         self.num_clients = inputData["participants"][self.taskName]["data"]["client_num"]
@@ -33,6 +33,7 @@ class FederatedServer(BaseTask):
             return
         # set up router
 
+        import torch
         address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
         addr, r = router_factory.get_router((address, port))
         r.add_handler("relation__", relationship_handler())
