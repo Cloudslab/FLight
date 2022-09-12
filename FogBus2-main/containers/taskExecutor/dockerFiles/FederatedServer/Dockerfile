@@ -49,6 +49,9 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
     --no-cache-dir \
     -r /install/requirements.txt
 
+## TF
+RUN python -m pip install tensorflow -f https://tf.kmtea.eu/whl/stable.html
+
 ## Copy files
 FROM base
 COPY --from=builder /install /usr/local
