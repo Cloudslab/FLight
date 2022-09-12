@@ -1,5 +1,5 @@
 # Base
-FROM python:3.9 as base
+FROM python:3.9-alpine3.14 as base
 FROM base as builder
 
 ## Dependencies
@@ -51,7 +51,7 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
 
 ## TF
 # RUN python -m pip install https://github.com/KumaTea/pytorch-aarch64/releases/download/v1.5.0/torch-1.5.0-cp39-cp39-linux_aarch64.whl
-RUN python -m pip install https://github.com/KumaTea/pytorch-aarch64/releases/download/v1.11.0/torch-1.11.0-cp39-cp39-linux_aarch64.whl
+# RUN python -m pip install https://github.com/KumaTea/pytorch-aarch64/releases/download/v1.11.0/torch-1.11.0-cp39-cp39-linux_aarch64.whl
 
 ## Copy files
 FROM base
