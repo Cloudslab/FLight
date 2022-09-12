@@ -50,7 +50,7 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
     -r /install/requirements.txt
 
 # Torch/TorchVision
-# RUN python -m pip install torch torchvision -f https://download.pytorch.org/whl/torch_stable.html
+RUN python -m pip install https://github.com/bitsy-ai/tensorflow-arm-bin/releases/download/v2.4.0/tensorflow-2.4.0-cp37-none-linux_aarch64.whl
 
 ## Copy files
 FROM base
