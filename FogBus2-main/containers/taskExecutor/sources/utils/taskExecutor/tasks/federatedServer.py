@@ -12,6 +12,7 @@ from .federated_learning.handler.relationship_handler import relationship_handle
 from .federated_learning.federaed_learning_model.base import base_model
 
 import time
+import cv2
 
 WAITING_TIME_SLOT = 0.01
 
