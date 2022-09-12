@@ -3,8 +3,8 @@ FROM python:3.9-alpine3.14 as base
 FROM base as builder
 
 ## Dependencies
-RUN apk update
-RUN apk add --no-cache \
+RUN apt-get update
+RUN apt-get install \
     build-base clang clang-dev ninja cmake ffmpeg-dev \
     freetype-dev g++ jpeg-dev lcms2-dev libffi-dev \
     libgcc libxml2-dev libxslt-dev linux-headers \
