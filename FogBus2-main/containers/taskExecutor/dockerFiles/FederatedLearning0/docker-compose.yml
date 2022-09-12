@@ -5,6 +5,7 @@ services:
   fogbus2-federated_learning0:
     # image: fogbus2-naive_formula0
     image: fogbus2-federated_learning0
+    platform: linux/x86_64
     build:
       context: ../../
       dockerfile: dockerFiles/FederatedServer/Dockerfile
