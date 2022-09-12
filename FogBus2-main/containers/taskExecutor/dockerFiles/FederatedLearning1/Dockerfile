@@ -4,7 +4,7 @@ FROM base as builder
 
 ## Dependencies
 RUN apt-get update
-RUN apt-get install cmake g++
+RUN apt-get install cmake
 #RUN apt-get install \
 #    build-base clang clang-dev ninja cmake ffmpeg-dev \
 #    freetype-dev g++ jpeg-dev lcms2-dev libffi-dev \
