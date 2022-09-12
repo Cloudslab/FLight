@@ -50,7 +50,7 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
     -r /install/requirements.txt
 
 # Tensorflow
-RUN python -m pip install https://github.com/bitsy-ai/tensorflow-arm-bin/releases/download/v2.4.0/tensorflow-2.4.0-cp37-none-linux_aarch64.whl
+RUN python -m pip install https://gh.kmtea.eu/https://github.com/KumaTea/pytorch-arm/releases/download/v1.8.1/torch-1.8.1-cp36-cp36m-linux_armv7l.whl
 
 ## Copy files
 FROM base
