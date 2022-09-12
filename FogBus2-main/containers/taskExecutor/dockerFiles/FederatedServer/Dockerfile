@@ -1,5 +1,5 @@
 # Base
-FROM python:3.9-alpine3.14 as base
+FROM python:3.7-alpine3.14 as base
 FROM base as builder
 
 ## Dependencies
@@ -50,7 +50,6 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
     -r /install/requirements.txt
 
 # Torch/TorchVision
-RUN python -m pip install https://gh.kmtea.eu/https://github.com/KumaTea/pytorch-arm/releases/download/v1.8.1/torch-1.8.1-cp39-cp39-linux_armv7l.whl
 
 ## Copy files
 FROM base
