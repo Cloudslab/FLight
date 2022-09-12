@@ -53,7 +53,7 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
 # RUN python -m pip install torch torchvision -f https://torch.kmtea.eu/whl/stable-cn.html
 
 ## Copy files
-FROM kumatea/pytorch
+FROM base
 COPY --from=builder /install /usr/local
 COPY ./sources/ /workplace
 
