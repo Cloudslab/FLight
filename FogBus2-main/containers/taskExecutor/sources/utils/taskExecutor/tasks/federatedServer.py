@@ -51,6 +51,9 @@ class FederatedServer(BaseTask):
         for cli in model.client:
             model.add_client(cli)
 
+        while len(model.server) < self.num_clients:
+            time.sleep(WAITING_TIME_SLOT)
+
         inputData = {"final_model": model.export()}
 
         return inputData
