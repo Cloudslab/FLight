@@ -49,7 +49,7 @@ class FederatedServer(BaseTask):
             time.sleep(WAITING_TIME_SLOT)
 
         for cli in model.client:
-            model.add_client(cli)
+            model.fetch_client(cli)
 
         while len(model.server) < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
