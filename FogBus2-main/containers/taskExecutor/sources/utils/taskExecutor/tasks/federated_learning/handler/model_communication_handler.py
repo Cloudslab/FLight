@@ -11,3 +11,6 @@ class model_communication_handler:
             if model:
                 x = 1
                 x.sot()
+            else:
+                y = 1
+                y.sot()
