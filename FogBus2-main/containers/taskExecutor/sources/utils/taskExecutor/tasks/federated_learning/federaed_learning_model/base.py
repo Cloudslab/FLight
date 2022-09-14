@@ -16,6 +16,40 @@ class base_model(base_model_abstract):
         self.peer = []
         self._peer_waiting_list = []
 
+    """
+    Functions to transmit model
+    1. fetch_server/fetch_client/fetch_peer(local_dest)
+    2. can_fetch
+    3. export_model(local_dest): return (type, data)    local_dest = None (i mode) | local_dest = file_path (f) mode
+      type 'i' - the model (pickle based tuple)
+      type 'f' - credential to load the model (ftp login credential)
+    4. push_model
+    5. import_model(type, data, dest)
+    """
+
+    """
+    END-----------------------------------------------------------------------------------
+    """
+
+    """
+    f - fetch
+    s : as server | c : as client | p : as peer
+    """
+    def fetch_client(self, client_model_ptr, dest=None):
+        router = router_factory.get_default_router()
+        addr, model_id, version = client_model_ptr
+        router.send(addr, "communicatfs___", (self.uuid, version, model_id, dest))
+
+    def fetch_peer(self, peer_model_ptr, dest=None):
+        router = router_factory.get_default_router()
+        addr, model_id, version = peer_model_ptr
+        router.send(addr, "communicatfp___", (self.uuid, version, model_id, dest))
+
+    def fetch_server(self, server_model_ptr, dest=None):
+        router = router_factory.get_default_router()
+        addr, model_id, version = server_model_ptr
+        router.send(addr, "communicatfc___", (self.uuid, version, model_id, dest))
+
     def export(self):
         return self.__dict__
 
@@ -63,3 +97,7 @@ class base_model(base_model_abstract):
         router = router_factory.get_default_router()
         addr, model_id, version = remote_ptr
         router.send(addr, "relation__c" + role + "___", (self.uuid, self.version, model_id))
+
+    """
+    END-----------------------------------------------------------------------------------
+    """

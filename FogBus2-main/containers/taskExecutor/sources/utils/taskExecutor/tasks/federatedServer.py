@@ -10,6 +10,7 @@ from .federated_learning.handler.push_handler import push_handler
 
 from .federated_learning.handler.relationship_handler import relationship_handler
 from .federated_learning.federaed_learning_model.base import base_model
+from .federated_learning.handler.model_communication_handler import model_communication_handler
 
 import time
 
@@ -32,13 +33,12 @@ class FederatedServer(BaseTask):
         if len(self.potential_client_addr) < self.num_clients:
             return
         # set up router
-        import torch
-        nn = torch.nn.Conv2d(1,32,3,1)
 
 
         address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
         addr, r = router_factory.get_router((address, port))
         r.add_handler("relation__", relationship_handler())
+        r.add_handler("communicat", model_communication_handler())
 
         # set up model
         model = base_model()
@@ -48,7 +48,10 @@ class FederatedServer(BaseTask):
         while len(model.client) < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
 
-        inputData = {"final_model": model.export(), "nn": nn.__repr__()}
+        for cli in model.client:
+            model.add_client(cli)
+
+        inputData = {"final_model": model.export()}
 
         return inputData
 

@@ -9,6 +9,7 @@ from .federated_learning.handler.push_handler import push_handler
 from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 
 from .federated_learning.handler.relationship_handler import relationship_handler
+from .federated_learning.handler.model_communication_handler import model_communication_handler
 
 class federatedLearning0(BaseTask):
     def __init__(self):
@@ -18,6 +19,7 @@ class federatedLearning0(BaseTask):
 
         addr, r = router_factory.get_router(inputData["self_addr"])
         r.add_handler("relation__", relationship_handler())
+        r.add_handler("communicat", model_communication_handler())
         #r.add_handler("add_client", add_client_handler())
         #r.add_handler("ack_ready_", ack_ready_handler())
         #r.add_handler("ask_next__", ack_next_handler())
