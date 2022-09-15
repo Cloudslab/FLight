@@ -20,43 +20,32 @@ class base_model(base_model_abstract):
         self.version = 1
         self.client = []
         self._client_waiting_list = []
-        #self.client_lock = threading.Lock()
+        self.client_lock = threading.Lock()
         self.server = []
         self._server_waiting_list = []
-        #self.server_lock = threading.Lock()
+        self.server_lock = threading.Lock()
         self.peer = []
         self._peer_waiting_list = []
-        #self.peer_lock = threading.Lock()
+        self.peer_lock = threading.Lock()
 
         # model transmission
         # mode - version - data
-        #self.export_lock = {"i": threading.Lock(), "f": threading.Lock()}
+        self.export_lock = {"i": threading.Lock(), "f": threading.Lock()}
         self.export_cache = {"i": [0, None], "f": [0, None]}
 
         self.remote_fetch_model_credential = {"p": {}, "s": {}, "c": {}}
-        #self.remote_fetch_model_credential_lock = {"p": threading.Lock(), "s": threading.Lock(), "c": threading.Lock()}
+        self.remote_fetch_model_credential_lock = {"p": threading.Lock(), "s": threading.Lock(), "c": threading.Lock()}
 
         self.client_model = {}
-        #self.client_model_lock = threading.Lock()
+        self.client_model_lock = threading.Lock()
         self.peer_model = {}
-        #self.peer_model_lock = threading.Lock()
-        self.server_model = {}
-        #self.server_model_lock = threading.Lock()
-        #self.additional_set_up()
-
-    def additional_set_up(self):
-        self.client_lock = threading.Lock()
-        self.server_lock = threading.Lock()
-        self.peer_lock = threading.Lock()
-        self.export_lock = {"i": threading.Lock(), "f": threading.Lock()}
-        self.remote_fetch_model_credential_lock = {"p": threading.Lock(), "s": threading.Lock(), "c": threading.Lock()}
-        self.client_lock = threading.Lock()
         self.peer_model_lock = threading.Lock()
+        self.server_model = {}
         self.server_model_lock = threading.Lock()
 
     def export(self):
-        return self.__dict__
-
+        # return self.__dict__
+        return {"uuid": self.uuid, "client": self.client, "server": self.server, "peer": self.peer}
     """
     Functions to transmit model
     1. fetch_server/fetch_client/fetch_peer(local_dest)
