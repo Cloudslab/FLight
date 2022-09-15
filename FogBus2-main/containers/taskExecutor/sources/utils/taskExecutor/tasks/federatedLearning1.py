@@ -1,6 +1,6 @@
 from .base import BaseTask
 
-from .federated_learning.communicate.router import router_factory
+from .federated_learning.communicate.router import router_factory, ftp_server_factory
 from .federated_learning.handler.add_client_handler import add_client_handler
 from .federated_learning.handler.ack_ready_handler import ack_ready_handler
 from .federated_learning.handler.ask_next_handler import ack_next_handler
@@ -17,6 +17,7 @@ class federatedLearning1(BaseTask):
 
     def exec(self, inputData):
         addr, r = router_factory.get_router(inputData["self_addr"])
+        ftp_server_factory.set_ftp_server(inputData["self_addr"])
         r.add_handler("relation__", relationship_handler())
         r.add_handler("communicat", model_communication_handler())
         #r.add_handler("add_client", add_client_handler())

@@ -42,17 +42,17 @@ class base_model(base_model_abstract):
         #self.peer_model_lock = threading.Lock()
         self.server_model = {}
         #self.server_model_lock = threading.Lock()
-        self.additional_set_up()
+        #self.additional_set_up()
 
-    #def additional_set_up(self):
-    #    self.client_lock = threading.Lock()
-    #    self.server_lock = threading.Lock()
-    #    self.peer_lock = threading.Lock()
-    #    self.export_lock = {"i": threading.Lock(), "f": threading.Lock()}
-    #    self.remote_fetch_model_credential_lock = {"p": threading.Lock(), "s": threading.Lock(), "c": threading.Lock()}
-    #    self.client_lock = threading.Lock()
-    #    self.peer_model_lock = threading.Lock()
-    #    self.server_model_lock = threading.Lock()
+    def additional_set_up(self):
+        self.client_lock = threading.Lock()
+        self.server_lock = threading.Lock()
+        self.peer_lock = threading.Lock()
+        self.export_lock = {"i": threading.Lock(), "f": threading.Lock()}
+        self.remote_fetch_model_credential_lock = {"p": threading.Lock(), "s": threading.Lock(), "c": threading.Lock()}
+        self.client_lock = threading.Lock()
+        self.peer_model_lock = threading.Lock()
+        self.server_model_lock = threading.Lock()
 
     def export(self):
         return self.__dict__

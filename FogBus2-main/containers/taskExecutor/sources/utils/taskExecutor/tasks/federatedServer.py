@@ -1,6 +1,6 @@
 from .base import BaseTask
 
-from .federated_learning.communicate.router import router_factory
+from .federated_learning.communicate.router import router_factory, ftp_server_factory
 from .federated_learning.federaed_learning_model.linear_regression import linear_regression
 from .federated_learning.handler.add_client_handler import add_client_handler
 from .federated_learning.handler.ack_ready_handler import ack_ready_handler
@@ -37,11 +37,13 @@ class FederatedServer(BaseTask):
 
         address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
         addr, r = router_factory.get_router((address, port))
+        ftp_server_factory.set_ftp_server((address, port))
         r.add_handler("relation__", relationship_handler())
         r.add_handler("communicat", model_communication_handler())
 
         # set up model
         model = base_model()
+        model.additional_set_up()
         for addr in self.potential_client_addr:
             model.add_client(addr)
 
