@@ -43,7 +43,6 @@ class FederatedServer(BaseTask):
 
         # set up model
         model = base_model()
-        model.additional_set_up()
         for addr in self.potential_client_addr:
             model.add_client(addr)
 
