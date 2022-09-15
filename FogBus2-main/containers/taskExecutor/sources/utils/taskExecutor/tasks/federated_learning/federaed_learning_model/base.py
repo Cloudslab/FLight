@@ -3,7 +3,7 @@ import time
 from .base_model_abstract import base_model_abstract
 from .datawarehouse import model_warehouse
 from ..communicate.router import router_factory, ftp_server_factory, receive_file
-import threading
+# import threading
 
 import os
 from pathlib import Path
@@ -44,15 +44,15 @@ class base_model(base_model_abstract):
         #self.server_model_lock = threading.Lock()
         self.additional_set_up()
 
-    def additional_set_up(self):
-        self.client_lock = threading.Lock()
-        self.server_lock = threading.Lock()
-        self.peer_lock = threading.Lock()
-        self.export_lock = {"i": threading.Lock(), "f": threading.Lock()}
-        self.remote_fetch_model_credential_lock = {"p": threading.Lock(), "s": threading.Lock(), "c": threading.Lock()}
-        self.client_lock = threading.Lock()
-        self.peer_model_lock = threading.Lock()
-        self.server_model_lock = threading.Lock()
+    #def additional_set_up(self):
+    #    self.client_lock = threading.Lock()
+    #    self.server_lock = threading.Lock()
+    #    self.peer_lock = threading.Lock()
+    #    self.export_lock = {"i": threading.Lock(), "f": threading.Lock()}
+    #    self.remote_fetch_model_credential_lock = {"p": threading.Lock(), "s": threading.Lock(), "c": threading.Lock()}
+    #    self.client_lock = threading.Lock()
+    #    self.peer_model_lock = threading.Lock()
+    #    self.server_model_lock = threading.Lock()
 
     def export(self):
         return self.__dict__
