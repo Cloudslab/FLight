@@ -10,6 +10,7 @@ from .federated_learning.federaed_learning_model.datawarehouse import data_wareh
 
 from .federated_learning.handler.relationship_handler import relationship_handler
 from .federated_learning.handler.model_communication_handler import model_communication_handler
+from .federated_learning.federaed_learning_model.datawarehouse import model_warehouse
 
 class federatedLearning0(BaseTask):
     def __init__(self):

@@ -92,7 +92,7 @@ class base_model(base_model_abstract):
         if not self.export_lock[mode].locked() and self.export_lock[mode].acquire():
             if mode == "f":
                 file_dir = os.path.dirname(inspect.getsourcefile(router_factory)) + "/tmp/"
-                file_name = self.uuid + file_extension
+                file_name = self.uuid + "_" + str(self.version) + file_extension
                 f = open(file_dir + file_name, "w+")
                 f.write(self.uuid)
                 f.close()

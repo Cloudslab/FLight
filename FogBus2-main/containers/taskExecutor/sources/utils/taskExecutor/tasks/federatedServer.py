@@ -43,14 +43,20 @@ class FederatedServer(BaseTask):
 
         # set up model
         model = base_model()
-        for addr in self.potential_client_addr:
-            model.add_client(addr)
+        model.add_client(self.potential_client_addr[0])
+        model.add_client(self.potential_client_addr[1])
+        model.add_server(self.potential_client_addr[2])
 
-        while len(model.client) < self.num_clients:
+        while (len(model.client) + len(model.server)) < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
 
-        for cli in model.client:
-            model.fetch_client(cli)
+        model.fetch_client(self.potential_client_addr[0])
+        model.fetch_client(self.potential_client_addr[1])
+
+        response_type, fetch_credential = model.export_model()
+        role = "c"
+        ptr = model.server[0]
+        model.push_model(ptr, role, (response_type, fetch_credential), None)
 
         #while len(model.client_model.keys()) < self.num_clients:
         #    time.sleep(WAITING_TIME_SLOT)
