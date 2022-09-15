@@ -48,11 +48,11 @@ class FederatedServer(BaseTask):
         while len(model.client) < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
 
-        for cli in model.client:
-            model.fetch_client(cli)
+        #for cli in model.client:
+        #    model.fetch_client(cli)
 
-        while len(model.client_model.keys()) < self.num_clients:
-            time.sleep(WAITING_TIME_SLOT)
+        #while len(model.client_model.keys()) < self.num_clients:
+        #    time.sleep(WAITING_TIME_SLOT)
 
         inputData = {"final_model": model.export(), "client": model.client, "path": model.client_model}
 
