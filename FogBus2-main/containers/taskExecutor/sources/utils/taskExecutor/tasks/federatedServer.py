@@ -50,8 +50,8 @@ class FederatedServer(BaseTask):
         while (len(model.client) + len(model.server)) < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
 
-        model.fetch_client(self.potential_client_addr[0])
-        model.fetch_client(self.potential_client_addr[1])
+        model.fetch_client(model.client[0])
+        model.fetch_client(model.client[1])
 
         response_type, fetch_credential = model.export_model()
         role = "c"
