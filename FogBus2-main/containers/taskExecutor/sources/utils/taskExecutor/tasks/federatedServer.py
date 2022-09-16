@@ -53,10 +53,10 @@ class FederatedServer(BaseTask):
             time.sleep(WAITING_TIME_SLOT)
         i = 6
         for cli in model.get_client():
-            model.step_remote(cli, "c", i)
+            model.step_remote(cli, "s", i)
             i += 6
         for ser in model.get_server():
-            model.step_remote(ser, "s", 6)
+            model.step_remote(ser, "c", 6)
         while (len(model.get_remote_fetch_model_credential("s")) + len(
                 model.get_remote_fetch_model_credential("c"))) < 2:
             time.sleep(0.01)
