@@ -56,6 +56,10 @@ class FederatedServer(BaseTask):
             model.fetch_client(cli)
         for ser in model.get_server():
             model.fetch_server(ser)
+        for cre in model.get_remote_fetch_model_credential("s"):
+            model.download_model(cre, "s")
+        for cre in model.get_remote_fetch_model_credential("c"):
+            model.download_model(cre, "c")
 
         #while len(model.client_model.keys()) < self.num_clients:
         #    time.sleep(WAITING_TIME_SLOT)
