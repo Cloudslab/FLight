@@ -11,6 +11,7 @@ from .federated_learning.handler.push_handler import push_handler
 from .federated_learning.handler.relationship_handler import relationship_handler
 from .federated_learning.federaed_learning_model.base import base_model
 from .federated_learning.handler.model_communication_handler import model_communication_handler
+from .federated_learning.handler.rpc_handler import rpc_handler
 
 import time
 
@@ -40,6 +41,7 @@ class FederatedServer(BaseTask):
         ftp_server_factory.set_ftp_server((address, port))
         r.add_handler("relation__", relationship_handler())
         r.add_handler("communicat", model_communication_handler())
+        r.add_handler("rpc_call__", rpc_handler())
 
         # set up model
         model = base_model()
@@ -50,13 +52,10 @@ class FederatedServer(BaseTask):
         while (len(model.client) + len(model.server)) < self.num_clients:
             time.sleep(WAITING_TIME_SLOT)
 
-        model.fetch_client(model.client[0])
-        model.fetch_client(model.client[1])
-
-        response_type, fetch_credential = model.export_model()
-        role = "c"
-        ptr = model.server[0]
-        model.push_model(ptr, role, (response_type, fetch_credential), None)
+        for cli in model.get_client():
+            model.fetch_client(cli)
+        for ser in model.get_server():
+            model.fetch_server(ser)
 
         #while len(model.client_model.keys()) < self.num_clients:
         #    time.sleep(WAITING_TIME_SLOT)

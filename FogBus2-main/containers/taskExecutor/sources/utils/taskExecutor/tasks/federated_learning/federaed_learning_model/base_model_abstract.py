@@ -8,21 +8,43 @@ class base_model_abstract(ABC):
         pass
 
     """
+    RPC calls between model
+    """
+    #@abstractmethod
+    #def _add_rpc(self, rpc_string, rpc):
+    #    pass
+
+    #@abstractmethod
+    #def call_rpc(self, remote_ptr, role, remote_rpc_string, call_back_rpc_string, args):
+    #    pass
+
+    #@abstractmethod
+    #def run_rpc(self, remote_ptr, remote_role, rpc_string, call_back_rpc_string, args):
+    #    pass
+
+    #@abstractmethod
+    #def fit_args(self, local_rpc_string, callback_rpc_string, args):
+    #    pass
+
+    #@abstractmethod
+    #def step(self, remote_ptr, role, args):
+    #    pass
+
+    #@abstractmethod
+    #def can_step(self, remote_ptr, role, args):
+    #    pass
+
+    #@abstractmethod
+    #def step(self, args):
+    #    pass
+
+    #@abstractmethod
+    #def _step(self, args=None):
+    #    pass
+
+    """
     Functions to transmit model
-    1. fetch_server/fetch_client/fetch_peer(local_dest)
-    2. can_fetch
-    3. export_model(local_dest): return (mode, data)    local_dest = None (i mode) | local_dest = file_path (f mode)
-      type 'i' - the model (pickle based tuple)
-      type 'f' - credential to load the model (ftp login credential)
-    4. push_model
-    5. import_model(type, data, dest) / can_import(t, data, dest) (import model only saves the credential of model)
-    6. fetch_model(t, data, dest)
     """
-
-    """
-    END-----------------------------------------------------------------------------------
-    """
-
 
     @abstractmethod
     def fetch_server(self, server_model_ptr):
@@ -41,23 +63,31 @@ class base_model_abstract(ABC):
         pass
 
     @abstractmethod
-    def export_model(self, mode, file_extension):
+    def give_fetch_credential(self, remote_ptr, mode="f"):
         pass
 
     @abstractmethod
-    def push_model(self, remote_ptr, role, data, remote_dest):
+    def _export_model(self, export_file_path):
         pass
 
     @abstractmethod
-    def import_model(self, role, data, dest, remote_ptr):
+    def export_model(self, mode="f", file_extension=".txt"):
         pass
 
     @abstractmethod
-    def can_import(self, role, data, dest, ptr):
+    def send_download_credential(self, remote_ptr, role, credential):
         pass
 
     @abstractmethod
-    def fetch_model(self, role, dest, ptr):
+    def save_download_model_credential(self, remote_ptr, role, credential):
+        pass
+
+    @abstractmethod
+    def remote_credential_valid(self, remote_ptr, role, credential):
+        pass
+
+    @abstractmethod
+    def download_model(self, remote_ptr, role, local_destination=None):
         pass
 
     """
