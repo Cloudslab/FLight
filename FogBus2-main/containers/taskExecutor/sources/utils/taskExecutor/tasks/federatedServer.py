@@ -27,6 +27,7 @@ class FederatedServer(BaseTask):
 
     def exec(self, inputData):
 
+
         self.addr = inputData["self_addr"]
         self.potential_client_addr.append(inputData["child_addr"])
         self.num_clients = inputData["participants"][self.taskName]["data"]["client_num"]
@@ -35,7 +36,7 @@ class FederatedServer(BaseTask):
             return
         # set up router
 
-
+        import sklearn
         address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
         addr, r = router_factory.get_router((address, port))
         ftp_server_factory.set_ftp_server((address, port))
