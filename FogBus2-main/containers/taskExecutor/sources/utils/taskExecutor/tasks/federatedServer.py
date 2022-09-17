@@ -68,8 +68,9 @@ class FederatedServer(BaseTask):
 
         #while len(model.client_model.keys()) < self.num_clients:
         #    time.sleep(WAITING_TIME_SLOT)
+        mmm = sklearn.linear_model.LinearRegression()
 
-        inputData = {"final_model": model.export(), "client": model.client, "path": model.client_model}
+        inputData = {"final_model": model.export(), "client": model.client, "path": model.client_model, "SKLEARN":str(mmm)}
 
         return inputData
 
