@@ -5,7 +5,7 @@ FROM base as builder
 ## Dependencies
 RUN apt-get update
 RUN apt-get -y install cmake
-RUN apt-get install python3-sklearn
+RUN apt-get -y install python3-sklearn
 #RUN apt-get install \
 #    build-base clang clang-dev ninja cmake ffmpeg-dev \
 #    freetype-dev g++ jpeg-dev lcms2-dev libffi-dev \
