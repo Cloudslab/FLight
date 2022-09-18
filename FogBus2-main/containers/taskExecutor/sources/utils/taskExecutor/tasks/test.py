@@ -5,6 +5,7 @@ from federated_learning.federaed_learning_model.datawarehouse import model_wareh
 from federated_learning.communicate.router import router_factory, ftp_server_factory
 from federated_learning.handler.relationship_handler import relationship_handler
 from federated_learning.handler.model_communication_handler import model_communication_handler
+from federated_learning.handler.remote_call_handler import remote_call_handler
 
 import time
 
@@ -19,22 +20,21 @@ if __name__ == "__main__":
     ftp_addr, ftp_server = ftp_server_factory.get_ftp_server(("127.0.0.1", 12345))
     r.add_handler("relation__", relationship_handler())
     r.add_handler("communicat", model_communication_handler())
+    r.add_handler("cli_step__", remote_call_handler())
     model = base_model()
-    model.add_client(addr)
-    model.add_client(addr)
-    model.add_client(addr)
+    for i in range(3):
+        model.add_client(addr)
     while (len(model.client) + len(model.server) + len(model.peer)) < 3:
         time.sleep(0.01)
+    for i in range(10):
+        print(i)
+        for cli in model.get_client():
+            if model.eligible_client(cli):
+                model.step_client(cli)
 
-    for cli in model.get_client():
-        model.fetch_client(cli)
-
-    while len(model.get_remote_fetch_model_credential("c")) < 3:
-        time.sleep(0.01)
-
-    for ptr in model.get_remote_fetch_model_credential("c").keys():
-        model.download_model(ptr, "c")
-
+        while not model.can_federate():
+            time.sleep(0.01)
+        model.federate()
 
     m = model_warehouse()
-    print(1234)
+    print(123)

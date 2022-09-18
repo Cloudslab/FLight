@@ -45,6 +45,14 @@ class base_model(base_model_abstract):
         self.server_model = {}
         self.server_model_lock = threading.Lock()
 
+        # during step, model cannot be exported
+        self.model_lock = threading.Lock()
+        self.waiting_client_lock = threading.Lock()
+        self.waiting_client = {}  # key is client pointer, value is the version they had about this server
+
+        self.synchronous_federate_minimum_client = 2
+        self.client_model_cache = []
+
     def export(self):
         # return self.__dict__
         return {"uuid": self.uuid, "client": self.client, "server": self.server, "peer": self.peer}
@@ -53,9 +61,92 @@ class base_model(base_model_abstract):
     Server - Client
     1. Server call client to train
     2. Client send back with credential
-    3. Server
+    3. Server check if can participate in federate -> download if allowed
+    4. Federate if download have enough stuff
     """
 
+    def eligible_client(self, client_ptr):
+        return client_ptr[:2] not in self.waiting_client
+
+    def step_client(self, client_ptr, step=1):
+        router = router_factory.get_default_router()
+        addr, model_id, version = client_ptr
+        self_model_download_credential = self.give_fetch_credential(client_ptr)
+        self.waiting_client_lock.acquire()
+        self.waiting_client[client_ptr[:2]] = self_model_download_credential[-2]  # self version within credential
+        self.waiting_client_lock.release()
+        router.send(addr, "cli_step__" + "s____", ((model_id, self.uuid, self.version, step), self_model_download_credential))
+
+    def step(self, args):
+        if self.model_lock.locked():
+            return False
+        self.model_lock.acquire(), self.export_lock["i"].acquire(), self.export_lock["f"].acquire()
+        num_step = args[0] # first argument is number of step trained
+        for i in range(num_step):
+            self._step(args[1:])
+        self.model_lock.release(), self.export_lock["i"].release(), self.export_lock["f"].release()
+        return True
+
+    def _step(self, args):
+        import random
+        random.seed()
+        t = random.choice([2,6,10])
+        time.sleep(t)
+        self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + "\n"
+        self.version += 1
+
+    def load_server(self, server_ptr):
+        server_ptr = server_ptr[:2]
+        self.dummy_content += "Load server: " + str(server_ptr) + "with credential " + str(self.get_server_model()[server_ptr]) + "\n"
+
+    def ack_client_done(self, server_ptr):
+        self.export_model()
+        credential = self.give_fetch_credential(server_ptr)
+        router = router_factory.get_default_router()
+        addr, remote_server_id, remote_server_version = server_ptr
+        router.send(addr, "cli_step__" + "a____", (remote_server_id, self.uuid, credential))
+
+    def eligible_federate(self, client_ptr, client_model_download_credential, mode="syn"):
+        client_ptr = client_ptr[:2]
+        model_not_expired = (mode == "syn" and client_model_download_credential[-1] == self.version) or (mode == "async")
+        return client_ptr in self.waiting_client and model_not_expired
+
+    def client_can_participate(self, client_ptr, mode="syn"):
+        if mode == "asyn": return True
+        if mode == "syn": return (client_ptr[:2] in self.client_model) and self.client_model[client_ptr[:2]][-1] == self.version
+
+    def can_federate(self, mode="syn"):
+        if mode == "asyn": return len(self.client_model) > 0
+        if mode == "syn": return sum([cred[-1]==self.version for cred in self.get_client_model().values()]) >= self.synchronous_federate_minimum_client
+
+    def load_client(self, client_ptr):
+        client_ptr = client_ptr[:2]
+        self.dummy_content += "Load client " + str(self.index_client(client_ptr)) + ": " + str(client_ptr) + "with credential " + str(self.get_client_model()[client_ptr]) + "\n"
+        self.client_model_cache.append(client_ptr)
+
+    def index_client(self, client_ptr):
+        li = sorted([cli_ptr[:2] for cli_ptr in self.get_client()])
+        return li.index(client_ptr[:2])
+
+
+    def federate(self, mode="syn"):
+        self.model_lock.acquire(), self.export_lock["i"].acquire(), self.export_lock["f"].acquire()
+        self.dummy_content += self.uuid + " " + str(self.version) + " start_fl at " + str(time.ctime(time.time())) + "\n"
+        self.client_model_cache.clear()
+        if self.can_federate(mode):
+            for cli in self.get_client_model():
+                if self.client_can_participate(cli, mode):
+                    self.load_client(cli)
+
+            self.federate_algo()
+            self.export_lock["f"].release()
+            self.version += 1
+            self.export_model()
+            self.model_lock.release()
+            self.export_lock["i"].release()
+
+    def federate_algo(self):
+        self.dummy_content += "Federation federate " + str(len(self.client_model_cache)) + " clients.\n"
 
 
     """
@@ -79,7 +170,8 @@ class base_model(base_model_abstract):
 
     def can_fetch(self, remote_ptr, role):  # check remote_ptr in self stored address ignoring version
         ignore_third = lambda x: [d[:2] for d in x]
-        dic = {"s": ignore_third(self.get_server()), "c": ignore_third(self.get_client()), "p": ignore_third(self.get_peer())}
+        dic = {"s": ignore_third(self.get_server()), "c": ignore_third(self.get_client()),
+               "p": ignore_third(self.get_peer())}
         return remote_ptr[:2] in dic[role]
 
     def give_fetch_credential(self, remote_ptr, mode="f"):
@@ -119,6 +211,9 @@ class base_model(base_model_abstract):
         self.remote_fetch_model_credential_lock[role].acquire()
         self.remote_fetch_model_credential[role][remote_ptr[:2]] = credential
         self.remote_fetch_model_credential_lock[role].release()
+        self.waiting_client_lock.acquire()
+        self.waiting_client.pop(remote_ptr[:2], None)
+        self.waiting_client_lock.release()
 
     def remote_credential_valid(self, remote_ptr, role, credential):
         ignore_third = lambda x: [d[:2] for d in x]
@@ -131,13 +226,10 @@ class base_model(base_model_abstract):
         if role == "p": _lock, _dic = self.peer_model_lock, self.peer_model
         if role == "c": _lock, _dic = self.client_model_lock, self.client_model
         ptr = server_addr, remote_model_id = remote_ptr[:2]
-
-        print(server_addr, remote_model_id)
-        print(self.get_remote_fetch_model_credential(role).keys())
         if (server_addr, remote_model_id) not in self.get_remote_fetch_model_credential(role):
             return
-        print(123)
-        remote_file_name, username, password, ftp_addr, remote_version, self_version = self.remote_fetch_model_credential[role][ptr]
+        remote_file_name, username, password, ftp_addr, remote_version, self_version = \
+        self.remote_fetch_model_credential[role][ptr]
         if ptr not in _dic or _dic[ptr][1] < remote_version:
             if not local_destination:
                 local_dir = os.path.dirname(inspect.getsourcefile(router_factory)) + "/tmp/"
@@ -206,6 +298,7 @@ class base_model(base_model_abstract):
     """
     Getter Start
     """
+
     def get_client(self):
         return self.client.copy()
 
