@@ -10,7 +10,6 @@ from .federated_learning.federaed_learning_model.datawarehouse import data_wareh
 
 from .federated_learning.handler.relationship_handler import relationship_handler
 from .federated_learning.handler.model_communication_handler import model_communication_handler
-from .federated_learning.handler.rpc_handler import rpc_handler
 
 class federatedLearning1(BaseTask):
     def __init__(self):
@@ -21,7 +20,6 @@ class federatedLearning1(BaseTask):
         ftp_server_factory.set_ftp_server(inputData["self_addr"])
         r.add_handler("relation__", relationship_handler())
         r.add_handler("communicat", model_communication_handler())
-        r.add_handler("rpc_call__", rpc_handler())
         #r.add_handler("add_client", add_client_handler())
         #r.add_handler("ack_ready_", ack_ready_handler())
         #r.add_handler("ask_next__", ack_next_handler())

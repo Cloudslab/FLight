@@ -8,41 +8,6 @@ class base_model_abstract(ABC):
         pass
 
     """
-    RPC calls between model
-    """
-    #@abstractmethod
-    #def _add_rpc(self, rpc_string, rpc):
-    #    pass
-
-    #@abstractmethod
-    #def call_rpc(self, remote_ptr, role, remote_rpc_string, call_back_rpc_string, args):
-    #    pass
-
-    #@abstractmethod
-    #def run_rpc(self, remote_ptr, remote_role, rpc_string, call_back_rpc_string, args):
-    #    pass
-
-    #@abstractmethod
-    #def fit_args(self, local_rpc_string, callback_rpc_string, args):
-    #    pass
-
-    #@abstractmethod
-    #def step(self, remote_ptr, role, args):
-    #    pass
-
-    #@abstractmethod
-    #def can_step(self, remote_ptr, role, args):
-    #    pass
-
-    #@abstractmethod
-    #def step(self, args):
-    #    pass
-
-    #@abstractmethod
-    #def _step(self, args=None):
-    #    pass
-
-    """
     Functions to transmit model
     """
 

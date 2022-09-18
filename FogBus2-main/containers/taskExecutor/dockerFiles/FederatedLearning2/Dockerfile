@@ -5,13 +5,6 @@ FROM base as builder
 ## Dependencies
 RUN apt-get update
 RUN apt-get -y install cmake
-#RUN apt-get install \
-#    build-base clang clang-dev ninja cmake ffmpeg-dev \
-#    freetype-dev g++ jpeg-dev lcms2-dev libffi-dev \
-#    libgcc libxml2-dev libxslt-dev linux-headers \
-#    make musl musl-dev openjpeg-dev openssl-dev \
-#    zlib-dev curl freetype gcc6 jpeg libjpeg \
- #   openjpeg tesseract-ocr zlib unzip openjpeg-tools
 
 RUN python -m pip install --retries 100 --default-timeout=600  --no-cache-dir --upgrade pip
 RUN python -m pip install --retries 100 --default-timeout=600  numpy==1.22.2 --no-cache-dir
@@ -53,7 +46,6 @@ RUN python -m pip install --retries 100 --default-timeout=600  \
 ## TF
 # RUN python -m pip install https://github.com/KumaTea/pytorch-aarch64/releases/download/v1.5.0/torch-1.5.0-cp39-cp39-linux_aarch64.whl
 RUN python -m pip install https://github.com/KumaTea/pytorch-aarch64/releases/download/v1.11.0/torch-1.11.0-cp39-cp39-linux_aarch64.whl
-RUN python -m pip install https://files.pythonhosted.org/packages/15/4d/65dca1e0ff82b89521c3dfc936bb607fe8c06bb876aa65ca70d02518999d/scikit_learn-1.1.2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl
 
 ## Copy files
 FROM base

@@ -45,101 +45,18 @@ class base_model(base_model_abstract):
         self.server_model = {}
         self.server_model_lock = threading.Lock()
 
-        # rpc model call
-        self._rpc = {}
-        self._rpc_criteria = {}
-        self.step_lock = threading.Lock()
-
-        self._add_rpc("step", self.step, self.can_step)
-        self._add_rpc("fetch_client", self.fetch_client, None)
-        self._add_rpc("fetch_peer", self.fetch_peer, None)
-        self._add_rpc("fetch_server", self.fetch_server, None)
-        self._export_per_iteration = 5
-
-    """
-    Getter Start
-    """
-    def get_client(self):
-        return self.client.copy()
-
-    def get_server(self):
-        return self.server.copy()
-
-    def get_peer(self):
-        return self.peer.copy()
-
-    def get_export_cache(self):
-        return self.export_cache.copy()
-
-    def get_remote_fetch_model_credential(self, role):
-        return self.remote_fetch_model_credential.get(role).copy()
-
-    def get_client_model(self):
-        return self.client_model.copy()
-
-    def get_server_model(self):
-        return self.server_model.copy()
-
-    def get_peer_model(self):
-        return self.peer_model.copy()
-    """
-    Getter End
-    """
-
     def export(self):
         # return self.__dict__
         return {"uuid": self.uuid, "client": self.client, "server": self.server, "peer": self.peer}
 
     """
-    RPC calls between model
+    Server - Client
+    1. Server call client to train
+    2. Client send back with credential
+    3. Server
     """
 
-    def _add_rpc(self, rpc_string, rpc, rpc_criteria):
-        if callable(rpc):
-            self._rpc[rpc_string] = rpc
-        self._rpc_criteria[rpc_string] = rpc_criteria
 
-    def call_rpc(self, remote_ptr, role, remote_rpc_string, call_back_rpc_string, args):
-        router = router_factory.get_default_router()
-        addr, model_id, version = remote_ptr
-        router.send(addr, "rpc_call__" + role + "____",
-                    (self.uuid, self.version, model_id, remote_rpc_string, call_back_rpc_string, args))
-
-    def run_rpc(self, remote_ptr, remote_role, rpc_string, call_back_rpc_string, args):
-        rpc_call, rpc_criteria = self._rpc.get(rpc_string, None), self._rpc_criteria.get(rpc_string, None)
-        if rpc_call and (not rpc_criteria or rpc_criteria(remote_ptr, remote_role, args)):
-            res = self.fit_args(rpc_string, call_back_rpc_string, rpc_call(args))
-            if call_back_rpc_string:
-                self.call_rpc(remote_ptr, {"s": "c", "c": "s", "p": "p"}[remote_role], call_back_rpc_string, None, res)
-                # second argument is convert remote role to local role
-
-    def fit_args(self, local_rpc_string, callback_rpc_string, args):
-        if local_rpc_string == "step" and callback_rpc_string == "fetch_client":
-            return list(router_factory.routers.keys())[0], self.uuid, self.version
-
-    def step_remote(self, remote_ptr, role, minimum_version):
-        self.call_rpc(remote_ptr, role, "step", "fetch_client", minimum_version)
-
-    def can_step(self, remote_ptr, role, minimum_version):
-        return role == "s" and remote_ptr[:2] in [ele[:2] for ele in self.server]
-
-    def step(self, minimum_version):
-
-        if minimum_version > self.version and not self.step_lock.locked():
-            self.step_lock.acquire()
-            while minimum_version > self.version:
-                self._step()
-                if self.version%5 == 0:
-                    self.export_model()
-            self.step_lock.release()
-        else:
-            while minimum_version < self.version:
-                time.sleep(0.01)
-
-    def _step(self, args=None):
-        self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + \
-                              "to version " + str(self.version + 1) + "\n"
-        self.version += 1
 
     """
     Functions to transmit model
@@ -148,30 +65,30 @@ class base_model(base_model_abstract):
     def fetch_client(self, client_model_ptr):
         router = router_factory.get_default_router()
         addr, model_id, version = client_model_ptr
-        router.send(addr, "communicatfs___", (self.uuid, version, model_id))
+        router.send(addr, "communicatfs___", (self.uuid, version, model_id, self.version))
 
     def fetch_peer(self, peer_model_ptr):
         router = router_factory.get_default_router()
         addr, model_id, version = peer_model_ptr
-        router.send(addr, "communicatfp___", (self.uuid, version, model_id))
+        router.send(addr, "communicatfp___", (self.uuid, version, model_id, self.version))
 
     def fetch_server(self, server_model_ptr):
         router = router_factory.get_default_router()
         addr, model_id, version = server_model_ptr
-        router.send(addr, "communicatfc___", (self.uuid, version, model_id))
+        router.send(addr, "communicatfc___", (self.uuid, version, model_id, self.version))
 
     def can_fetch(self, remote_ptr, role):  # check remote_ptr in self stored address ignoring version
         ignore_third = lambda x: [d[:2] for d in x]
-        dic = {"s": ignore_third(self.server), "c": ignore_third(self.client), "p": ignore_third(self.peer)}
+        dic = {"s": ignore_third(self.get_server()), "c": ignore_third(self.get_client()), "p": ignore_third(self.get_peer())}
         return remote_ptr[:2] in dic[role]
 
     def give_fetch_credential(self, remote_ptr, mode="f"):
         ftp_server = ftp_server_factory.get_default_ftp_server()
         _, cache = self.export_cache[mode]
-        addr, model_id, _ = remote_ptr
+        addr, model_id, remote_version = remote_ptr
         username, password = ftp_server.add_temp_user(model_id + "_" + self.uuid)
         # create a user whose username is remote model's id
-        return cache, username, password, ftp_server.addr
+        return cache, username, password, ftp_server.addr, self.version, remote_version
 
     def _export_model(self, export_file_path):
         f = open(export_file_path, "w+")
@@ -214,21 +131,26 @@ class base_model(base_model_abstract):
         if role == "p": _lock, _dic = self.peer_model_lock, self.peer_model
         if role == "c": _lock, _dic = self.client_model_lock, self.client_model
         ptr = server_addr, remote_model_id = remote_ptr[:2]
-        if (server_addr, remote_model_id) not in self.remote_fetch_model_credential[role]:
-            return
-        remote_file_name, username, password, ftp_addr = self.remote_fetch_model_credential[role][ptr]
-        if not local_destination:
-            local_dir = os.path.dirname(inspect.getsourcefile(router_factory)) + "/tmp/"
-            local_file_name = self.uuid + "_" + role + "_" + remote_file_name
-            local_destination = local_dir + local_file_name
 
-        receive_file(ftp_addr, remote_file_name, local_destination, username, password)
-        _lock.acquire()
-        _dic[ptr] = local_destination
-        _lock.release()
-        self.remote_fetch_model_credential_lock[role].acquire()
-        self.remote_fetch_model_credential[role].pop(ptr, None)
-        self.remote_fetch_model_credential_lock[role].release()
+        print(server_addr, remote_model_id)
+        print(self.get_remote_fetch_model_credential(role).keys())
+        if (server_addr, remote_model_id) not in self.get_remote_fetch_model_credential(role):
+            return
+        print(123)
+        remote_file_name, username, password, ftp_addr, remote_version, self_version = self.remote_fetch_model_credential[role][ptr]
+        if ptr not in _dic or _dic[ptr][1] < remote_version:
+            if not local_destination:
+                local_dir = os.path.dirname(inspect.getsourcefile(router_factory)) + "/tmp/"
+                local_file_name = self.uuid + "_" + role + "_" + remote_file_name
+                local_destination = local_dir + local_file_name
+
+            receive_file(ftp_addr, remote_file_name, local_destination, username, password)
+            _lock.acquire()
+            _dic[ptr] = local_destination, remote_version, self.version
+            _lock.release()
+            self.remote_fetch_model_credential_lock[role].acquire()
+            self.remote_fetch_model_credential[role].pop(ptr, None)
+            self.remote_fetch_model_credential_lock[role].release()
 
     """
     Functions to handle relationships
@@ -282,5 +204,32 @@ class base_model(base_model_abstract):
         router.send(addr, "relation__c" + role + "___", (self.uuid, self.version, model_id))
 
     """
-    END-----------------------------------------------------------------------------------
+    Getter Start
+    """
+    def get_client(self):
+        return self.client.copy()
+
+    def get_server(self):
+        return self.server.copy()
+
+    def get_peer(self):
+        return self.peer.copy()
+
+    def get_export_cache(self):
+        return self.export_cache.copy()
+
+    def get_remote_fetch_model_credential(self, role):
+        return self.remote_fetch_model_credential.get(role).copy()
+
+    def get_client_model(self):
+        return self.client_model.copy()
+
+    def get_server_model(self):
+        return self.server_model.copy()
+
+    def get_peer_model(self):
+        return self.peer_model.copy()
+
+    """
+    Getter End
     """
