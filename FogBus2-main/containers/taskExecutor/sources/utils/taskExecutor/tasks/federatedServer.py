@@ -42,10 +42,10 @@ class FederatedServer(BaseTask):
             model.add_client(self.potential_client_addr[0], (i+1, 1))
         for i in range(3,6):
             model.add_client(self.potential_client_addr[1], (i+1, 1))
-        for i in range(7,9):
-            model.add_server(self.potential_client_addr[2], (i+1, 1))
+        for i in range(6,9):
+            model.add_client(self.potential_client_addr[2], (i+1, 1))
 
-        while (len(model.client) + len(model.server)) < 9:
+        while (len(model.client)) < 9:
             time.sleep(WAITING_TIME_SLOT)
 
         for i in range(10):
