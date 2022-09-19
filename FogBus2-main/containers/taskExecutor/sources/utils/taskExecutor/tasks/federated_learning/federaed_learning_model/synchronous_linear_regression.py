@@ -13,7 +13,7 @@ class linear_regression(base_model):
         self.lr = LinearRegressionModel()
         self.x_data = None
         self.y_data = None
-        self.synchronous_federate_minimum_client = 5
+        self.synchronous_federate_minimum_client = 3
         if default_xy_generator_param:
             w, b = default_xy_generator_param
             self.x_data = Variable(torch.Tensor([[i] for i in range(10)]))
