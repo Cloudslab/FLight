@@ -27,19 +27,12 @@ if __name__ == "__main__":
         time.sleep(0.01)
 
     m = model_warehouse()
-    for cli in model.get_client():
-        if model.eligible_client(cli):
-            model.step_client(cli, 50)
-
-    while not model.can_federate():
-        time.sleep(0.01)
 
     for i in range(10):
         print(i)
         for cli in model.get_client():
             if model.eligible_client(cli):
-                model.step_client(cli)
-
+                model.step_client(cli, 50)
 
         while not model.can_federate():
             time.sleep(0.01)

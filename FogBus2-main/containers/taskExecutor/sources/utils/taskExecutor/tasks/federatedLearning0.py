@@ -1,16 +1,10 @@
 from .base import BaseTask
 
 from .federated_learning.communicate.router import router_factory, ftp_server_factory
-from .federated_learning.handler.add_client_handler import add_client_handler
-from .federated_learning.handler.ack_ready_handler import ack_ready_handler
-from .federated_learning.handler.ask_next_handler import ack_next_handler
-from .federated_learning.handler.fetch_handler import fetch_handler
-from .federated_learning.handler.push_handler import push_handler
-from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 
 from .federated_learning.handler.relationship_handler import relationship_handler
 from .federated_learning.handler.model_communication_handler import model_communication_handler
-from .federated_learning.federaed_learning_model.datawarehouse import model_warehouse
+from .federated_learning.handler.remote_call_handler import remote_call_handler
 
 class federatedLearning0(BaseTask):
     def __init__(self):
@@ -22,11 +16,6 @@ class federatedLearning0(BaseTask):
         ftp_server_factory.set_ftp_server(inputData["self_addr"])
         r.add_handler("relation__", relationship_handler())
         r.add_handler("communicat", model_communication_handler())
-
-        #r.add_handler("add_client", add_client_handler())
-        #r.add_handler("ack_ready_", ack_ready_handler())
-        #r.add_handler("ask_next__", ack_next_handler())
-        #r.add_handler("fetch_____", fetch_handler())
-        #r.add_handler("push______", push_handler())
+        r.add_handler("cli_step__", remote_call_handler())
 
         return addr

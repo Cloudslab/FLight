@@ -27,8 +27,6 @@ class linear_regression(base_model):
             pass
         else:
             x_data, y_data = self.x_data, self.y_data
-        if random.random() > 0.88:
-            time.sleep(4)
         self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + "\n"
         self.lr.step(x_data, y_data, 1)
         self.version += 1
