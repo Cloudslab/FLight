@@ -12,6 +12,7 @@ import time
 
 WAITING_TIME_SLOT = 0.01
 
+
 class FederatedServer(BaseTask):
     def __init__(self):
         super().__init__(taskID=221, taskName='FederatedServer')
@@ -20,7 +21,6 @@ class FederatedServer(BaseTask):
         self.num_clients = 0
 
     def exec(self, inputData):
-
 
         self.addr = inputData["self_addr"]
         self.potential_client_addr.append(inputData["child_addr"])
@@ -39,27 +39,27 @@ class FederatedServer(BaseTask):
         # set up model
         model = linear_regression()
         for i in range(3):
-            model.add_client(self.potential_client_addr[0], (i+1, 1))
-        for i in range(3,6):
-            model.add_client(self.potential_client_addr[1], (i+1, 1))
-        for i in range(6,9):
-            model.add_client(self.potential_client_addr[2], (i+1, 1))
+            model.add_client(self.potential_client_addr[0], (i + 1, 1))
+        for i in range(3, 6):
+            model.add_client(self.potential_client_addr[1], (i + 1, 1))
+        for i in range(6, 9):
+            model.add_client(self.potential_client_addr[2], (i + 1, 1))
 
         while (len(model.client)) < 9:
             time.sleep(WAITING_TIME_SLOT)
 
-        for i in range(10):
-            print(i)
-            for cli in model.get_client():
-                if model.eligible_client(cli):
-                    model.step_client(cli, 50)
+        #for i in range(10):
+        #    print(i)
+        #    for cli in model.get_client():
+        #        if model.eligible_client(cli):
+        #            model.step_client(cli, 50)
+        #
+        #    while not model.can_federate():
+        #        time.sleep(0.01)
+        #    model.federate()
+        #    time.sleep(3)  # time until next round
 
-            while not model.can_federate():
-                time.sleep(0.01)
-            model.federate()
-            time.sleep(3)  # time until next round
-
-
-        inputData = {"model_log":model.dummy_content, "model_param": (model.lr.linear.weight.data, model.lr.linear.bias.data)}
+        inputData = {"model_log": model.dummy_content,
+                     "model_param": (model.lr.linear.weight.data, model.lr.linear.bias.data)}
 
         return inputData
