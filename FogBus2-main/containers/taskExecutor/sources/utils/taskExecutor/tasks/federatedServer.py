@@ -52,16 +52,16 @@ class FederatedServer(BaseTask):
             time.sleep(WAITING_TIME_SLOT)
 
         print(12345)
-        #for i in range(10):
-        #    print(i)
-        #    for cli in model.get_client():
-        #        if model.eligible_client(cli):
-        #            model.step_client(cli, 50)
+        for i in range(10):
+            print(i)
+            for cli in model.get_client():
+                if model.eligible_client(cli):
+                    model.step_client(cli, 50)
 
-        #    while not model.can_federate():
-        #        time.sleep(0.01)
-        #    model.federate()
-        #    time.sleep(3)  # time until next round
+            while not model.can_federate():
+                time.sleep(0.01)
+            model.federate()
+            time.sleep(3)  # time until next round
 
 
         inputData = {"logs": model.dummy_content, "weight": (model.lr.linear.weight.data.item(), model.lr.linear.bias.data.item())}
