@@ -64,7 +64,7 @@ class FederatedServer(BaseTask):
         #    time.sleep(3)  # time until next round
 
 
-        inputData = {"final_model": model.export(), "client": model.client}
+        inputData = {"logs": model.dummy_content, "weight": (model.lr.linear.weight.data, model.lr.linear.bias.data)}
 
         print(123456)
         return inputData
