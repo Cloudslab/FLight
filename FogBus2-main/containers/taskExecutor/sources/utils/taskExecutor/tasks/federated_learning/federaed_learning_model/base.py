@@ -13,7 +13,7 @@ import inspect
 
 class base_model(base_model_abstract):
 
-    def __init__(self):
+    def __init__(self, export_at_creation=True):
         # model relationship handle
         self._name = "bas"
         self.uuid = model_warehouse().set(self)
@@ -32,8 +32,9 @@ class base_model(base_model_abstract):
         self.export_lock = {"i": threading.Lock(), "f": threading.Lock()}
         self.export_cache = {"i": [-1, None], "f": [-1, None]}
         self.dummy_content = self.uuid + " " + str(self.version) + " created at " + str(time.ctime(time.time())) + "\n"
-        self.export_model("i")
-        self.export_model("f")
+        if export_at_creation:
+            self.export_model("i")
+            self.export_model("f")
 
         self.remote_fetch_model_credential = {"p": {}, "s": {}, "c": {}}
         self.remote_fetch_model_credential_lock = {"p": threading.Lock(), "s": threading.Lock(), "c": threading.Lock()}
@@ -51,7 +52,7 @@ class base_model(base_model_abstract):
         self.waiting_client = {}  # key is client pointer, value is the version they had about this server
 
         self.synchronous_federate_minimum_client = 2
-        self.client_model_cache = []
+        self.client_model_cache = [] # using model lock (cache will only be touched during federation) so do not put an extra lock here
 
     def export(self):
         # return self.__dict__
@@ -127,7 +128,6 @@ class base_model(base_model_abstract):
     def index_client(self, client_ptr):
         li = sorted([cli_ptr[:2] for cli_ptr in self.get_client()])
         return li.index(client_ptr[:2])
-
 
     def federate(self, mode="syn"):
         self.model_lock.acquire(), self.export_lock["i"].acquire(), self.export_lock["f"].acquire()
@@ -252,17 +252,17 @@ class base_model(base_model_abstract):
     4. _add_client/_add_server/_add_peer
     """
 
-    def add_client(self, client_addr):
+    def add_client(self, client_addr, additional_args=None):
         router = router_factory.get_default_router()
-        router.send(client_addr, "relation__as" + self._name, (self.uuid, self.version))
+        router.send(client_addr, "relation__as" + self._name, (self.uuid, self.version, additional_args))
 
-    def add_server(self, server_addr):
+    def add_server(self, server_addr, additional_args=None):
         router = router_factory.get_default_router()
-        router.send(server_addr, "relation__ac" + self._name, (self.uuid, self.version))
+        router.send(server_addr, "relation__ac" + self._name, (self.uuid, self.version, additional_args))
 
-    def add_peer(self, peer_addr):
+    def add_peer(self, peer_addr, additional_args=None):
         router = router_factory.get_default_router()
-        router.send(peer_addr, "relation__ap" + self._name, (self.uuid, self.version))
+        router.send(peer_addr, "relation__ap" + self._name, (self.uuid, self.version, additional_args))
 
     def can_add(self, remote_ptr, role):
         return True
