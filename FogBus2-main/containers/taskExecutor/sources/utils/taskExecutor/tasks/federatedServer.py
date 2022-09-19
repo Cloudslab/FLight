@@ -43,8 +43,8 @@ class FederatedServer(BaseTask):
             model.add_client(self.potential_client_addr[0], (i+1, 1))
         for i in range(3,6):
             model.add_client(self.potential_client_addr[1], (i+1, 1))
-        for i in range(7,9):
-            model.add_server(self.potential_client_addr[2], (i+1, 1))
+        for i in range(6,9):
+            model.add_client(self.potential_client_addr[2], (i+1, 1))
 
         print(1234)
 
