@@ -12,7 +12,6 @@ import time
 
 WAITING_TIME_SLOT = 0.01
 
-
 class FederatedServer(BaseTask):
     def __init__(self):
         super().__init__(taskID=221, taskName='FederatedServer')
@@ -36,30 +35,36 @@ class FederatedServer(BaseTask):
         r.add_handler("communicat", model_communication_handler())
         r.add_handler("cli_step__", remote_call_handler())
 
+        print(123)
+
         # set up model
         model = linear_regression()
         for i in range(3):
-            model.add_client(self.potential_client_addr[0], (i + 1, 1))
-        for i in range(3, 6):
-            model.add_client(self.potential_client_addr[1], (i + 1, 1))
-        for i in range(6, 9):
-            model.add_client(self.potential_client_addr[2], (i + 1, 1))
+            model.add_client(self.potential_client_addr[0], (i+1, 1))
+        for i in range(3,6):
+            model.add_client(self.potential_client_addr[1], (i+1, 1))
+        for i in range(7,9):
+            model.add_server(self.potential_client_addr[2], (i+1, 1))
 
-        while (len(model.client)) < 9:
+        print(1234)
+
+        while (len(model.client) + len(model.server)) < 9:
             time.sleep(WAITING_TIME_SLOT)
 
+        print(12345)
         #for i in range(10):
         #    print(i)
         #    for cli in model.get_client():
         #        if model.eligible_client(cli):
         #            model.step_client(cli, 50)
-        #
+
         #    while not model.can_federate():
         #        time.sleep(0.01)
         #    model.federate()
         #    time.sleep(3)  # time until next round
 
-        inputData = {"model_log": model.dummy_content,
-                     "model_param": (model.lr.linear.weight.data, model.lr.linear.bias.data)}
 
+        inputData = {"final_model": model.export(), "client": model.client}
+
+        print(123456)
         return inputData
