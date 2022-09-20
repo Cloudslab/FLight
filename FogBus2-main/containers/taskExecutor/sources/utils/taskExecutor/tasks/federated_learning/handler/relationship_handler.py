@@ -2,10 +2,12 @@ import pickle
 from ..federaed_learning_model.datawarehouse import model_warehouse
 from ..federaed_learning_model.base import base_model
 from ..federaed_learning_model.synchronous_linear_regression import linear_regression
+from ..federaed_learning_model.synchronous_cv import synchronous_computer_vision
 
 model_handbook = {
     "bas": base_model,
-    "lrs": linear_regression
+    "lrs": linear_regression,
+    "cv1": synchronous_computer_vision
 }
 
 

@@ -12,6 +12,9 @@ different update method
 """
 
 import uuid
+import pickle
+import inspect
+import os
 
 from mysql import connector
 
@@ -124,3 +127,20 @@ class data_warehouse:
         cursor.execute(sql)
         conn.commit()
         conn.close()
+
+    @classmethod
+    def get_cv1_data(cls, file_idx=0, role="train"):
+
+        dir_path = os.path.dirname(inspect.getsourcefile(data_warehouse))+"/cv_data/"
+        file_name = None
+        if role == "train":
+            file_name = "cv1_train_"+str(file_idx)+".txt"
+        if role == "test":
+            file_name = "cv1_test.txt"
+        f = open(dir_path+file_name, "rb")
+        d = pickle.loads(f.read())
+        f.close()
+        return d
+
+
+

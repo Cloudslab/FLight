@@ -132,7 +132,11 @@ class base_model(base_model_abstract):
     def federate(self, mode="syn"):
         self.model_lock.acquire(), self.export_lock["i"].acquire(), self.export_lock["f"].acquire()
         self.dummy_content += self.uuid + " " + str(self.version) + " start_fl at " + str(time.ctime(time.time())) + "\n"
-        self.client_model_cache.clear()
+        if type(self.client_model_cache) is dict:
+            for k in self.client_model_cache:
+                self.client_model_cache[k].clear()
+        if type(self.client_model_cache) is list: self.client_model_cache.clear()
+
         if self.can_federate(mode):
             for cli in self.get_client_model():
                 if self.client_can_participate(cli, mode):
