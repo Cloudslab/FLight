@@ -66,6 +66,13 @@ class FederatedServer(BaseTask):
                 break
             time.sleep(0.01)  # time until next round
         time_2 = time.time()
-        inputData = {"logs": model.dummy_content, "time_caused": time_2 - time_1}
+
+        time_3 = time.time()
+        modell = synchronous_computer_vision(19)
+        while modell.cv1.accuracy <= 0.8:
+            modell.cv1.step(modell.train_data)
+        time_4 = time.time()
+
+        inputData = {"logs": model.dummy_content, "time_fl": time_2 - time_1, "time_linear": time_4-time_3}
 
         return inputData
