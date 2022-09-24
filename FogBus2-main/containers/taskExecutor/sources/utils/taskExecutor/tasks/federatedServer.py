@@ -37,7 +37,7 @@ class FederatedServer(BaseTask):
         r.add_handler("cli_step__", remote_call_handler())
 
         print(123)
-        time_1 = time.time()
+
         # set up model
         model = synchronous_computer_vision()
         for i in range(3):
@@ -52,6 +52,7 @@ class FederatedServer(BaseTask):
         while (len(model.client) + len(model.server)) < 9:
             time.sleep(WAITING_TIME_SLOT)
 
+        time_1 = time.time()
         for i in range(10):
             print(i)
             for cli in model.get_client():
@@ -62,14 +63,14 @@ class FederatedServer(BaseTask):
                 time.sleep(0.01)
             model.federate()
             print("Average Accuracy: {}", model.cv1.accuracy)
-            if model.cv1.accuracy >= 0.8:
+            if model.cv1.accuracy >= 80:
                 break
             time.sleep(0.01)  # time until next round
         time_2 = time.time()
 
         time_3 = time.time()
         modell = synchronous_computer_vision(19)
-        while modell.cv1.accuracy <= 0.8:
+        while modell.cv1.accuracy <= 80:
             modell.stepp(None)
         time_4 = time.time()
 
