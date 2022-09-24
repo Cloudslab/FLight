@@ -67,6 +67,14 @@ class synchronous_computer_vision(base_model):
         self.cv1.test(self.test_data)
         self.version += 1
 
+    def stepp(self, args):
+        self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + "\n"
+        # train model
+        self.cv1.step(self.train_data)
+        # calculate accuracy
+        self.cv1.test(self.test_data)
+        self.version += 1
+
     def load_client(self, client_ptr):
         client_path, _, _ = self.get_client_model()[client_ptr[:2]]
         f = open(client_path, "rb")

@@ -70,7 +70,7 @@ class FederatedServer(BaseTask):
         time_3 = time.time()
         modell = synchronous_computer_vision(19)
         while modell.cv1.accuracy <= 0.8:
-            modell.cv1.step(modell.train_data)
+            modell.stepp(None)
         time_4 = time.time()
 
         inputData = {"logs": model.dummy_content, "time_fl": time_2 - time_1, "time_linear": time_4-time_3}
