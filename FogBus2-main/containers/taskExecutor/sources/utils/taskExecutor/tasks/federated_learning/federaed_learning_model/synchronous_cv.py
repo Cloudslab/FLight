@@ -75,7 +75,7 @@ class synchronous_computer_vision(base_model):
         # calculate accuracy
         self.cv1.test(self.test_data)
         self.version += 1
-        time.sleep(1)
+        time.sleep(9)
 
     def load_client(self, client_ptr):
         client_path, _, _ = self.get_client_model()[client_ptr[:2]]
