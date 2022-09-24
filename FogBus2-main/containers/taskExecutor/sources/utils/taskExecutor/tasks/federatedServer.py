@@ -63,14 +63,14 @@ class FederatedServer(BaseTask):
                 time.sleep(0.01)
             model.federate()
             print("Average Accuracy: {}", model.cv1.accuracy)
-            if model.cv1.accuracy >= 80:
+            if model.cv1.accuracy >= 70:
                 break
             time.sleep(0.01)  # time until next round
         time_2 = time.time()
 
         time_3 = time.time()
         modell = synchronous_computer_vision(19)
-        while modell.cv1.accuracy <= 80:
+        while modell.cv1.accuracy <= 70:
             modell.stepp(None)
         time_4 = time.time()
 

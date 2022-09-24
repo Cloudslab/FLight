@@ -66,6 +66,7 @@ class synchronous_computer_vision(base_model):
         # calculate accuracy
         self.cv1.test(self.test_data)
         self.version += 1
+        time.sleep(1)
 
     def stepp(self, args):
         self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + "\n"
@@ -74,6 +75,7 @@ class synchronous_computer_vision(base_model):
         # calculate accuracy
         self.cv1.test(self.test_data)
         self.version += 1
+        time.sleep(9)
 
 
     def load_client(self, client_ptr):
