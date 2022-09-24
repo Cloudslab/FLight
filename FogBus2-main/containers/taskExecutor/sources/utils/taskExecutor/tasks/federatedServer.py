@@ -62,7 +62,7 @@ class FederatedServer(BaseTask):
                 time.sleep(0.01)
             model.federate()
             print("Average Accuracy: {}", model.cv1.accuracy)
-            time.sleep(3)  # time until next round
+            time.sleep(0.01)  # time until next round
 
         inputData = {"logs": model.dummy_content}
 
