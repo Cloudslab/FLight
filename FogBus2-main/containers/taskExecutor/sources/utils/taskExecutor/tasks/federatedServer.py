@@ -47,13 +47,22 @@ class FederatedServer(BaseTask):
         for i in range(6,9):
             model.add_client(self.potential_client_addr[2], i)
 
+        model1 = synchronous_computer_vision()
+        for i in range(3):
+            model1.add_client(self.potential_client_addr[0], i)
+        for i in range(3,9):
+            model1.add_client(self.potential_client_addr[1], i)
+
         print(1234)
 
         while (len(model.client) + len(model.server)) < 9:
             time.sleep(WAITING_TIME_SLOT)
 
+        while (len(model1.client) + len(model1.server)) < 9:
+            time.sleep(WAITING_TIME_SLOT)
+
         time_1 = time.time()
-        for i in range(10):
+        for i in range(100):
             print(i)
             for cli in model.get_client():
                 if model.eligible_client(cli):
@@ -63,17 +72,28 @@ class FederatedServer(BaseTask):
                 time.sleep(0.01)
             model.federate()
             print("Average Accuracy: {}", model.cv1.accuracy)
-            if model.cv1.accuracy >= 70:
+            if model.cv1.accuracy >= 75:
                 break
             time.sleep(0.01)  # time until next round
         time_2 = time.time()
 
         time_3 = time.time()
-        modell = synchronous_computer_vision(19)
-        while modell.cv1.accuracy <= 70:
-            modell.stepp(None)
+        for i in range(100):
+            print(i)
+            for cli in model1.get_client():
+                if model1.eligible_client(cli):
+                    model1.step_client(cli, 20)
+
+            while not model1.can_federate():
+                time.sleep(0.01)
+            model1.federate()
+            print("Average Accuracy: {}", model1.cv1.accuracy)
+            if model1.cv1.accuracy >= 75:
+                break
+            time.sleep(0.01)  # time until next round
         time_4 = time.time()
 
-        inputData = {"logs": model.dummy_content, "time_fl": time_2 - time_1, "time_linear": time_4-time_3}
+
+        inputData = {"logs": [model.dummy_content, model1.dummy_content], "time": [time_2 - time_1, time_4 - time_3]}
 
         return inputData

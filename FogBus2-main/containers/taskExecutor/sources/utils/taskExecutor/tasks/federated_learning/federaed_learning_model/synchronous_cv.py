@@ -17,7 +17,7 @@ class synchronous_computer_vision(base_model):
         self.cv1 = Net()
         self.train_data = data_warehouse.get_cv1_data(train_file_idx)
         self.test_data = data_warehouse.get_cv1_data(role="test")
-        self.synchronous_federate_minimum_client = 3
+        self.synchronous_federate_minimum_client = 6
         self.export_model()
         self.accuracy = 0
         self.client_model_cache = {
@@ -66,7 +66,6 @@ class synchronous_computer_vision(base_model):
         # calculate accuracy
         self.cv1.test(self.test_data)
         self.version += 1
-        time.sleep(1)
 
     def stepp(self, args):
         self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + "\n"
@@ -75,7 +74,6 @@ class synchronous_computer_vision(base_model):
         # calculate accuracy
         self.cv1.test(self.test_data)
         self.version += 1
-        time.sleep(9)
 
 
     def load_client(self, client_ptr):
