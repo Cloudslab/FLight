@@ -3,11 +3,13 @@ from ..federaed_learning_model.datawarehouse import model_warehouse
 from ..federaed_learning_model.base import base_model
 from ..federaed_learning_model.synchronous_linear_regression import linear_regression
 from ..federaed_learning_model.synchronous_cv import synchronous_computer_vision
+from ..federaed_learning_model.minst import minst_classification
 
 model_handbook = {
     "bas": base_model,
     "lrs": linear_regression,
-    "cv1": synchronous_computer_vision
+    "cv1": synchronous_computer_vision,
+    "mst": minst_classification
 }
 
 
