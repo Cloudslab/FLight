@@ -41,15 +41,15 @@ class FederatedServer(BaseTask):
 
         print(123)
 
+        time_stamp100, time_diff100, accuracy100 = cifar_sequential_test(self.potential_client_addr[0], 100)
         time_stamp300, time_diff300, accuracy300 = cifar_sequential_test(self.potential_client_addr[0], 300)
-        time_stamp500, time_diff500, accuracy500 = cifar_sequential_test(self.potential_client_addr[0], 500)
         inputData = {
+            "time_stamp100": time_stamp100,
+            "time_diff100": time_diff100,
+            "accuracy100": accuracy100,
             "time_stamp300": time_stamp300,
             "time_diff300": time_diff300,
-            "accuracy300": accuracy300,
-            "time_stamp500": time_stamp500,
-            "time_diff500": time_diff500,
-            "accuracy500": accuracy500
+            "accuracy300": accuracy300
         }
 
         return inputData
