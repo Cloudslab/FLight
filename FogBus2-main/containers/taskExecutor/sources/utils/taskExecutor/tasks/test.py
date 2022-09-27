@@ -16,6 +16,55 @@ import time
 
 import glob
 
+def minst_sequential_test(client_addr):
+    model = minst_classification()
+    model.synchronous_federate_minimum_client = 1
+    model.add_client(client_addr, (0,10))
+    while len(model.get_client()) == 0:
+        time.sleep(0.01)
+
+    time_stamp = [time.time()]
+    time_diff = [0]
+    accuracy = [model.model.accuracy]
+
+    for i in range(100):
+        model.step_client(model.get_client()[0], 1)
+        while not model.can_federate():
+            time.sleep(0.01)
+        model.federate()
+        time_stamp.append(time.time())
+        time_diff.append(time_stamp[-1]-time_stamp[-2])
+        accuracy.append(model.model.accuracy)
+        print(accuracy[-1], time_stamp[-1]-time_stamp[0])
+
+    return time_stamp, time_diff, accuracy
+
+def minst_no_cs(client_addr):
+    model = minst_classification()
+    model.synchronous_federate_minimum_client = 30
+
+    for i in range(30):
+        model.add_client(client_addr, (i, i+1))
+
+    while len(model.get_client()) != 30:
+        time.sleep(0.01)
+
+
+
+    time_stamp = [time.time()]
+    time_diff = [0]
+    accuracy = [model.model.accuracy]
+    for i in range(100):
+        for cli in model.get_client():
+            model.step_client(cli, 10)
+        while not model.can_federate():
+            time.sleep(0.01)
+        model.federate()
+        time_stamp.append(time.time())
+        time_diff.append(time_stamp[-1]-time_stamp[-2])
+        accuracy.append(model.model.accuracy)
+        print(accuracy[-1], time_stamp[-1]-time_stamp[0])
+
 if __name__ == "__main__":
     """
     addr, r = router_factory.get_router(("127.0.0.1", 12345))
@@ -57,10 +106,13 @@ if __name__ == "__main__":
     r.add_handler("relation__", relationship_handler())
     r.add_handler("communicat", model_communication_handler())
     r.add_handler("cli_step__", remote_call_handler())
-    model = minst_classification()
-    for i in range(30):
-        model.add_client(addr, (i, i+1))
 
+    minst_no_cs(addr)
+
+    #model = minst_classification()
+    #for i in range(30):
+    #    model.add_client(addr, (i, i+1))
+    """
     while (len(model.client) + len(model.server)) < 30:
         time.sleep(0.01)
     time1 = time.time()
@@ -84,6 +136,7 @@ if __name__ == "__main__":
             break
         time.sleep(0.01)  # time until next round
     print(model.dummy_content)
+    """
     #time2 = time.time()
     #print(time2 - time1)
     #print(model.dummy_content)
@@ -101,4 +154,5 @@ if __name__ == "__main__":
     #time4 = time.time()
     #print(time4 - time3)
     #print(modell)
+
 

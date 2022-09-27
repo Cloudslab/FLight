@@ -9,6 +9,8 @@ from .federated_learning.federaed_learning_model.synchronous_cv import synchrono
 from .federated_learning.handler.model_communication_handler import model_communication_handler
 from .federated_learning.handler.remote_call_handler import remote_call_handler
 
+from .federated_learning.federaed_learning_model.minst import minst_classification
+
 import time
 
 WAITING_TIME_SLOT = 0.01
@@ -37,6 +39,21 @@ class FederatedServer(BaseTask):
         r.add_handler("cli_step__", remote_call_handler())
 
         print(123)
+
+        time_stamp10, time_diff10, accuracy10 = minst_sequential_test(self.potential_client_addr[0], 10)
+        time_stamp30, time_diff30, accuracy30 = minst_sequential_test(self.potential_client_addr[0], 30)
+        res = {
+            "time_stamp10": time_stamp10,
+            "time_diff10": time_diff10,
+            "accuracy10": accuracy10,
+            "time_stamp30": time_stamp30,
+            "time_diff30": time_diff30,
+            "accuracy30": accuracy30
+        }
+
+        return res
+
+        """
 
         # set up model
         model = synchronous_computer_vision()
@@ -97,3 +114,26 @@ class FederatedServer(BaseTask):
         inputData = {"logs": [model.dummy_content, model1.dummy_content], "time": [time_2 - time_1, time_4 - time_3]}
 
         return inputData
+    """
+
+def minst_sequential_test(client_addr, amount):
+    model = minst_classification()
+    model.synchronous_federate_minimum_client = 1
+    model.add_client(client_addr, (0,amount))
+    while len(model.get_client()) == 0:
+        time.sleep(WAITING_TIME_SLOT)
+
+    time_stamp = [time.time()]
+    time_diff = [0]
+    accuracy = [model.model.accuracy]
+
+    for i in range(100):
+        model.step_client(model.get_client()[0], 1)
+        while not model.can_federate():
+            time.sleep(0.01)
+        model.federate()
+        time_stamp.append(time.time())
+        time_diff.append(time_stamp[-1]-time_stamp[-2])
+        accuracy.append(model.model.accuracy)
+
+    return time_stamp, time_diff, accuracy

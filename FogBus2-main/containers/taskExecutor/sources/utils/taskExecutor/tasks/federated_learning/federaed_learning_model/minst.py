@@ -10,6 +10,7 @@ import torch.optim as optim
 from torch.autograd import Variable
 from .datawarehouse import data_warehouse
 
+REST_TIME = 0.5
 
 class minst_classification(base_model):
     def __init__(self, args=(0, 1)):
@@ -108,6 +109,7 @@ class CNN(nn.Module):
         self.out = nn.Linear(32 * 7 * 7, 10)
         self.optimizer = optim.Adam(self.parameters(), lr=0.01)
         self.loss_func = nn.CrossEntropyLoss()
+        self.accuracy = 0
 
     def forward(self, x):
         x = self.conv1(x)
@@ -119,6 +121,7 @@ class CNN(nn.Module):
 
     def step(self, ds):
         for data, target in ds:
+            time.sleep(REST_TIME)
             self.optimizer.zero_grad()
             output = self(data)
             loss = self.loss_func(output, target)
