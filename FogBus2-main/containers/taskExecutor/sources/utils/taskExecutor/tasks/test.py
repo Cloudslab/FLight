@@ -11,6 +11,7 @@ from federated_learning.handler.model_communication_handler import model_communi
 from federated_learning.handler.remote_call_handler import remote_call_handler
 
 from federated_learning.federaed_learning_model.minst import minst_classification
+from federated_learning.federaed_learning_model.cifar10 import cifar10_classification
 
 import time
 
@@ -36,6 +37,29 @@ def minst_sequential_test(client_addr):
         time_diff.append(time_stamp[-1]-time_stamp[-2])
         accuracy.append(model.model.accuracy)
         print(accuracy[-1], time_stamp[-1]-time_stamp[0])
+
+    return time_stamp, time_diff, accuracy
+
+def cifar_sequential_test(client_addr, amount):
+    model = cifar10_classification()
+    model.synchronous_federate_minimum_client = 1
+    model.add_client(client_addr, (0, amount))
+    while len(model.get_client()) == 0:
+        time.sleep(0.01)
+
+    time_stamp = [time.time()]
+    time_diff = [0]
+    accuracy = [model.model.accuracy]
+
+    for i in range(100):
+        model.step_client(model.get_client()[0], 10)
+        while not model.can_federate():
+            time.sleep(0.01)
+        model.federate()
+        time_stamp.append(time.time())
+        time_diff.append(time_stamp[-1]-time_stamp[-2])
+        accuracy.append(model.model.accuracy)
+        print(accuracy[-1], time_stamp[-1] - time_stamp[0])
 
     return time_stamp, time_diff, accuracy
 
@@ -107,7 +131,7 @@ if __name__ == "__main__":
     r.add_handler("communicat", model_communication_handler())
     r.add_handler("cli_step__", remote_call_handler())
 
-    minst_no_cs(addr)
+    cifar_sequential_test(addr, 10)
 
     #model = minst_classification()
     #for i in range(30):

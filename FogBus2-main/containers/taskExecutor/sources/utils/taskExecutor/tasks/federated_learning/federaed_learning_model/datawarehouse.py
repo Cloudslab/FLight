@@ -151,5 +151,11 @@ class data_warehouse:
         f.close()
         return d["test"], d["train"][idx_start: idx_end]
 
-
-
+    @classmethod
+    def get_CIFAR10_data(cls, idx_start=0, idx_end=1):
+        dir_path = os.path.dirname(inspect.getsourcefile(data_warehouse)) + "/dataset/"
+        file_name = "cifar10_data.txt"
+        f = open(dir_path+file_name, "rb")
+        d = pickle.loads(f.read())
+        f.close()
+        return d["test"], d["train"][idx_start: idx_end]
