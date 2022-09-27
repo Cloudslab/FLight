@@ -135,7 +135,7 @@ def minst_sequential_test(client_addr, amount):
         model.federate()
         time_stamp.append(time.time())
         time_diff.append(time_stamp[-1]-time_stamp[-2])
-        accuracy.append(model.model.accuracy)
+        accuracy.append(model.model.accuracy.data)
 
     return time_stamp, time_diff, accuracy
 
