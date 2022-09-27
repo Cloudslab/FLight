@@ -17,7 +17,7 @@ import time
 
 import glob
 
-def minst_sequential_test(client_addr):
+def minst_sequential_test(client_addr, num_iter):
     model = minst_classification()
     model.synchronous_federate_minimum_client = 1
     model.add_client(client_addr, (0,10))
@@ -28,14 +28,14 @@ def minst_sequential_test(client_addr):
     time_diff = [0]
     accuracy = [model.model.accuracy]
 
-    for i in range(100):
+    for i in range(num_iter):
         model.step_client(model.get_client()[0], 1)
         while not model.can_federate():
             time.sleep(0.01)
         model.federate()
         time_stamp.append(time.time())
         time_diff.append(time_stamp[-1]-time_stamp[-2])
-        accuracy.append(model.model.accuracy)
+        accuracy.append(model.model.accuracy.item())
         print(accuracy[-1], time_stamp[-1]-time_stamp[0])
 
     return time_stamp, time_diff, accuracy
@@ -131,7 +131,8 @@ if __name__ == "__main__":
     r.add_handler("communicat", model_communication_handler())
     r.add_handler("cli_step__", remote_call_handler())
 
-    cifar_sequential_test(addr, 10)
+    _,_, a = minst_sequential_test(addr, 10)
+    print(a)
 
     #model = minst_classification()
     #for i in range(30):
