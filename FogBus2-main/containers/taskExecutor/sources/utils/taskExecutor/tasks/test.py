@@ -131,7 +131,7 @@ if __name__ == "__main__":
     r.add_handler("communicat", model_communication_handler())
     r.add_handler("cli_step__", remote_call_handler())
 
-    _,_, a = minst_sequential_test(addr, 10)
+    _,_, a = cifar_sequential_test(addr, 500)
     print(a)
 
     #model = minst_classification()
