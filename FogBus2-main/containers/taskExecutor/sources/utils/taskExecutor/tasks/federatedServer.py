@@ -129,7 +129,7 @@ def minst_sequential_test(client_addr, amount):
     accuracy = [model.model.accuracy]
 
     for i in range(1):
-        model.step_client(model.get_client()[0], 1)
+        model.step_client(model.get_client()[0], 100)
         while not model.can_federate():
             time.sleep(0.01)
         model.federate()
