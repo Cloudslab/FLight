@@ -10,7 +10,7 @@ import torch.optim as optim
 from torch.autograd import Variable
 from .datawarehouse import data_warehouse
 
-REST_TIME = 0.5
+REST_TIME = 0.02
 
 class cifar10_classification(base_model):
     def __init__(self, args=(0, 1)):

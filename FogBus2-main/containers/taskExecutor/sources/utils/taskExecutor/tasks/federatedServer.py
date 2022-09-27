@@ -41,15 +41,15 @@ class FederatedServer(BaseTask):
 
         print(123)
 
-        time_stamp10, time_diff10, accuracy10 = minst_sequential_test(self.potential_client_addr[0], 10)
-        time_stamp30, time_diff30, accuracy30 = minst_sequential_test(self.potential_client_addr[0], 30)
+        time_stamp300, time_diff300, accuracy300 = cifar_sequential_test(self.potential_client_addr[0], 300)
+        time_stamp500, time_diff500, accuracy500 = cifar_sequential_test(self.potential_client_addr[0], 500)
         inputData = {
-            "time_stamp10": time_stamp10,
-            "time_diff10": time_diff10,
-            "accuracy10": accuracy10,
-            "time_stamp30": time_stamp30,
-            "time_diff30": time_diff30,
-            "accuracy30": accuracy30
+            "time_stamp300": time_stamp300,
+            "time_diff300": time_diff300,
+            "accuracy300": accuracy300,
+            "time_stamp500": time_stamp500,
+            "time_diff500": time_diff500,
+            "accuracy500": accuracy500
         }
 
         return inputData
@@ -150,8 +150,8 @@ def cifar_sequential_test(client_addr, amount):
     time_diff = [0]
     accuracy = [model.model.accuracy]
 
-    for i in range(1):
-        model.step_client(model.get_client()[0], 10)
+    for i in range(100):
+        model.step_client(model.get_client()[0], 5)
         while not model.can_federate():
             time.sleep(0.01)
         model.federate()
