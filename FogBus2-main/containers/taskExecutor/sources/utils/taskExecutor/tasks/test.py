@@ -53,6 +53,17 @@ def minst_federated_learning_no_cs_even(client_addrs, amount):
         time_diff.append(time_stamp[-1] - time_stamp[-2])
         accuracy.append(model.model.accuracy.item())
         print(accuracy[-1], time_diff[-1])
+import random
+def random_choice(client_addr, amount):
+    model = minst_classification()
+    for i in range(amount):
+        model.add_client(client_addr, (0, 1))
+
+    while len(model.get_client()) != amount:
+        time.sleep(0.01)
+
+    for i in range(10):
+        print()
 
 def minst_sequential_test(client_addr, num_iter):
     model = minst_classification()
@@ -168,8 +179,16 @@ if __name__ == "__main__":
     r.add_handler("communicat", model_communication_handler())
     r.add_handler("cli_step__", remote_call_handler())
 
-    _,_, a = minst_federated_learning_no_cs_even([addr, addr, addr], 30)
-    print(a)
+    #_,_, a = minst_federated_learning_no_cs_even([addr, addr, addr], 30)
+    #print(a)
+    model = minst_classification()
+    for i in range(30):
+        model.add_client(addr, (i, i+1))
+    while(len(model.get_client()) < 30):
+        time.sleep(0.01)
+
+    for i in range(1):
+        print(random.sample(model.get_client(), 3))
 
     #model = minst_classification()
     #for i in range(30):
