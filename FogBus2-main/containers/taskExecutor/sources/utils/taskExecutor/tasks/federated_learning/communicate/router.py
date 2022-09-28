@@ -105,7 +105,7 @@ class router:
         Thread(target=self._send).start()
 
     def _dispatch(self):
-        self.socket.listen(5)
+        self.socket.listen(30)
         while True:
             conn, _ = self.socket.accept()
             event = conn.recv(EVENT_STRING_LEN).decode("utf-8")
