@@ -17,6 +17,43 @@ import time
 
 import glob
 
+
+def minst_federated_learning_no_cs_even(client_addrs, amount):
+    model = minst_classification()
+    model.synchronous_federate_minimum_client = amount
+    if amount == 10:
+        for i in range(3):
+            model.add_client(client_addrs[0], (i, i + 1))
+        for i in range(3, 6):
+            model.add_client(client_addrs[1], (i, i + 1))
+        for i in range(6, 10):
+            model.add_client(client_addrs[2], (i, i + 1))
+
+    if amount == 30:
+        for i in range(10):
+            model.add_client(client_addrs[0], (i, i + 1))
+        for i in range(10, 20):
+            model.add_client(client_addrs[1], (i, i + 1))
+        for i in range(20, 30):
+            model.add_client(client_addrs[2], (i, i + 1))
+
+    while len(model.get_client()) < amount:
+        time.sleep(0.01)
+
+    time_stamp = [time.time()]
+    time_diff = [0]
+    accuracy = [model.model.accuracy]
+    for i in range(100):
+        for cli in model.get_client():
+            model.step_client(cli, 10)
+        while not model.can_federate():
+            time.sleep(0.01)
+        model.federate()
+        time_stamp.append(time.time())
+        time_diff.append(time_stamp[-1] - time_stamp[-2])
+        accuracy.append(model.model.accuracy.item())
+        print(accuracy[-1], time_diff[-1])
+
 def minst_sequential_test(client_addr, num_iter):
     model = minst_classification()
     model.synchronous_federate_minimum_client = 1
@@ -131,7 +168,7 @@ if __name__ == "__main__":
     r.add_handler("communicat", model_communication_handler())
     r.add_handler("cli_step__", remote_call_handler())
 
-    _,_, a = cifar_sequential_test(addr, 500)
+    _,_, a = minst_federated_learning_no_cs_even([addr, addr, addr], 30)
     print(a)
 
     #model = minst_classification()
