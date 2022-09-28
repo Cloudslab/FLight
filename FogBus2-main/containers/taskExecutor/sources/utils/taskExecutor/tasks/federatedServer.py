@@ -42,23 +42,15 @@ class FederatedServer(BaseTask):
 
         print(123)
 
-        minst_time_stamp10, minst_time_diff10, minst_accuracy10 = minst_federated_learning_random_cs_no_even(self.potential_client_addr, 10)
-        minst_time_stamp30, minst_time_diff30, minst_accuracy30 = minst_federated_learning_random_cs_no_even(self.potential_client_addr, 30)
-        #cifar_time_stamp100, cifar_time_diff100, cifar_accuracy_100 = cifar_federated_learning_no_cs_no_even(self.potential_client_addr, 10)
-        #cifar_time_stamp300, cifar_time_diff300, cifar_accuracy_300 = cifar_federated_learning_no_cs_no_even(self.potential_client_addr, 30)
+        minst_time_stamp100, minst_time_diff100, minst_accuracy100 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 10)
+        minst_time_stamp300, minst_time_diff300, minst_accuracy300 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 30)
         inputData = {
-            "time_stamp10": minst_time_stamp10,
-            "time_diff10": minst_time_diff10,
-            "accuracy10": minst_accuracy10,
-            "time_stamp30": minst_time_stamp30,
-            "time_diff30": minst_time_diff30,
-            "accuracy30": minst_accuracy30
-            #"cifar_time_stamp100": cifar_time_stamp100,
-            #"cifar_time_diff100": cifar_time_diff100,
-            #"cifar_accuracy_100": cifar_accuracy_100,
-            #"cifar_time_stamp300": cifar_time_stamp300,
-            #"cifar_time_diff300": cifar_time_diff300,
-            #"cifar_accuracy_300": cifar_accuracy_300
+            "minst_time_stamp100": minst_time_stamp100,
+            "minst_time_diff100": minst_time_diff100,
+            "minst_accuracy100": minst_accuracy100,
+            "minst_time_stamp300": minst_time_stamp300,
+            "minst_time_diff300": minst_time_diff300,
+            "minst_accuracy300": minst_accuracy300
         }
 
         return inputData
@@ -154,6 +146,43 @@ def minst_federated_learning_random_cs_no_even(client_addrs, amount):
     for i in range(100):
         for cli in random.sample(model.get_client(), 3):
             model.step_client(cli, 10)
+        while not model.can_federate():
+            time.sleep(0.01)
+        model.federate()
+        time_stamp.append(time.time())
+        time_diff.append(time_stamp[-1] - time_stamp[-2])
+        accuracy.append(model.model.accuracy.item())
+
+    return time_stamp, time_diff, accuracy
+
+def cifar_federated_learning_random_cs_no_even(client_addrs, amount):
+    model = cifar10_classification()
+    model.synchronous_federate_minimum_client = 3
+    if amount == 10:
+        for i in range(3):
+            model.add_client(client_addrs[0], (i, 30))
+        for i in range(3, 6):
+            model.add_client(client_addrs[1], (i, 60))
+        for i in range(6, 10):
+            model.add_client(client_addrs[2], (i, 100))
+
+    if amount == 30:
+        for i in range(10):
+            model.add_client(client_addrs[0], (i, 100))
+        for i in range(10, 20):
+            model.add_client(client_addrs[1], (i, 200))
+        for i in range(20, 30):
+            model.add_client(client_addrs[2], (i, 300))
+
+    while len(model.get_client()) < amount:
+        time.sleep(WAITING_TIME_SLOT)
+
+    time_stamp = [time.time()]
+    time_diff = [0]
+    accuracy = [model.model.accuracy]
+    for i in range(100):
+        for cli in random.sample(model.get_client(), 3):
+            model.step_client(cli, 5)
         while not model.can_federate():
             time.sleep(0.01)
         model.federate()
