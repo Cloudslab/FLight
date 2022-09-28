@@ -43,21 +43,21 @@ class FederatedServer(BaseTask):
 
         minst_time_stamp10, minst_time_diff10, minst_accuracy10 = minst_federated_learning_no_cs_no_even(self.potential_client_addr, 10)
         minst_time_stamp30, minst_time_diff30, minst_accuracy30 = minst_federated_learning_no_cs_no_even(self.potential_client_addr, 30)
-        cifar_time_stamp100, cifar_time_diff100, cifar_accuracy_100 = cifar_federated_learning_no_cs_no_even(self.potential_client_addr, 10)
-        cifar_time_stamp300, cifar_time_diff300, cifar_accuracy_300 = cifar_federated_learning_no_cs_no_even(self.potential_client_addr, 30)
+        #cifar_time_stamp100, cifar_time_diff100, cifar_accuracy_100 = cifar_federated_learning_no_cs_no_even(self.potential_client_addr, 10)
+        #cifar_time_stamp300, cifar_time_diff300, cifar_accuracy_300 = cifar_federated_learning_no_cs_no_even(self.potential_client_addr, 30)
         inputData = {
             "minst_time_stamp10": minst_time_stamp10,
             "minst_time_diff10": minst_time_diff10,
             "minst_accuracy10": minst_accuracy10,
             "minst_time_stamp30": minst_time_stamp30,
             "minst_time_diff30": minst_time_diff30,
-            "minst_accuracy30": minst_accuracy30,
-            "cifar_time_stamp100": cifar_time_stamp100,
-            "cifar_time_diff100": cifar_time_diff100,
-            "cifar_accuracy_100": cifar_accuracy_100,
-            "cifar_time_stamp300": cifar_time_stamp300,
-            "cifar_time_diff300": cifar_time_diff300,
-            "cifar_accuracy_300": cifar_accuracy_300
+            "minst_accuracy30": minst_accuracy30
+            #"cifar_time_stamp100": cifar_time_stamp100,
+            #"cifar_time_diff100": cifar_time_diff100,
+            #"cifar_accuracy_100": cifar_accuracy_100,
+            #"cifar_time_stamp300": cifar_time_stamp300,
+            #"cifar_time_diff300": cifar_time_diff300,
+            #"cifar_accuracy_300": cifar_accuracy_300
         }
 
         return inputData
