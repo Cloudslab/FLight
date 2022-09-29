@@ -31,7 +31,7 @@ class FederatedServer(BaseTask):
         self.addr = inputData["self_addr"]
         self.potential_client_addr.append(inputData["child_addr"])
         self.num_clients = inputData["participants"][self.taskName]["data"]["client_num"]
-        self.machine_profile += inputData["machine_profile"]
+        self.machine_profile.append(inputData["machine_profile"])
 
         if len(self.potential_client_addr) < self.num_clients:
             return
@@ -43,7 +43,7 @@ class FederatedServer(BaseTask):
         r.add_handler("communicat", model_communication_handler())
         r.add_handler("cli_step__", remote_call_handler())
 
-        self.machine_profile += data_warehouse.profile_other_machine()
+        self.machine_profile.append(data_warehouse.profile_other_machine())
 
         inputData = {"info": self.machine_profile}
 
