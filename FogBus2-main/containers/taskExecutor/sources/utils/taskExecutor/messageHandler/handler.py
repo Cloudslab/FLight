@@ -91,9 +91,11 @@ class TaskExecutorMessageHandler:
         self.basicComponent.debugLogger.info(intermediateData)
         # NEW codes added for Federated Learning @ Wuji Zhu
         if "tag" in intermediateData and intermediateData["tag"] == "Federated Learning":
-            from ..tasks.federated_learning.federaed_learning_model import datawarehouse
+            from ..profiler.resources import ResourcesProfiler
             intermediateData["self_addr"] = self.basicComponent.addr[0], intermediateData["participants"][self.task.taskName]["data"]["port"]
-            intermediateData["machine_profile"] = datawarehouse.data_warehouse.profile_other_machine()
+            r = ResourcesProfiler(self.basicComponent)
+            r.profileResources()
+            intermediateData["machine_profile"] = r.resources.toDict()
             intermediateData["debug_logger"] = self.basicComponent.debugLogger
             if len(self.registrationManager.childrenAddresses.keys()):
                 task_executor_router_address = self.task.exec(intermediateData)

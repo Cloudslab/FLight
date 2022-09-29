@@ -43,7 +43,7 @@ class FederatedServer(BaseTask):
         r.add_handler("communicat", model_communication_handler())
         r.add_handler("cli_step__", remote_call_handler())
 
-        self.machine_profile.append(data_warehouse.profile_other_machine())
+        self.machine_profile.append(inputData["machine_profile"])
 
         inputData = {"info": self.machine_profile}
 
