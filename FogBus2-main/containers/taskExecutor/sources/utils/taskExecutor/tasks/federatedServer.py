@@ -24,14 +24,14 @@ class FederatedServer(BaseTask):
         self.potential_client_addr = []
         self.addr = None
         self.num_clients = 0
-        self.machine_profile = []
+        self.machine_profile = {}
 
     def exec(self, inputData):
 
         self.addr = inputData["self_addr"]
         self.potential_client_addr.append(inputData["child_addr"])
         self.num_clients = inputData["participants"][self.taskName]["data"]["client_num"]
-        self.machine_profile.append(inputData["machine_profile"])
+        self.machine_profile[inputData["child_addr"]] = inputData["machine_profile"]["cpu"], inputData["machine_profile"]["memory"]
 
         if len(self.potential_client_addr) < self.num_clients:
             return
@@ -42,8 +42,6 @@ class FederatedServer(BaseTask):
         r.add_handler("relation__", relationship_handler())
         r.add_handler("communicat", model_communication_handler())
         r.add_handler("cli_step__", remote_call_handler())
-
-        self.machine_profile.append(inputData["machine_profile"])
 
         inputData = {"info": self.machine_profile}
 
