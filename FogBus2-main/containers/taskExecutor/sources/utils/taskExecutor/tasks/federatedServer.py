@@ -46,6 +46,8 @@ class FederatedServer(BaseTask):
         self.machine_profile += data_warehouse.profile_other_machine()
 
         inputData = {"info": self.machine_profile}
+
+
         #minst_time_stamp100, minst_time_diff100, minst_accuracy100 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 10)
         #minst_time_stamp300, minst_time_diff300, minst_accuracy300 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 30)
         #inputData = {
