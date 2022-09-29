@@ -18,6 +18,7 @@ class minst_classification(base_model):
         self._name = "mst"
         self.model = CNN()
         self.test_data, self.train_data = data_warehouse.get_MINST_data(args[0], args[1])
+        self.cs_info["data_size"] = len(self.train_data)
         self.min_client = 10
         self.export_model()
         self.client_model_cache = {
@@ -43,6 +44,7 @@ class minst_classification(base_model):
         f.close()
 
     def load_server(self, server_ptr):
+        load_time_start = time.time()
         self.model_lock.acquire(), self.export_lock["i"].acquire(), self.export_lock["f"].acquire()
         server_model_path, _, _ = self.get_server_model()[server_ptr[:2]]
         f = open(server_model_path, "rb")
@@ -54,6 +56,9 @@ class minst_classification(base_model):
         self.model.conv2[0].bias.data = param_dict["conv2_b"]
         self.model.out.weight.data = param_dict["fc_w"]
         self.model.out.bias.data = param_dict["fc_b"]
+
+        load_time_end = time.time()
+        self.cs_info["loading_time"] = load_time_end - load_time_start
 
         self.model_lock.release(), self.export_lock["i"].release(), self.export_lock["f"].release()
 
@@ -82,7 +87,11 @@ class minst_classification(base_model):
     def _step(self, args):
         self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + "\n"
         # train model
+        step_time_start = time.time()
         self.model.step(self.train_data)
+        step_time_end = time.time()
+        self.cs_info["epoch_time"] = step_time_end - step_time_start
+        self.cs_info["train_one_time"] = self.cs_info["epoch_time"] / self.cs_info["data_size"]
         self.version += 1
 
 

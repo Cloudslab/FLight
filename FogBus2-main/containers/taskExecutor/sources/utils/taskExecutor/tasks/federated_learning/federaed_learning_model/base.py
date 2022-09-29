@@ -54,6 +54,26 @@ class base_model(base_model_abstract):
         self.synchronous_federate_minimum_client = 2
         self.client_model_cache = [] # using model lock (cache will only be touched during federation) so do not put an extra lock here
 
+        # client selection module
+        self.client_performance = {}
+        self.cs_info = {
+            "data_size": 0,
+            "train_one_time": 0,
+            "epoch_time": 0,
+            "loading_time": 0
+        }
+
+        self.client_performance_lock = threading.Lock()
+
+    """
+    Client Performance base Selection
+    """
+    def update_client_performance(self, ptr, performance):
+        self.client_performance_lock.acquire()
+        for k in performance.keys():
+            self.client_performance[ptr[:2]][k] = performance[k]
+        self.client_performance_lock.release()
+
     def export(self):
         # return self.__dict__
         return {"uuid": self.uuid, "client": self.client, "server": self.server, "peer": self.peer}
@@ -105,7 +125,7 @@ class base_model(base_model_abstract):
         credential = self.give_fetch_credential(server_ptr)
         router = router_factory.get_default_router()
         addr, remote_server_id, remote_server_version = server_ptr
-        router.send(addr, "cli_step__" + "a____", (remote_server_id, self.uuid, credential))
+        router.send(addr, "cli_step__" + "a____", (remote_server_id, self.uuid, credential, self.cs_info))
 
     def eligible_federate(self, client_ptr, client_model_download_credential, mode="syn"):
         client_ptr = client_ptr[:2]
@@ -283,6 +303,9 @@ class base_model(base_model_abstract):
         self.client_lock.acquire()
         self.client.append(client_ptr)
         self.client_lock.release()
+        self.client_performance_lock.acquire()
+        self.client_performance[client_ptr[:2]] = {"data_size": 0, "train_one_time": 0, "epoch_time": 0, "loading_time": 0, "transmission_time": 0}
+        self.client_performance_lock.release()
 
     def _add_server(self, server_ptr):
         self.server_lock.acquire()

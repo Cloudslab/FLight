@@ -162,3 +162,18 @@ class data_warehouse:
             setattr(cls, "cifar10_data", d)
         d = getattr(cls, "cifar10_data")
         return d["test"], d["train"][idx_start: idx_end]
+
+    @classmethod
+    def profile_other_machine(cls):
+        dbTasks = connector.connect(
+            host="127.0.0.1",
+            port=3306,
+            user="root",
+            password="passwordForRoot",
+            database="FogBus2_Resources")
+        cursor = dbTasks.cursor()
+        sql = 'SELECT * FROM hosts'
+        cursor.execute(sql)
+        res = cursor.fetchall()
+        dbTasks.close()
+        return res

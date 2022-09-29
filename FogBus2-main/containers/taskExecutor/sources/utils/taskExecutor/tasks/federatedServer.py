@@ -11,6 +11,7 @@ from .federated_learning.handler.remote_call_handler import remote_call_handler
 
 from .federated_learning.federaed_learning_model.minst import minst_classification
 from .federated_learning.federaed_learning_model.cifar10 import cifar10_classification
+from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 
 import time
 import random
@@ -23,12 +24,14 @@ class FederatedServer(BaseTask):
         self.potential_client_addr = []
         self.addr = None
         self.num_clients = 0
+        self.machine_profile = []
 
     def exec(self, inputData):
 
         self.addr = inputData["self_addr"]
         self.potential_client_addr.append(inputData["child_addr"])
         self.num_clients = inputData["participants"][self.taskName]["data"]["client_num"]
+        self.machine_profile += inputData["machine_profile"]
 
         if len(self.potential_client_addr) < self.num_clients:
             return
@@ -40,18 +43,19 @@ class FederatedServer(BaseTask):
         r.add_handler("communicat", model_communication_handler())
         r.add_handler("cli_step__", remote_call_handler())
 
-        print(123)
+        self.machine_profile += data_warehouse.profile_other_machine()
 
-        minst_time_stamp100, minst_time_diff100, minst_accuracy100 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 10)
-        minst_time_stamp300, minst_time_diff300, minst_accuracy300 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 30)
-        inputData = {
-            "minst_time_stamp100": minst_time_stamp100,
-            "minst_time_diff100": minst_time_diff100,
-            "minst_accuracy100": minst_accuracy100,
-            "minst_time_stamp300": minst_time_stamp300,
-            "minst_time_diff300": minst_time_diff300,
-            "minst_accuracy300": minst_accuracy300
-        }
+        inputData = {"info": self.machine_profile}
+        #minst_time_stamp100, minst_time_diff100, minst_accuracy100 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 10)
+        #minst_time_stamp300, minst_time_diff300, minst_accuracy300 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 30)
+        #inputData = {
+        #    "minst_time_stamp100": minst_time_stamp100,
+        #    "minst_time_diff100": minst_time_diff100,
+        #    "minst_accuracy100": minst_accuracy100,
+        #    "minst_time_stamp300": minst_time_stamp300,
+        #    "minst_time_diff300": minst_time_diff300,
+        #    "minst_accuracy300": minst_accuracy300
+        #}
 
         return inputData
 
