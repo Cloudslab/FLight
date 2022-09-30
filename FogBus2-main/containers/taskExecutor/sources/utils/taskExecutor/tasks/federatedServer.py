@@ -71,8 +71,8 @@ class FederatedServer(BaseTask):
         #    "minst_time_diff300": minst_time_diff300,
         #    "minst_accuracy300": minst_accuracy300
         #}
-
-        inputData["res"] = minst_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 10)
+        _, a, b = minst_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 30)
+        inputData["res"] = {"accuracy30": b, "time_diff30": a}
 
         return inputData
 
