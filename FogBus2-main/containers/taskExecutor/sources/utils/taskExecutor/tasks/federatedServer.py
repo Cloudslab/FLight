@@ -46,21 +46,20 @@ class FederatedServer(BaseTask):
         inputData = {"info": self.machine_profile}
 
 
-        res_cifar = {10:{}, 30:{}}
-        res_minst = {10:{}, 30:{}}
-        for r_min in range(5):
-            res_cifar[10][r_min] = {}
-            res_cifar[10][r_max] = {}
-            for r_max in range(r_min, 10):
-                res_cifar[10][r_min][r_max] = cifar_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 10)
-                res_cifar[30][r_min][r_max] = cifar_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 30)
 
-        for r_min in range(5):
-            res_minst[10][r_min] = {}
-            res_minst[10][r_max] = {}
-            for r_max in range(r_min, 10):
-                res_minst[10][r_min][r_max] = minst_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 10)
-                res_minst[30][r_min][r_max] = minst_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 30)
+        #for r_min in range(5):
+        #    res_cifar[10][r_min] = {}
+        #    res_cifar[10][r_max] = {}
+        #    for r_max in range(r_min, 10):
+        #        res_cifar[10][r_min][r_max] = cifar_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 10)
+        #        res_cifar[30][r_min][r_max] = cifar_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 30)
+
+        #for r_min in range(5):
+        #    res_minst[10][r_min] = {}
+        #    res_minst[10][r_max] = {}
+        #    for r_max in range(r_min, 10):
+        #        res_minst[10][r_min][r_max] = minst_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 10)
+        #        res_minst[30][r_min][r_max] = minst_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 30)
 
         #minst_time_stamp100, minst_time_diff100, minst_accuracy100 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 10)
         #minst_time_stamp300, minst_time_diff300, minst_accuracy300 = cifar_federated_learning_random_cs_no_even(self.potential_client_addr, 30)
@@ -73,76 +72,14 @@ class FederatedServer(BaseTask):
         #    "minst_accuracy300": minst_accuracy300
         #}
 
-        inputData["cifar"] = res_cifar
-        inputData["minst"] = res_minst
+        inputData["res"] = minst_federated_learning_r_min_rmax_cs_no_even(10)
 
         return inputData
-
-        """
-
-        # set up model
-        model = synchronous_computer_vision()
-        for i in range(3):
-            model.add_client(self.potential_client_addr[0], i)
-        for i in range(3,6):
-            model.add_client(self.potential_client_addr[1], i)
-        for i in range(6,9):
-            model.add_client(self.potential_client_addr[2], i)
-
-        model1 = synchronous_computer_vision()
-        for i in range(3):
-            model1.add_client(self.potential_client_addr[0], i)
-        for i in range(3,9):
-            model1.add_client(self.potential_client_addr[1], i)
-
-        print(1234)
-
-        while (len(model.client) + len(model.server)) < 9:
-            time.sleep(WAITING_TIME_SLOT)
-
-        while (len(model1.client) + len(model1.server)) < 9:
-            time.sleep(WAITING_TIME_SLOT)
-
-        time_1 = time.time()
-        for i in range(100):
-            print(i)
-            for cli in model.get_client():
-                if model.eligible_client(cli):
-                    model.step_client(cli, 20)
-
-            while not model.can_federate():
-                time.sleep(0.01)
-            model.federate()
-            print("Average Accuracy: {}", model.cv1.accuracy)
-            if model.cv1.accuracy >= 75:
-                break
-            time.sleep(0.01)  # time until next round
-        time_2 = time.time()
-
-        time_3 = time.time()
-        for i in range(100):
-            print(i)
-            for cli in model1.get_client():
-                if model1.eligible_client(cli):
-                    model1.step_client(cli, 20)
-
-            while not model1.can_federate():
-                time.sleep(0.01)
-            model1.federate()
-            print("Average Accuracy: {}", model1.cv1.accuracy)
-            if model1.cv1.accuracy >= 75:
-                break
-            time.sleep(0.01)  # time until next round
-        time_4 = time.time()
-
-
-        inputData = {"logs": [model.dummy_content, model1.dummy_content], "time": [time_2 - time_1, time_4 - time_3]}
-
-        return inputData
-    """
 
 def minst_federated_learning_r_min_rmax_cs_no_even(client_addrs, amount):
     model = minst_classification()
+    model.r_min = 5
+    model.r_max = 5
     if amount == 10:
         for i in range(3):
             model.add_client(client_addrs[0], (i, 3))
