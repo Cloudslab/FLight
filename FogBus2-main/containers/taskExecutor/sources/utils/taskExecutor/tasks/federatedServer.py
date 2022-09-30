@@ -45,6 +45,7 @@ class FederatedServer(BaseTask):
 
         inputData = {"info": self.machine_profile}
 
+
         res_cifar = {10:{}, 30:{}}
         res_minst = {10:{}, 30:{}}
         for r_min in range(5):
