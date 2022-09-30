@@ -72,7 +72,7 @@ class FederatedServer(BaseTask):
         #    "minst_accuracy300": minst_accuracy300
         #}
 
-        inputData["res"] = minst_federated_learning_r_min_rmax_cs_no_even(10)
+        inputData["res"] = minst_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 10)
 
         return inputData
 
