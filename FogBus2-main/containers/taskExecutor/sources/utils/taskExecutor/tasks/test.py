@@ -20,7 +20,7 @@ import glob
 def minst_federated_learning_random_cs_no_even(client_addr, amount):
     import random
     model = minst_classification()
-    model.synchronous_federate_minimum_client = amount
+    model.synchronous_federate_minimum_client = 10
     if amount == 10:
         for i in range(3):
             model.add_client(client_addr, (i, 3))
@@ -43,22 +43,35 @@ def minst_federated_learning_random_cs_no_even(client_addr, amount):
     time_stamp = [time.time()]
     time_diff = [0]
     accuracy = [model.model.accuracy]
-    for i in range(1):
-        for cli in model.get_client():
+    for i in range(10):
+        #print(model.client_performance)
+        #print(model.select_top_k())
+        model.synchronous_federate_minimum_client = len(model.select_top_k())
+        print(model.r_min, model.r_max)
+        #print(model.select_top_k())
+        for cli in model.select_top_k():
+
+            print(model.get_client().index(cli))
             model.step_client(cli, 10)
         while not model.can_federate():
             time.sleep(0.01)
+        accuracy_old = model.model.accuracy
+        if accuracy_old != 0: accuracy_old = accuracy_old.item()
         model.federate()
+        accuracy_new = model.model.accuracy.item()
+        model.update_r(accuracy_new, accuracy_old)
+
+
         time_stamp.append(time.time())
         time_diff.append(time_stamp[-1] - time_stamp[-2])
         accuracy.append(model.model.accuracy.item())
         print(time_diff[-1])
         print(accuracy[-1])
 
-    for cli, val in model.client_performance.items():
-        print(cli)
-        for k, v in val.items():
-            print(k,v)
+    #for cli, val in model.client_performance.items():
+    #    print(cli)
+    #    for k, v in val.items():
+    #        print(k,v)
     return time_stamp, time_diff, accuracy
 
 def cifar_federated_learning_random_cs_no_even(client_addr, amount):
@@ -67,11 +80,11 @@ def cifar_federated_learning_random_cs_no_even(client_addr, amount):
     model.synchronous_federate_minimum_client = amount
     if amount == 10:
         for i in range(3):
-            model.add_client(client_addr, (i, 30))
+            model.add_client(client_addr, (i*10, 30))
         for i in range(3, 6):
-            model.add_client(client_addr, (i, 60))
+            model.add_client(client_addr, (i*10, 60))
         for i in range(6, 10):
-            model.add_client(client_addr, (i, 100))
+            model.add_client(client_addr, (i*10, 100))
 
     if amount == 30:
         for i in range(10):
@@ -87,12 +100,22 @@ def cifar_federated_learning_random_cs_no_even(client_addr, amount):
     time_stamp = [time.time()]
     time_diff = [0]
     accuracy = [model.model.accuracy]
-    for i in range(1):
-        for cli in model.get_client():
+    for i in range(10):
+        model.synchronous_federate_minimum_client = len(model.select_top_k())
+        print(model.r_min, model.r_max)
+        for cli in model.select_top_k():
+            print(model.get_client().index(cli))
             model.step_client(cli, 10)
         while not model.can_federate():
             time.sleep(0.01)
+
+        accuracy_old = model.model.accuracy
+        if accuracy_old != 0: accuracy_old = accuracy_old.item()
         model.federate()
+        accuracy_new = model.model.accuracy.item()
+        model.update_r(accuracy_new, accuracy_old)
+
+
         time_stamp.append(time.time())
         time_diff.append(time_stamp[-1] - time_stamp[-2])
         accuracy.append(model.model.accuracy.item())
@@ -117,6 +140,7 @@ if __name__ == "__main__":
     #_,_, a = minst_federated_learning_no_cs_even([addr, addr, addr], 30)
     #print(a)
 
+    #cifar_federated_learning_random_cs_no_even(addr, 10)
     cifar_federated_learning_random_cs_no_even(addr, 10)
 
 

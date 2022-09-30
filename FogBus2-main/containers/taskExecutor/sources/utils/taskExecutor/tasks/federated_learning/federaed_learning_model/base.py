@@ -52,7 +52,7 @@ class base_model(base_model_abstract):
         self.waiting_client = {}  # key is client pointer, value is the version they had about this server
 
         self.synchronous_federate_minimum_client = 2
-        self.client_model_cache = [] # using model lock (cache will only be touched during federation) so do not put an extra lock here
+        self.client_model_cache = []  # using model lock (cache will only be touched during federation) so do not put an extra lock here
 
         # client selection module
         self.client_performance = {}
@@ -64,15 +64,39 @@ class base_model(base_model_abstract):
         }
 
         self.client_performance_lock = threading.Lock()
+        self.r_min = 0.5
+        self.r_max = 0.7
 
     """
     Client Performance base Selection
     """
+
     def update_client_performance(self, ptr, performance):
         self.client_performance_lock.acquire()
         for k in performance.keys():
             self.client_performance[ptr[:2]][k] = performance[k]
         self.client_performance_lock.release()
+
+    def select_top_k(self, k_start=0, k_end=1):
+        lis = []
+        for k, v in self.client_performance.items():
+            print(v)
+            r_min, r_max = self.rank_client(v)
+            lis.append((r_min, r_max, k))
+        min_r_max = min([ele[1] for ele in lis])
+        if min_r_max == 0: min_r_max = float('inf')
+        res = [ele[-1] for ele in lis if ele[0] < min_r_max]
+        rres = [ele for ele in self.client if ele[:2] in res]
+
+        return rres
+
+    def rank_client(self, val):
+        return val["train_one_time"] * self.r_min * val["data_size"] + val["loading_time"] + val["transmission_time"], \
+               val["train_one_time"] * self.r_max * val["data_size"] + val["loading_time"] + val["transmission_time"]
+
+    def update_r(self, accuracy_new, accuracy_old):
+        self.r_min = self.r_min * (100 - accuracy_new) / (100 - accuracy_old)
+        self.r_max = self.r_max * (100 + accuracy_new) / (100 + accuracy_old)
 
     def export(self):
         # return self.__dict__
@@ -96,13 +120,14 @@ class base_model(base_model_abstract):
         self.waiting_client_lock.acquire()
         self.waiting_client[client_ptr[:2]] = self_model_download_credential[-2]  # self version within credential
         self.waiting_client_lock.release()
-        router.send(addr, "cli_step__" + "s____", ((model_id, self.uuid, self.version, step), self_model_download_credential))
+        router.send(addr, "cli_step__" + "s____",
+                    ((model_id, self.uuid, self.version, step), self_model_download_credential))
 
     def step(self, args):
         if self.model_lock.locked():
             return False
         self.model_lock.acquire(), self.export_lock["i"].acquire(), self.export_lock["f"].acquire()
-        num_step = args[0] # first argument is number of step trained
+        num_step = args[0]  # first argument is number of step trained
         for i in range(num_step):
             self._step(args[1:])
         self.model_lock.release(), self.export_lock["i"].release(), self.export_lock["f"].release()
@@ -111,14 +136,15 @@ class base_model(base_model_abstract):
     def _step(self, args):
         import random
         random.seed()
-        t = random.choice([2,6,10])
+        t = random.choice([2, 6, 10])
         time.sleep(t)
         self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + "\n"
         self.version += 1
 
     def load_server(self, server_ptr):
         server_ptr = server_ptr[:2]
-        self.dummy_content += "Load server: " + str(server_ptr) + "with credential " + str(self.get_server_model()[server_ptr]) + "\n"
+        self.dummy_content += "Load server: " + str(server_ptr) + "with credential " + str(
+            self.get_server_model()[server_ptr]) + "\n"
 
     def ack_client_done(self, server_ptr):
         self.export_model()
@@ -129,20 +155,24 @@ class base_model(base_model_abstract):
 
     def eligible_federate(self, client_ptr, client_model_download_credential, mode="syn"):
         client_ptr = client_ptr[:2]
-        model_not_expired = (mode == "syn" and client_model_download_credential[-1] == self.version) or (mode == "async")
+        model_not_expired = (mode == "syn" and client_model_download_credential[-1] == self.version) or (
+                    mode == "async")
         return client_ptr in self.waiting_client and model_not_expired
 
     def client_can_participate(self, client_ptr, mode="syn"):
         if mode == "asyn": return True
-        if mode == "syn": return (client_ptr[:2] in self.client_model) and self.client_model[client_ptr[:2]][-1] == self.version
+        if mode == "syn": return (client_ptr[:2] in self.client_model) and self.client_model[client_ptr[:2]][
+            -1] == self.version
 
     def can_federate(self, mode="syn"):
         if mode == "asyn": return len(self.client_model) > 0
-        if mode == "syn": return sum([cred[-1]==self.version for cred in self.get_client_model().values()]) >= self.synchronous_federate_minimum_client
+        if mode == "syn": return sum([cred[-1] == self.version for cred in
+                                      self.get_client_model().values()]) >= self.synchronous_federate_minimum_client
 
     def load_client(self, client_ptr):
         client_ptr = client_ptr[:2]
-        self.dummy_content += "Load client " + str(self.index_client(client_ptr)) + ": " + str(client_ptr) + "with credential " + str(self.get_client_model()[client_ptr]) + "\n"
+        self.dummy_content += "Load client " + str(self.index_client(client_ptr)) + ": " + str(
+            client_ptr) + "with credential " + str(self.get_client_model()[client_ptr]) + "\n"
         self.client_model_cache.append(client_ptr)
 
     def index_client(self, client_ptr):
@@ -151,7 +181,8 @@ class base_model(base_model_abstract):
 
     def federate(self, mode="syn"):
         self.model_lock.acquire(), self.export_lock["i"].acquire(), self.export_lock["f"].acquire()
-        self.dummy_content += self.uuid + " " + str(self.version) + " start_fl at " + str(time.ctime(time.time())) + "\n"
+        self.dummy_content += self.uuid + " " + str(self.version) + " start_fl at " + str(
+            time.ctime(time.time())) + "\n"
         if type(self.client_model_cache) is dict:
             for k in self.client_model_cache:
                 self.client_model_cache[k].clear()
@@ -171,7 +202,6 @@ class base_model(base_model_abstract):
 
     def federate_algo(self):
         self.dummy_content += "Federation federate " + str(len(self.client_model_cache)) + " clients.\n"
-
 
     """
     Functions to transmit model
@@ -253,7 +283,7 @@ class base_model(base_model_abstract):
         if (server_addr, remote_model_id) not in self.get_remote_fetch_model_credential(role):
             return
         remote_file_name, username, password, ftp_addr, remote_version, self_version = \
-        self.remote_fetch_model_credential[role][ptr]
+            self.remote_fetch_model_credential[role][ptr]
         if ptr not in _dic or _dic[ptr][1] < remote_version:
             if not local_destination:
                 local_dir = os.path.dirname(inspect.getsourcefile(router_factory)) + "/tmp/"
@@ -304,7 +334,8 @@ class base_model(base_model_abstract):
         self.client.append(client_ptr)
         self.client_lock.release()
         self.client_performance_lock.acquire()
-        self.client_performance[client_ptr[:2]] = {"data_size": 0, "train_one_time": 0, "epoch_time": 0, "loading_time": 0, "transmission_time": 0}
+        self.client_performance[client_ptr[:2]] = {"data_size": 0, "train_one_time": 0, "epoch_time": 0,
+                                                   "loading_time": 0, "transmission_time": 0}
         self.client_performance_lock.release()
 
     def _add_server(self, server_ptr):
