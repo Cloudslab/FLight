@@ -81,8 +81,6 @@ class base_model(base_model_abstract):
         return not_update1 and not_update2 and not_update3 and not_update4
 
     def should_update_time_allowed(self, new_accuracy, old_accuracy):
-        if type(new_accuracy) != int: new_accuracy = new_accuracy.data
-        if type(old_accuracy) != int: old_accuracy = old_accuracy.data
         return (new_accuracy - old_accuracy) < self.update_time_threshold and len(self.select_client()) != len(self.client)
 
     def update_time_allowed(self, step):
