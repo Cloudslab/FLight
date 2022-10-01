@@ -46,7 +46,7 @@ class FederatedServer(BaseTask):
         cpu_freq_factor = {}
         cpu_freq_sum = 0
         for k in self.machine_profile:
-            cpu_freq_factor[k] = self.machine_profile[k]["frequency"] * (1 - self.machine_profile[k]["utilization"])
+            cpu_freq_factor[k] = self.machine_profile[k][0]["frequency"] * (1 - self.machine_profile[k][0]["utilization"])
             cpu_freq_sum += cpu_freq_factor[k]
 
 
