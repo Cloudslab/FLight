@@ -9,6 +9,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 from .datawarehouse import data_warehouse
+import math
 
 REST_TIME = 0.02
 
@@ -20,6 +21,7 @@ class cifar10_classification(base_model):
         self.test_data, self.train_data = data_warehouse.get_CIFAR10_data(args[0], args[1])
         self.cs_info["data_size"] = len(self.train_data)
         self.min_client = 10
+        self.server_version = -1
         self.export_model()
         self.client_model_cache = {
             "conv1_w": [],
@@ -31,7 +33,9 @@ class cifar10_classification(base_model):
             "fc2_w": [],
             "fc2_b": [],
             "fc3_w": [],
-            "fc3_b": []
+            "fc3_b": [],
+            "data_size": [],
+            "server_version": []
         }
 
     def _export_model(self, export_file_path):
@@ -46,7 +50,9 @@ class cifar10_classification(base_model):
             "fc2_w": self.model.fc2.weight.data,
             "fc2_b": self.model.fc2.bias.data,
             "fc3_w": self.model.fc3.weight.data,
-            "fc3_b": self.model.fc3.bias.data
+            "fc3_b": self.model.fc3.bias.data,
+            "data_size": len(self.train_data),
+            "server_version": self.server_version
         }
         f.write(pickle.dumps(binary_self))
         f.close()
@@ -68,11 +74,34 @@ class cifar10_classification(base_model):
         self.model.fc2.bias.data = param_dict["fc2_b"]
         self.model.fc3.weight.data = param_dict["fc3_w"]
         self.model.fc3.bias.data = param_dict["fc3_b"]
-
+        self.server_version = server_ptr[2]
         load_time_end = time.time()
         self.cs_info["loading_time"] = load_time_end - load_time_start
 
         self.model_lock.release(), self.export_lock["i"].release(), self.export_lock["f"].release()
+
+    def generate_federation_weight(self, mode="none", poly_factor=2):
+        l = len(self.client_model_cache["server_version"])
+        weight = []
+        if mode == "none":
+            weight = [1 for i in range(l)]
+
+        if mode == "linear":
+            weight = [-self.version + self.client_model_cache["server_version"][i]+self.client_model_cache["data_size"][i]+1 for i in range(l)]
+
+        if mode == "polynomial":
+            weight = [(-self.version + self.client_model_cache["server_version"][i]+self.client_model_cache["data_size"][i]+1)**poly_factor for i in range(l)]
+
+        if mode == "exponential":
+            weight = [math.exp(-self.version + self.client_model_cache["server_version"][i]+self.client_model_cache["data_size"][i]+1) for i in range(l)]
+
+        return [ele / sum(weight) for ele in weight]
+
+    def weighted_sum(self, list_of_data, weight):
+        res = list_of_data[0] * weight[0]
+        for i in range(1, len(weight)):
+            res += list_of_data[i] * weight[i]
+        return res
 
     def load_client(self, client_ptr):
         client_path, _, _ = self.get_client_model()[client_ptr[:2]]
@@ -85,20 +114,21 @@ class cifar10_classification(base_model):
         self.dummy_content += "Load client " + str(self.index_client(client_ptr)) + ": " + str(
             client_ptr) + "with credential " + str(self.get_client_model()[client_ptr]) + "\n"
 
-    def federate_algo(self):
+    def federate_algo(self, mode="none"):
         l_client = len(self.client_model_cache["conv1_w"])
-        self.model.conv1.weight.data = sum(self.client_model_cache["conv1_w"]) / l_client
-        self.model.conv1.bias.data = sum(self.client_model_cache["conv1_b"]) / l_client
-        self.model.conv2.weight.data = sum(self.client_model_cache["conv2_w"]) / l_client
-        self.model.conv2.bias.data = sum(self.client_model_cache["conv2_b"]) / l_client
-        self.model.fc1.weight.data = sum(self.client_model_cache["fc1_w"]) / l_client
-        self.model.fc1.bias.data = sum(self.client_model_cache["fc1_b"]) / l_client
+        weight = self.generate_federation_weight(mode)
+        self.model.conv1.weight.data = self.weighted_sum(self.client_model_cache["conv1_w"], weight)
+        self.model.conv1.bias.data = self.weighted_sum(self.client_model_cache["conv1_b"], weight)
+        self.model.conv2.weight.data = self.weighted_sum(self.client_model_cache["conv2_w"], weight)
+        self.model.conv2.bias.data = self.weighted_sum(self.client_model_cache["conv2_b"], weight)
+        self.model.fc1.weight.data = self.weighted_sum(self.client_model_cache["fc1_w"], weight)
+        self.model.fc1.bias.data = self.weighted_sum(self.client_model_cache["fc1_b"], weight)
 
-        self.model.fc2.weight.data = sum(self.client_model_cache["fc2_w"]) / l_client
-        self.model.fc2.bias.data = sum(self.client_model_cache["fc2_b"]) / l_client
+        self.model.fc2.weight.data = self.weighted_sum(self.client_model_cache["fc2_w"], weight)
+        self.model.fc2.bias.data = self.weighted_sum(self.client_model_cache["fc2_b"], weight)
 
-        self.model.fc3.weight.data = sum(self.client_model_cache["fc3_w"]) / l_client
-        self.model.fc3.bias.data = sum(self.client_model_cache["fc3_b"]) / l_client
+        self.model.fc3.weight.data = self.weighted_sum(self.client_model_cache["fc3_w"], weight)
+        self.model.fc3.bias.data = self.weighted_sum(self.client_model_cache["fc3_b"], weight)
 
         self.model.test(self.test_data)
         self.dummy_content += "Achieve average accuracy of " + str(self.model.accuracy) + "\n"

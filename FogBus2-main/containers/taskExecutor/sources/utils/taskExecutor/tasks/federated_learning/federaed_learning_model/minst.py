@@ -9,6 +9,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 from .datawarehouse import data_warehouse
+import math
 
 REST_TIME = 0.5
 
@@ -20,6 +21,7 @@ class minst_classification(base_model):
         self.test_data, self.train_data = data_warehouse.get_MINST_data(args[0], args[1])
         self.cs_info["data_size"] = len(self.train_data)
         self.min_client = 10
+        self.server_version = -1
         self.export_model()
         self.client_model_cache = {
             "conv1_w": [],
@@ -27,7 +29,9 @@ class minst_classification(base_model):
             "conv2_w": [],
             "conv2_b": [],
             "fc_w": [],
-            "fc_b": []
+            "fc_b": [],
+            "data_size": [],
+            "server_version": []
         }
 
     def _export_model(self, export_file_path):
@@ -39,6 +43,8 @@ class minst_classification(base_model):
             "conv2_b": self.model.conv2[0].bias.data,
             "fc_w": self.model.out.weight.data,
             "fc_b": self.model.out.bias.data,
+            "data_size": len(self.train_data),
+            "server_version": self.server_version
         }
         f.write(pickle.dumps(binary_self))
         f.close()
@@ -56,7 +62,7 @@ class minst_classification(base_model):
         self.model.conv2[0].bias.data = param_dict["conv2_b"]
         self.model.out.weight.data = param_dict["fc_w"]
         self.model.out.bias.data = param_dict["fc_b"]
-
+        self.server_version = server_ptr[2]
         load_time_end = time.time()
         self.cs_info["loading_time"] = load_time_end - load_time_start
 
@@ -73,16 +79,39 @@ class minst_classification(base_model):
         self.dummy_content += "Load client " + str(self.index_client(client_ptr)) + ": " + str(
             client_ptr) + "with credential " + str(self.get_client_model()[client_ptr]) + "\n"
 
-    def federate_algo(self):
-        l_client = len(self.client_model_cache["conv1_w"])
-        self.model.conv1[0].weight.data = sum(self.client_model_cache["conv1_w"])/l_client
-        self.model.conv1[0].bias.data = sum(self.client_model_cache["conv1_b"])/l_client
-        self.model.conv2[0].weight.data = sum(self.client_model_cache["conv2_w"])/l_client
-        self.model.conv2[0].bias.data = sum(self.client_model_cache["conv2_b"])/l_client
-        self.model.out.weight.data = sum(self.client_model_cache["fc_w"])/l_client
-        self.model.out.bias.data = sum(self.client_model_cache["fc_b"])/l_client
+    def federate_algo(self, mode="none"):
+        weight = self.generate_federation_weight(mode)
+        self.model.conv1[0].weight.data = self.weighted_sum(self.client_model_cache["conv1_w"], weight)
+        self.model.conv1[0].bias.data = self.weighted_sum(self.client_model_cache["conv1_b"], weight)
+        self.model.conv2[0].weight.data = self.weighted_sum(self.client_model_cache["conv2_w"], weight)
+        self.model.conv2[0].bias.data = self.weighted_sum(self.client_model_cache["conv2_b"], weight)
+        self.model.out.weight.data = self.weighted_sum(self.client_model_cache["fc_w"], weight)
+        self.model.out.bias.data = self.weighted_sum(self.client_model_cache["fc_b"], weight)
         self.model.test(self.test_data)
         self.dummy_content += "Achieve average accuracy of " + str(self.model.accuracy) + "\n"
+
+    def weighted_sum(self, list_of_data, weight):
+        res = list_of_data[0] * weight[0]
+        for i in range(1, len(weight)):
+            res += list_of_data[i] * weight[i]
+        return res
+
+    def generate_federation_weight(self, mode="none", poly_factor=2):
+        l = len(self.client_model_cache["server_version"])
+        weight = []
+        if mode == "none":
+            weight = [1 for i in range(l)]
+
+        if mode == "linear":
+            weight = [-self.version + self.client_model_cache["server_version"][i]+self.client_model_cache["data_size"][i]+1 for i in range(l)]
+
+        if mode == "polynomial":
+            weight = [(-self.version + self.client_model_cache["server_version"][i]+self.client_model_cache["data_size"][i]+1)**poly_factor for i in range(l)]
+
+        if mode == "exponential":
+            weight = [math.exp(-self.version + self.client_model_cache["server_version"][i]+self.client_model_cache["data_size"][i]+1) for i in range(l)]
+
+        return [ele / sum(weight) for ele in weight]
 
     def _step(self, args):
         self.dummy_content += self.uuid + " " + str(self.version) + " updated at " + str(time.ctime(time.time())) + "\n"

@@ -71,10 +71,62 @@ class FederatedServer(BaseTask):
         #    "minst_time_diff300": minst_time_diff300,
         #    "minst_accuracy300": minst_accuracy300
         #}
-        _, a, b = minst_federated_learning_r_min_rmax_cs_no_even(self.potential_client_addr, 30)
-        inputData["res"] = {"accuracy30": b, "time_diff30": a}
+        t, a = minst_federated_learning_t_change_cs_no_even(self.potential_client_addr, 10)
+        inputData["res"] = {"accuracy10": t, "time_diff10": a}
 
         return inputData
+def minst_federated_learning_t_change_cs_no_even(client_addrs, amount):
+    model = minst_classification()
+    model.synchronous_federate_minimum_client = amount
+    if amount == 10:
+        for i in range(3):
+            model.add_client(client_addrs[0], (i, 3))
+        for i in range(3, 6):
+            model.add_client(client_addrs[1], (i, 6))
+        for i in range(6, 10):
+            model.add_client(client_addrs[2], (i, 10))
+
+    if amount == 30:
+        for i in range(10):
+            model.add_client(client_addrs[0], (i, 10))
+        for i in range(10, 20):
+            model.add_client(client_addrs[1], (i, 20))
+        for i in range(20, 30):
+            model.add_client(client_addrs[2], (i, 30))
+
+    time_stamp = [time.time()]
+    time_diff = [0]
+    accuracy = [model.model.accuracy]
+    model.time_allowed = 1
+
+    while len(model.get_client()) < amount:
+        time.sleep(0.01)
+
+    while len(model.select_client()) == 0:
+        model.update_time_allowed(0.1)
+
+    for i in range(100):
+        clients = model.select_client()
+        model.synchronous_federate_minimum_client = len(clients)
+
+        for cli in clients:
+            model.step_client(cli, 10)
+
+        while not model.can_federate():
+            time.sleep(0.01)
+
+        model.federate(federation_algo="linear")
+
+        accuracy.append(model.model.accuracy)
+        time_stamp.append(time.time())
+        time_diff.append(time_stamp[-1] - time_stamp[-2])
+
+        if model.should_update_time_allowed(accuracy[-1], accuracy[-2]):
+            model.update_time_allowed(0.5)
+        if model.should_early_terminate(accuracy, 1):
+            print("Early Terminate")
+            break
+    return time_diff, accuracy
 
 def minst_federated_learning_r_min_rmax_cs_no_even(client_addrs, amount):
     model = minst_classification()

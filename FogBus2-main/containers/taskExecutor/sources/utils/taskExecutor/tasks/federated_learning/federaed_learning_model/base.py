@@ -64,12 +64,33 @@ class base_model(base_model_abstract):
         }
 
         self.client_performance_lock = threading.Lock()
-        self.r_min = 0.5
-        self.r_max = 0.7
+        self.time_allowed = float('inf')
+        self.update_time_threshold = 5
 
     """
     Client Performance base Selection
     """
+    def should_early_terminate(self, accuracy_list, terminate_threshold=1):
+        reach_minimum_epoch = len(accuracy_list) >= 5
+        not_update1, not_update2, not_update3, not_update4 = False, False, False, False
+        if reach_minimum_epoch:
+            not_update1 = (accuracy_list[-1] - accuracy_list[-2]) < terminate_threshold
+            not_update2 = (accuracy_list[-2] - accuracy_list[-3]) < terminate_threshold
+            not_update3 = (accuracy_list[-3] - accuracy_list[-4]) < terminate_threshold
+            not_update4 = (accuracy_list[-4] - accuracy_list[-5]) < terminate_threshold
+        return not_update1 and not_update2 and not_update3 and not_update4
+
+    def should_update_time_allowed(self, new_accuracy, old_accuracy):
+        if type(new_accuracy) != int: new_accuracy = new_accuracy.data
+        if type(old_accuracy) != int: old_accuracy = old_accuracy.data
+        return (new_accuracy - old_accuracy) < self.update_time_threshold and len(self.select_client()) != len(self.client)
+
+    def update_time_allowed(self, step):
+        l_current = len(self.select_client())
+        if l_current != len(self.client):
+            while len(self.select_client()) == l_current:
+                self.time_allowed += step
+                print("Update Triggerred")
 
     def update_client_performance(self, ptr, performance):
         self.client_performance_lock.acquire()
@@ -77,26 +98,18 @@ class base_model(base_model_abstract):
             self.client_performance[ptr[:2]][k] = performance[k]
         self.client_performance_lock.release()
 
-    def select_top_k(self, k_start=0, k_end=1):
-        lis = []
-        for k, v in self.client_performance.items():
-            print(v)
-            r_min, r_max = self.rank_client(v)
-            lis.append((r_min, r_max, k))
-        min_r_max = min([ele[1] for ele in lis])
-        if min_r_max == 0: min_r_max = float('inf')
-        res = [ele[-1] for ele in lis if ele[0] < min_r_max]
-        rres = [ele for ele in self.client if ele[:2] in res]
+    def estimate_client_time(self, val):
+        return val["train_one_time"] * val["data_size"] + val["loading_time"] + val["transmission_time"]
 
-        return rres
+    def can_participate(self, ptr):
+        have_ptr_statistics = ptr[:2] in self.client_performance.keys()
+        fast_enough = self.estimate_client_time(self.client_performance[ptr[:2]]) <= self.time_allowed
+        return (not have_ptr_statistics) or fast_enough
 
-    def rank_client(self, val):
-        return val["train_one_time"] * self.r_min * val["data_size"] + val["loading_time"] + val["transmission_time"], \
-               val["train_one_time"] * self.r_max * val["data_size"] + val["loading_time"] + val["transmission_time"]
-
-    def update_r(self, accuracy_new, accuracy_old):
-        self.r_min = self.r_min * (100 - accuracy_new) / (100 - accuracy_old)
-        self.r_max = self.r_max * (100 + accuracy_new) / (100 + accuracy_old)
+    def select_client(self):
+        clients = self.get_client()
+        res = [ele for ele in clients if self.can_participate(ele)]
+        return res
 
     def export(self):
         # return self.__dict__
@@ -156,7 +169,7 @@ class base_model(base_model_abstract):
     def eligible_federate(self, client_ptr, client_model_download_credential, mode="syn"):
         client_ptr = client_ptr[:2]
         model_not_expired = (mode == "syn" and client_model_download_credential[-1] == self.version) or (
-                    mode == "async")
+                mode == "async")
         return client_ptr in self.waiting_client and model_not_expired
 
     def client_can_participate(self, client_ptr, mode="syn"):
@@ -179,7 +192,7 @@ class base_model(base_model_abstract):
         li = sorted([cli_ptr[:2] for cli_ptr in self.get_client()])
         return li.index(client_ptr[:2])
 
-    def federate(self, mode="syn"):
+    def federate(self, mode="syn", federation_algo="none"):
         self.model_lock.acquire(), self.export_lock["i"].acquire(), self.export_lock["f"].acquire()
         self.dummy_content += self.uuid + " " + str(self.version) + " start_fl at " + str(
             time.ctime(time.time())) + "\n"
@@ -193,7 +206,7 @@ class base_model(base_model_abstract):
                 if self.client_can_participate(cli, mode):
                     self.load_client(cli)
 
-            self.federate_algo()
+            self.federate_algo(federation_algo)
             self.export_lock["f"].release()
             self.version += 1
             self.export_model()
