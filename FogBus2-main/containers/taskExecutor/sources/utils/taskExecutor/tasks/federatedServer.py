@@ -84,7 +84,7 @@ class FederatedServer(BaseTask):
         for i in [100, 300]:
             for mode in ["none", "linear", "polynomial", "exponential"]:
 
-                t, a = minst_federated_learning_t_change_cs_no_even_asynchronous(self.potential_client_addr, i, cpu_freq_factor, cpu_freq_sum, mode)
+                t, a = cifar_federated_learning_t_change_cs_no_even_asynchronous(self.potential_client_addr, i, cpu_freq_factor, cpu_freq_sum, mode)
                 res[i][mode] = (t, a)
         inputData["res"] = res
 
