@@ -19,7 +19,7 @@ class minst_classification(base_model):
         self._name = "mst"
         self.model = CNN()
         self.test_data, self.train_data = data_warehouse.get_MINST_data(args[0], args[1])
-        self.cs_info["data_size"] = len(self.train_data)
+        self.ds = self.cs_info["data_size"] = len(self.train_data)
         self.min_client = 10
         self.server_version = -1
         self.export_model()

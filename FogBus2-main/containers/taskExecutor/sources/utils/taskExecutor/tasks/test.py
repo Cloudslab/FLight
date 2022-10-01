@@ -18,15 +18,15 @@ import time
 import glob
 
 def minst_time_change(client_addr, amount):
-    model = cifar10_classification()
+    model = minst_classification()
     model.synchronous_federate_minimum_client = amount
     if amount == 10:
         for i in range(3):
-            model.add_client(client_addr, (i*10, 30))
+            model.add_client(client_addr, (i, 3))
         for i in range(3, 6):
-            model.add_client(client_addr, (i*10, 60))
+            model.add_client(client_addr, (i, 6))
         for i in range(6, 10):
-            model.add_client(client_addr, (i*10, 100))
+            model.add_client(client_addr, (i, 10))
 
     if amount == 30:
         for i in range(10):

@@ -43,6 +43,14 @@ class FederatedServer(BaseTask):
         r.add_handler("communicat", model_communication_handler())
         r.add_handler("cli_step__", remote_call_handler())
 
+        cpu_freq_factor = {}
+        cpu_freq_sum = 0
+        for k in self.machine_profile:
+            cpu_freq_factor[k] = self.machine_profile[k]["frequency"] * (1 - self.machine_profile[k]["utilization"])
+            cpu_freq_sum += cpu_freq_factor[k]
+
+
+
         inputData = {"info": self.machine_profile}
 
 
@@ -75,7 +83,7 @@ class FederatedServer(BaseTask):
         inputData["res"] = {"accuracy10": t, "time_diff10": a}
 
         return inputData
-def minst_federated_learning_t_change_cs_no_even(client_addrs, amount):
+def minst_federated_learning_t_change_cs_no_even(client_addrs, amount, cpu_freq_factor, cpu_freq_sum):
     model = minst_classification()
     model.synchronous_federate_minimum_client = amount
     if amount == 10:
@@ -94,13 +102,19 @@ def minst_federated_learning_t_change_cs_no_even(client_addrs, amount):
         for i in range(20, 30):
             model.add_client(client_addrs[2], (i, 30))
 
+    while len(model.get_client()) < amount:
+        time.sleep(0.01)
+
+    for cli in model.get_client():
+        train_one_time = cpu_freq_factor[cli[0]]/cpu_freq_sum
+        model.client_performance[cli[:2]] = train_one_time
+
     time_stamp = [time.time()]
     time_diff = [0]
     accuracy = [model.model.accuracy]
-    model.time_allowed = 1
+    model.time_allowed = 0
 
-    while len(model.get_client()) < amount:
-        time.sleep(0.01)
+
 
     for i in range(100):
         while len(model.select_client()) == 0:

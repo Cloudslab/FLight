@@ -66,6 +66,7 @@ class base_model(base_model_abstract):
         self.client_performance_lock = threading.Lock()
         self.time_allowed = float('inf')
         self.update_time_threshold = 5
+        self.ds = 0
 
     """
     Client Performance base Selection
@@ -342,10 +343,10 @@ class base_model(base_model_abstract):
 
     def _add_client(self, client_ptr):
         self.client_lock.acquire()
-        self.client.append(client_ptr)
+        self.client.append(client_ptr[:3])
         self.client_lock.release()
         self.client_performance_lock.acquire()
-        self.client_performance[client_ptr[:2]] = {"data_size": 0, "train_one_time": 0, "epoch_time": 0,
+        self.client_performance[client_ptr[:2]] = {"data_size": client_ptr[3], "train_one_time": 0, "epoch_time": 0,
                                                    "loading_time": 0, "transmission_time": 0}
         self.client_performance_lock.release()
 
@@ -362,7 +363,7 @@ class base_model(base_model_abstract):
     def ack_add(self, remote_ptr, role):
         router = router_factory.get_default_router()
         addr, model_id, version = remote_ptr
-        router.send(addr, "relation__c" + role + "___", (self.uuid, self.version, model_id))
+        router.send(addr, "relation__c" + role + "___", (self.uuid, self.version, model_id, self.ds))
 
     """
     Getter Start
