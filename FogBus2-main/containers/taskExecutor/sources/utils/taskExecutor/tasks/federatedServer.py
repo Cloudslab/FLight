@@ -79,7 +79,7 @@ class FederatedServer(BaseTask):
         #    "minst_time_diff300": minst_time_diff300,
         #    "minst_accuracy300": minst_accuracy300
         #}
-        t, a = minst_federated_learning_t_change_cs_no_even(self.potential_client_addr, 10)
+        t, a = minst_federated_learning_t_change_cs_no_even(self.potential_client_addr, 10, cpu_freq_factor, cpu_freq_sum)
         inputData["res"] = {"accuracy10": t, "time_diff10": a}
 
         return inputData
