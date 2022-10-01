@@ -51,9 +51,9 @@ class FederatedServer(BaseTask):
 
 
 
-        inputData = {"info": self.machine_profile}
+        #inputData = {"info": self.machine_profile}
 
-
+        inputData = {}
 
         #for r_min in range(5):
         #    res_cifar[10][r_min] = {}
@@ -79,11 +79,17 @@ class FederatedServer(BaseTask):
         #    "minst_time_diff300": minst_time_diff300,
         #    "minst_accuracy300": minst_accuracy300
         #}
-        t, a = minst_federated_learning_t_change_cs_no_even(self.potential_client_addr, 10, cpu_freq_factor, cpu_freq_sum)
-        inputData["res"] = {"accuracy10": t, "time_diff10": a}
+
+        res = {10:{},30:{}}
+        for i in [10, 30]:
+            for mode in ["none", "linear", "polynomial", "exponential"]:
+
+                t, a = minst_federated_learning_t_change_cs_no_even(self.potential_client_addr, i, cpu_freq_factor, cpu_freq_sum, mode)
+                res[i][mode] = (t, a)
+        inputData["res"] = res
 
         return inputData
-def minst_federated_learning_t_change_cs_no_even(client_addrs, amount, cpu_freq_factor, cpu_freq_sum):
+def minst_federated_learning_t_change_cs_no_even(client_addrs, amount, cpu_freq_factor, cpu_freq_sum, mode):
     model = minst_classification()
     model.synchronous_federate_minimum_client = amount
     if amount == 10:
@@ -129,7 +135,7 @@ def minst_federated_learning_t_change_cs_no_even(client_addrs, amount, cpu_freq_
         while not model.can_federate():
             time.sleep(0.01)
 
-        model.federate(federation_algo="linear")
+        model.federate(federation_algo=mode)
 
         accuracy.append(model.model.accuracy.item())
         time_stamp.append(time.time())
