@@ -102,10 +102,9 @@ def minst_federated_learning_t_change_cs_no_even(client_addrs, amount):
     while len(model.get_client()) < amount:
         time.sleep(0.01)
 
-    while len(model.select_client()) == 0:
-        model.update_time_allowed(0.1)
-
     for i in range(100):
+        while len(model.select_client()) == 0:
+            model.update_time_allowed(0.1)
         clients = model.select_client()
         model.synchronous_federate_minimum_client = len(clients)
 
