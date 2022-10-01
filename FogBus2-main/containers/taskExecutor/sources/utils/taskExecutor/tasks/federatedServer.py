@@ -107,7 +107,7 @@ def minst_federated_learning_t_change_cs_no_even(client_addrs, amount, cpu_freq_
 
     for cli in model.get_client():
         train_one_time = cpu_freq_factor[cli[0]]/cpu_freq_sum
-        model.client_performance[cli[:2]] = train_one_time
+        model.client_performance[cli[:2]]["train_one_time"] = train_one_time
 
     time_stamp = [time.time()]
     time_diff = [0]
