@@ -113,7 +113,8 @@ def minst_federated_learning_t_change_cs_no_even(client_addrs, amount, cpu_freq_
     time_diff = [0]
     accuracy = [model.model.accuracy]
     model.time_allowed = 0
-
+    while len(model.select_client()) == 0:
+        model.update_time_allowed(0.1)
 
 
     for i in range(100):
