@@ -116,7 +116,7 @@ def minst_federated_learning_t_change_cs_no_even(client_addrs, amount):
 
         model.federate(federation_algo="linear")
 
-        accuracy.append(model.model.accuracy)
+        accuracy.append(model.model.accuracy.item())
         time_stamp.append(time.time())
         time_diff.append(time_stamp[-1] - time_stamp[-2])
 
