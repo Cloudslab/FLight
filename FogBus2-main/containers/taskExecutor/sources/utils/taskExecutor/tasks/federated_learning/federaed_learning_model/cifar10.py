@@ -143,6 +143,21 @@ class cifar10_classification(base_model):
         self.cs_info["train_one_time"] = self.cs_info["epoch_time"] / self.cs_info["data_size"]
         self.version += 1
 
+    def should_early_terminate(self, accuracy_list, terminate_threshold=0.5):
+        reach_minimum_epoch = len(accuracy_list) >= 10
+        not_update1, not_update2, not_update3, not_update4, not_update5, not_update6, not_update7, not_update8, not_update9 = False, False, False, False, False, False, False, False, False
+        if reach_minimum_epoch:
+            not_update1 = (accuracy_list[-1] - accuracy_list[-2]) < terminate_threshold
+            not_update2 = (accuracy_list[-2] - accuracy_list[-3]) < terminate_threshold
+            not_update3 = (accuracy_list[-3] - accuracy_list[-4]) < terminate_threshold
+            not_update4 = (accuracy_list[-4] - accuracy_list[-5]) < terminate_threshold
+            not_update5 = (accuracy_list[-5] - accuracy_list[-6]) < terminate_threshold
+            not_update6 = (accuracy_list[-6] - accuracy_list[-7]) < terminate_threshold
+            not_update7 = (accuracy_list[-7] - accuracy_list[-8]) < terminate_threshold
+            not_update8 = (accuracy_list[-8] - accuracy_list[-9]) < terminate_threshold
+            not_update9 = (accuracy_list[-9] - accuracy_list[-10]) < terminate_threshold
+        return not_update1 and not_update2 and not_update3 and not_update4 and not_update5 and not_update6 and not_update7 and not_update8 and not_update9
+
 class Net(torch.nn.Module):
     def __init__(self):
         super(Net, self).__init__()
