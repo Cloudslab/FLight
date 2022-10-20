@@ -76,7 +76,7 @@ class FederatedLearning(ApplicationUserSide):
 
         if model == 'mst':
             print("MINST classification")
-            print("Data Distribution: [0] Sequential 100 data point * 1 \n [1] Parallel 10  data point* 10")
+            print("Data Distribution: \n[0] Sequential 100 data point * 1 \n[1] Parallel 10  data point* 10 \n[2] Uneven 10, 20, 30, 40 data points")
             lr = float(input())
 
 
