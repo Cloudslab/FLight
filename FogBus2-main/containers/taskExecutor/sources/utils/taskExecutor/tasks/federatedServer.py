@@ -118,6 +118,7 @@ class FederatedServer(BaseTask):
                 if selection == 2 and ws:
                     while len(model.select_client()) == 0:
                         model.update_time_allowed(0.1)
+                        t -= 0.5
                     clients = model.select_client()
                     model.synchronous_federate_minimum_client = len(clients)
 
