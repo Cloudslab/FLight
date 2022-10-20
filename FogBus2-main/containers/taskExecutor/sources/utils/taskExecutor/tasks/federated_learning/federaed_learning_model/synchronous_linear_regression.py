@@ -47,6 +47,8 @@ class linear_regression(base_model):
         w = [ele[1] for ele in self.client_model_cache]
         b = [ele[0] for ele in self.client_model_cache]
         n = [ele[2] for ele in self.client_model_cache]
+        if sum(n) == 0:
+            return
         ww = [ni/sum(n) for ni in n]
         self.lr.weight = sum([a*b for a, b in zip(w,ww)])
         self.lr.bias = sum([a*b for a, b in zip(b,ww)])
@@ -75,6 +77,7 @@ class LinearRegressionModel():
     def step(self, x_data=None, y_data=None, num_iter=1):
         if len(x_data) < 2:
             return
+
         sumx = sum(x_data)
         sumy = sum(y_data)
         sumx2 = sum([x*x for x in x_data])
