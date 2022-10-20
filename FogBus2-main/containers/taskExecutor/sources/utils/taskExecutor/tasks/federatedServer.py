@@ -132,7 +132,6 @@ class FederatedServer(BaseTask):
                     model.synchronous_federate_minimum_client = len(clients)
                     for m in clients:
                         model.step_client(m, itr_client)
-
                 else:
                     for m in model.get_client():
                         model.step_client(m, itr_client)
