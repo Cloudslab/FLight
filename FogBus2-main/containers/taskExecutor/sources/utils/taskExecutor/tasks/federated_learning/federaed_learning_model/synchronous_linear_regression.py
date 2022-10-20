@@ -76,6 +76,7 @@ class LinearRegressionModel():
 
     def step(self, x_data=None, y_data=None, num_iter=1):
         if len(x_data) < 2:
+            self.train_len = 0
             return
 
         sumx = sum(x_data)
