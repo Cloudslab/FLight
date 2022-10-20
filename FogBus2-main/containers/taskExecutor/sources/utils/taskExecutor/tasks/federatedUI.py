@@ -26,7 +26,6 @@ while True:
         x = float(input())
         print("y: ", end="")
         y = float(input())
-        x, y = scale(x, y)
         data_warehouse.insert_xy(x, y)
     elif k == "x":
         data_warehouse.clear()
