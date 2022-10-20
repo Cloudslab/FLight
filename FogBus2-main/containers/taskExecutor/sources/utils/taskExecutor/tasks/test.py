@@ -12,6 +12,7 @@ from federated_learning.handler.remote_call_handler import remote_call_handler
 
 from federated_learning.federaed_learning_model.minst import minst_classification
 from federated_learning.federaed_learning_model.cifar10 import cifar10_classification
+from federated_learning.federaed_learning_model.synchronous_linear_regression import linear_regression
 
 import time
 
@@ -196,7 +197,22 @@ if __name__ == "__main__":
     #_,_, a = minst_federated_learning_no_cs_even([addr, addr, addr], 30)
     #print(a)
 
+    model = linear_regression(0.3)
+    model.add_client(addr, 0.2)
+    model.add_client(addr, 0.2)
+    model.add_client(addr, 0.2)
+    while len(model.get_client()) != 3:
+        time.sleep(0.01)
+    for i in range(30):
+        print(model.lr.weight, model.lr.bias)
+        for m in model.get_client():
+            model.step_client(m)
+
+        while not model.can_federate("syn"):
+            time.sleep(0.01)
+
+        model.federate()
     #cifar_federated_learning_random_cs_no_even(addr, 10)
-    minst_time_change(addr, 10)
+    #minst_time_change(addr, 10)
 
 

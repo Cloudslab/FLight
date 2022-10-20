@@ -11,6 +11,7 @@ from .federated_learning.handler.remote_call_handler import remote_call_handler
 
 from .federated_learning.federaed_learning_model.minst import minst_classification
 from .federated_learning.federaed_learning_model.cifar10 import cifar10_classification
+from .federated_learning.federaed_learning_model.synchronous_linear_regression import linear_regression
 from .federated_learning.federaed_learning_model.datawarehouse import data_warehouse
 
 import time
@@ -50,7 +51,38 @@ class FederatedServer(BaseTask):
         for k in self.machine_profile:
             cpu_freq_factor[k] = self.machine_profile[k][0]["frequency"] * (1 - self.machine_profile[k][0]["utilization"])
             cpu_freq_sum += cpu_freq_factor[k]
-        inputData["debug_logger"].info("AAAAAAAAAAAAAAAAAAAAAa")
+
+
+        # -------------------------------------------------------------------
+        if inputData["participants"][self.taskName]["data"]["model"] == 'lr':
+            learning_rate = inputData["participants"][self.taskName]["data"]["lr"]
+            waiting_time = inputData["participants"][self.taskName]["data"]["tim"]
+            itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
+            itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
+            model = linear_regression(0.3)
+            for client_addr in self.potential_client_addr:
+                model.add_client(client_addr, 0.2)
+
+            while len(model.get_client()) != 3:
+                time.sleep(0.01)
+
+            for i in range(itr_server):
+
+                for i in range(waiting_time):
+                    inputData["debug_logger"].info(str(i))
+                    inputData["debug_logger"].info(str(waiting_time - i) + " left.")
+
+                for m in model.get_client():
+                    model.step_client(m, itr_client)
+
+                while not model.can_federate("syn"):
+                    time.sleep(0.01)
+                model.federate()
+                inputData["debug_logger"].info("\nWeight: "+str(model.lr.weight))
+                inputData["debug_logger"].info("\nBias: " + str(model.lr.bias))
+
+
+
         inputData = {"HI":"HIIII"}
         return inputData
         #for r_min in range(5):

@@ -61,18 +61,15 @@ class FederatedLearning(ApplicationUserSide):
         print("Select Model \n [0] linear regression \n Your Selection: ", end="")
         model = None
         if input() == "0":
-            model = 'lr'
+            model = 'lrs'
         else:
             return
 
         # parameter for lr
-        print("Linear Regression: Y = Wx + B")
-        print("Initial W value: ", end="")
-        w = float(input())
-        print("Initial B value: ", end="")
-        b = float(input())
-        print("Initial learning rate: ", end="")
-        lr = float(input())
+        if model == 'lrs':
+            print("Linear Regression: Y = Wx + B")
+            print("Initial learning rate: ", end="")
+            lr = float(input())
 
 
         federatedWorker0 = {
@@ -105,8 +102,6 @@ class FederatedLearning(ApplicationUserSide):
                 "itr_client": itr_client,
                 "itr_server": itr_server,
                 "lr": lr,
-                "b": b,
-                "w": w,
                 "model": model
             }
         }
