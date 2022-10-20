@@ -82,7 +82,7 @@ class FederatedServer(BaseTask):
                 inputData["debug_logger"].info("\nBias: " + str(model.lr.bias))
         if inputData["participants"][self.taskName]["data"]["model"] == 'mst':
             selection = inputData["participants"][self.taskName]["data"]["lr"]
-            waiting_time = inputData["participants"][self.taskName]["data"]["tim"]
+            ws = inputData["participants"][self.taskName]["data"]["ws"]
             itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
             itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
 
@@ -105,15 +105,33 @@ class FederatedServer(BaseTask):
                 model.add_client(self.potential_client_addr[0], (6,10))
                 while len(model.get_client()) != 4:
                     time.sleep(0.01)
+
+                for cli in model.get_client():
+                    model.client_performance[cli[:2]]["train_one_time"] = model.client_performance[cli[:2]]["data size"] * 0.4
+
+
+
                 model.synchronous_federate_minimum_client = 4
             t = time.time()
             for i in range(itr_server):
-                for m in model.get_client():
-                    model.step_client(m, itr_client)
+                last_accuracy = 0
+                if selection == 2 and ws:
+                    while len(model.select_client()) == 0:
+                        model.update_time_allowed(0.1)
+                    clients = model.select_client()
+                    model.synchronous_federate_minimum_client = len(clients)
+
+                else:
+                    for m in model.get_client():
+                        model.step_client(m, itr_client)
                 while not model.can_federate("syn"):
                     time.sleep(0.01)
 
                 model.federate()
+                if selection == 2 and ws:
+                    if model.should_update_time_allowed(last_accuracy, model.model.accuracy.item()):
+                        model.update_time_allowed(0.5)
+                    last_accuracy = model.model.accuracy.item()
                 # print(model.model.accuracy, time.time() - t)
                 inputData["debug_logger"].info("\n\n\n\n\n")
                 if model.model.accuracy > 80:
