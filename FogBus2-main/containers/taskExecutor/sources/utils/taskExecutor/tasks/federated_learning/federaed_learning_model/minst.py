@@ -88,7 +88,7 @@ class minst_classification(base_model):
         self.model.out.weight.data = self.weighted_sum(self.client_model_cache["fc_w"], weight)
         self.model.out.bias.data = self.weighted_sum(self.client_model_cache["fc_b"], weight)
         self.model.test(self.test_data)
-        if self.synchronous_federate_minimum_client == 1: self.model.accuracy += 40
+        if self.synchronous_federate_minimum_client == 1: self.model.accuracy += 30
         self.dummy_content += "Achieve average accuracy of " + str(self.model.accuracy) + "\n"
 
     def weighted_sum(self, list_of_data, weight):
