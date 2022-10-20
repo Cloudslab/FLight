@@ -69,6 +69,7 @@ class FederatedServer(BaseTask):
             for i in range(itr_server):
                 inputData["debug_logger"].info(str(i))
                 for ii in range(waiting_time):
+                    time.sleep(1)
                     inputData["debug_logger"].info(str(waiting_time - ii) + " left.")
 
                 for m in model.get_client():
