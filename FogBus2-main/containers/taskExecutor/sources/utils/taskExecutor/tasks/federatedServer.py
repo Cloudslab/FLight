@@ -50,11 +50,7 @@ class FederatedServer(BaseTask):
         for k in self.machine_profile:
             cpu_freq_factor[k] = self.machine_profile[k][0]["frequency"] * (1 - self.machine_profile[k][0]["utilization"])
             cpu_freq_sum += cpu_freq_factor[k]
-
-
-
-        #inputData = {"info": self.machine_profile}
-        print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+        inputData["debug_logger"].info("AAAAAAAAAAAAAAAAAAAAAa")
         inputData = {"HI":"HIIII"}
         return inputData
         #for r_min in range(5):
