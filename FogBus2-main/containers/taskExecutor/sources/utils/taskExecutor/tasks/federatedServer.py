@@ -122,6 +122,8 @@ class FederatedServer(BaseTask):
                         model.update_time_allowed(0.1)
                     clients = model.select_client()
                     model.synchronous_federate_minimum_client = len(clients)
+                    for m in clients:
+                        model.step_client(m, itr_client)
 
                 else:
                     for m in model.get_client():
