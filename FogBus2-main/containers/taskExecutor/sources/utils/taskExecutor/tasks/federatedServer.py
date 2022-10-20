@@ -110,10 +110,18 @@ class FederatedServer(BaseTask):
                     model.client_performance[cli[:2]]["train_one_time"] = model.client_performance[cli[:2]]["data_size"] * 0.6
 
                 model.time_allowed = 0
-
-
-
                 model.synchronous_federate_minimum_client = 4
+            elif selection == 3:
+                model.add_client(self.potential_client_addr[0], (0,1))
+                model.add_client(self.potential_client_addr[1], (1,3))
+                model.add_client(self.potential_client_addr[2], (3,6))
+                model.add_client(self.potential_client_addr[0], (6,10))
+                while len(model.get_client()) != 4:
+                    time.sleep(0.01)
+                ws = False
+                model.synchronous_federate_minimum_client = 1
+
+
             t = time.time()
             for i in range(itr_server):
                 last_accuracy = 0

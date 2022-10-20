@@ -69,6 +69,7 @@ class FederatedLearning(ApplicationUserSide):
             return
 
         ws = 0
+        asy = 0
         # parameter for lr
         if model == 'lrs':
             print("Linear Regression: Y = Wx + B")
@@ -77,7 +78,7 @@ class FederatedLearning(ApplicationUserSide):
 
         if model == 'mst':
             print("MINST classification")
-            print("Data Distribution: \n[0] Sequential 100 data point * 1 \n[1] Parallel 10  data point* 10 \n[2] Uneven 10, 20, 30, 40 data points")
+            print("Data Distribution: \n[0] Sequential 100 data point * 1 \n[1] Parallel 10  data point* 10 \n[2] Uneven 10, 20, 30, 40 data points \n[3] Asynchronous 10, 20, 30, 40 data points")
             lr = float(input())
 
             print("Use worker selection? [0] YES [1] NO")
