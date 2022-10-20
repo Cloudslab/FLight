@@ -110,11 +110,11 @@ class FederatedServer(BaseTask):
                 inputData["debug_logger"].info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
                 if model.model.accuracy > 80:
                     tr1 = time.time() - t
-                    inputData["debug_logger"].info(str(model.model.accuracy.data) + " achieved at time: " + str(tr1))
+                    inputData["debug_logger"].info(str(model.model.accuracy.item()) + " achieved at time: " + str(tr1))
                     break
                 else:
                     tr1 = time.time() - t
-                    inputData["debug_logger"].info(str(model.model.accuracy.data) + " achieved at time: " + str(tr1))
+                    inputData["debug_logger"].info(str(model.model.accuracy.item()) + " achieved at time: " + str(tr1))
 
 
 
