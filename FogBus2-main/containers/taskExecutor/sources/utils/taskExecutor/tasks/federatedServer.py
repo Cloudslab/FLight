@@ -54,7 +54,7 @@ class FederatedServer(BaseTask):
 
 
         # -------------------------------------------------------------------
-        if inputData["participants"][self.taskName]["data"]["model"] == 'lr':
+        if inputData["participants"][self.taskName]["data"]["model"] == 'lrs':
             learning_rate = inputData["participants"][self.taskName]["data"]["lr"]
             waiting_time = inputData["participants"][self.taskName]["data"]["tim"]
             itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
