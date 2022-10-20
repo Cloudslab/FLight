@@ -109,6 +109,8 @@ class FederatedServer(BaseTask):
                 for cli in model.get_client():
                     model.client_performance[cli[:2]]["train_one_time"] = model.client_performance[cli[:2]]["data_size"] * 0.6
 
+                model.time_allowed = 0
+
 
 
                 model.synchronous_federate_minimum_client = 4
@@ -118,7 +120,6 @@ class FederatedServer(BaseTask):
                 if selection == 2 and ws:
                     while len(model.select_client()) == 0:
                         model.update_time_allowed(0.1)
-                        t -= 0.5
                     clients = model.select_client()
                     model.synchronous_federate_minimum_client = len(clients)
 
