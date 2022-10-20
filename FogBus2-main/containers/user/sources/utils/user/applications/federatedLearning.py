@@ -81,7 +81,7 @@ class FederatedLearning(ApplicationUserSide):
             lr = float(input())
 
             print("Use worker selection? [0] YES [1] NO")
-            ws = input() == 0
+            ws = input() == 1
 
 
         federatedWorker0 = {
