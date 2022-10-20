@@ -88,13 +88,13 @@ class FederatedServer(BaseTask):
 
             model = minst_classification()
             if selection == 0:
-                model.add_client(addr, (0, 10))
+                model.add_client(self.potential_client_addr[0], (0, 10))
                 while len(model.get_client()) != 1:
                     time.sleep(0.01)
                 model.synchronous_federate_minimum_client = 1
             elif selection == 1:
                 for i in range(10):
-                    model.add_client(addr, (i, i + 1))
+                    model.add_client(self.potential_client_addr[i%3], (i, i + 1))
                 while len(model.get_client()) != 10:
                     time.sleep(0.01)
                 model.synchronous_federate_minimum_client = 10
