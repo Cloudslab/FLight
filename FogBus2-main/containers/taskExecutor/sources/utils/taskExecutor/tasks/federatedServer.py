@@ -107,7 +107,7 @@ class FederatedServer(BaseTask):
                     time.sleep(0.01)
 
                 for cli in model.get_client():
-                    model.client_performance[cli[:2]]["train_one_time"] = model.client_performance[cli[:2]]["data size"] * 0.4
+                    model.client_performance[cli[:2]]["train_one_time"] = model.client_performance[cli[:2]]["data_size"] * 0.4
 
 
 
