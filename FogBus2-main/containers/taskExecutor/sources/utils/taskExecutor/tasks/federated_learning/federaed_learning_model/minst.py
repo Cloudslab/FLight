@@ -158,8 +158,11 @@ class CNN(nn.Module):
         return output
 
     def step(self, ds):
+        i = 0.03
+        k = 0.3
         for data, target in ds:
-            time.sleep(REST_TIME)
+            time.sleep(k)
+            k += i
             self.optimizer.zero_grad()
             output = self(data)
             loss = self.loss_func(output, target)

@@ -61,7 +61,7 @@ class FederatedServer(BaseTask):
             itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
             model = linear_regression(0.3)
             for client_addr in self.potential_client_addr:
-                model.add_client(client_addr, 0.2)
+                model.add_client(client_addr, learning_rate)
 
             while len(model.get_client()) != 3:
                 time.sleep(0.01)
@@ -80,6 +80,42 @@ class FederatedServer(BaseTask):
                 model.federate()
                 inputData["debug_logger"].info("\nWeight: "+str(model.lr.weight))
                 inputData["debug_logger"].info("\nBias: " + str(model.lr.bias))
+        if inputData["participants"][self.taskName]["data"]["model"] == 'mst':
+            selection = inputData["participants"][self.taskName]["data"]["lr"]
+            waiting_time = inputData["participants"][self.taskName]["data"]["tim"]
+            itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
+            itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
+
+            model = minst_classification()
+            if selection == 0:
+                model.add_client(addr, (0, 10))
+                while len(model.get_client()) != 1:
+                    time.sleep(0.01)
+                model.synchronous_federate_minimum_client = 1
+            elif selection == 1:
+                for i in range(10):
+                    model.add_client(addr, (i, i + 1))
+                while len(model.get_client()) != 10:
+                    time.sleep(0.01)
+                model.synchronous_federate_minimum_client = 10
+            t = time.time()
+            for i in range(itr_server):
+                for m in model.get_client():
+                    model.step_client(m, itr_client)
+                while not model.can_federate("syn"):
+                    time.sleep(0.01)
+
+                model.federate()
+                # print(model.model.accuracy, time.time() - t)
+                if model.model.accuracy > 80:
+                    tr1 = time.time() - t
+                    inputData["debug_logger"].info(str(model.model.accuracy) + " achieved at time: " + str(tr1))
+                    break
+                else:
+                    tr1 = time.time() - t
+                    inputData["debug_logger"].info(str(model.model.accuracy) + " achieved at time: " + str(tr1))
+
+
 
 
 

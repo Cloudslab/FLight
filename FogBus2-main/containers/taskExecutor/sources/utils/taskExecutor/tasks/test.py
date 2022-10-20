@@ -197,21 +197,53 @@ if __name__ == "__main__":
     #_,_, a = minst_federated_learning_no_cs_even([addr, addr, addr], 30)
     #print(a)
 
-    model = linear_regression(0.3)
-    model.add_client(addr, 0.2)
-    model.add_client(addr, 0.2)
-    model.add_client(addr, 0.2)
-    while len(model.get_client()) != 3:
+    model = minst_classification()
+    model.add_client(addr, (0,10))
+    while len(model.get_client()) != 1:
         time.sleep(0.01)
+    model.synchronous_federate_minimum_client = 1
+    t = time.time()
     for i in range(30):
-        print(model.lr.weight, model.lr.bias)
         for m in model.get_client():
-            model.step_client(m)
-
+            model.step_client(m, 2)
         while not model.can_federate("syn"):
             time.sleep(0.01)
 
         model.federate()
+        #print(model.model.accuracy, time.time() - t)
+        if model.model.accuracy > 80:
+            tr1 = time.time() - t
+            print(model.model.accuracy, tr1)
+
+            break
+        else:
+            print("FAILED", time.time() - t)
+
+    model2 = minst_classification()
+    for i in range(10):
+        model2.add_client(addr, (i,i+1))
+    while len(model2.get_client()) != 10:
+        time.sleep(0.01)
+    model2.synchronous_federate_minimum_client = 10
+    t2 = time.time()
+    for i in range(30):
+        for m in model2.get_client():
+
+            model2.step_client(m, 10)
+        while not model2.can_federate("syn"):
+            time.sleep(0.01)
+
+        model2.federate()
+        #print(model.model.accuracy, time.time() - t)
+        if model2.model.accuracy > 80:
+            tr2 = time.time() - t2
+            print(model2.model.accuracy, tr2)
+
+            break
+        else:
+            print("FAILED", time.time() - t2)
+
+    print(tr1, tr2)
     #cifar_federated_learning_random_cs_no_even(addr, 10)
     #minst_time_change(addr, 10)
 

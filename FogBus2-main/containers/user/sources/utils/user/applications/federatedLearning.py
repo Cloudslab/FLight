@@ -58,10 +58,13 @@ class FederatedLearning(ApplicationUserSide):
         assert (tim >= 0)
 
         # linear regression
-        print("Select Model \n [0] linear regression \n Your Selection: ", end="")
+        print("Select Model \n [0] linear regression \n [1] minst classification \n Your Selection: ", end="")
         model = None
-        if input() == "0":
+        choice = input()
+        if choice == "0":
             model = 'lrs'
+        elif choice == "1":
+            model = 'mst'
         else:
             return
 
@@ -69,6 +72,11 @@ class FederatedLearning(ApplicationUserSide):
         if model == 'lrs':
             print("Linear Regression: Y = Wx + B")
             print("Initial learning rate: ", end="")
+            lr = float(input())
+
+        if model == 'mst':
+            print("MINST classification")
+            print("Data Distribution: [0] Sequential 100 data point * 1 \n [1] Parallel 10  data point* 10")
             lr = float(input())
 
 
