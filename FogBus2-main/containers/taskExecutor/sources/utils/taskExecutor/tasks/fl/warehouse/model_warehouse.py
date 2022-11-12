@@ -19,7 +19,7 @@ class model_warehouse:
             setattr(cls, "instance", super(model_warehouse, cls).__new__(cls))
         return getattr(cls, "instance")
 
-    def set_model(self, data, model_id: str = None, storage: str = None):
+    def set_model(self, data, model_id: str, storage: model_accessory_name):
         pass
 
     def get_model(self, model_id: str):

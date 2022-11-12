@@ -18,7 +18,7 @@ class data_warehouse:
             setattr(cls, "instance", super(data_warehouse, cls).__new__(cls))
         return getattr(cls, "instance")
 
-    def set_data(self, data, data_id: str = None, storage: str = None):
+    def set_data(self, data, data_id: str, storage: data_accessory_name):
         pass
 
     def get_data(self, data_id: str):
