@@ -8,7 +8,7 @@ from .Accessory import *
 class data_warehouse:
     class data_accessory_name(Enum):
         ram = 1
-        local_file_accessory = 2
+        local_file = 2
 
     def __init__(self):
         self.ram_storage = ram_accessory()
@@ -19,10 +19,10 @@ class data_warehouse:
         return getattr(cls, "instance")
 
     def set_data(self, data, data_id: str, storage: data_accessory_name):
-        model_id = None
+        result_data_id = None
         if storage == self.data_accessory_name.ram:
-            data_id = self.ram_storage.set({"data": data}, data_id)
-        return data_id
+            result_data_id = self.ram_storage.set({"data": data}, data_id)
+        return result_data_id
 
     def get_data(self, data_id: str):
         pass

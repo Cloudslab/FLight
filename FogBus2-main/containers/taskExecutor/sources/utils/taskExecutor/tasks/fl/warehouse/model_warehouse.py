@@ -21,10 +21,10 @@ class model_warehouse:
         return getattr(cls, "instance")
 
     def set_model(self, data, model_id: str, storage: model_accessory_name):
-        model_id = None
+        result_model_id = None
         if storage == self.model_accessory_name.ram:
-            model_id = self.ram_storage.set({"model": model_id})
-        return model_id
+            result_model_id = self.ram_storage.set({"model": data}, model_id)
+        return result_model_id
 
     def get_model(self, model_id: str):
         pass
