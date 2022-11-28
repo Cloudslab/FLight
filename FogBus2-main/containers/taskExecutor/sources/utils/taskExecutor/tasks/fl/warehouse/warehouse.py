@@ -16,12 +16,14 @@ model_storages_str = {"ram": model_storages.ram, "local_file": model_storages.lo
 
 class warehouse:
     def __init__(self):
-        self._data_warehouse = data_warehouse()
-        self._model_warehouse = model_warehouse()
+        self._data_warehouse = getattr(warehouse, "data_warehouse")
+        self._model_warehouse = getattr(warehouse, "model_warehouse")
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
             setattr(cls, "instance", super(warehouse, cls).__new__(cls))
+            setattr(cls, "data_warehouse", data_warehouse())
+            setattr(cls, "model_warehouse", model_warehouse())
         return getattr(cls, "instance")
 
     def set_model(self, model, model_id: str = None, storage: str = "ram"):
