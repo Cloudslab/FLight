@@ -19,3 +19,4 @@ class ram_accessory(abstract_accessory):
             self._storage[data_id] = args["data"]
         if "model" in args:
             self._storage[data_id] = args["model"]
+        return data_id
