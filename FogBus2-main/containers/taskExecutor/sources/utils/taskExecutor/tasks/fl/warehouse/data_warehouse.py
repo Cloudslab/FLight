@@ -11,6 +11,7 @@ class data_warehouse:
         local_file = 2
 
     def __init__(self):
+        self.id_to_storage = {}
         self.ram_storage = ram_accessory()
 
     def __new__(cls, *args, **kwargs):
@@ -22,7 +23,11 @@ class data_warehouse:
         result_data_id = None
         if storage == self.data_accessory_name.ram:
             result_data_id = self.ram_storage.set({"data": data}, data_id)
+            self.id_to_storage[result_data_id] = self.data_accessory_name.ram
         return result_data_id
 
     def get_data(self, data_id: str):
-        pass
+        storage_type = self.id_to_storage.get(data_id, None)
+        if storage_type == self.data_accessory_name.ram:
+            return self.ram_storage.get({}, data_id)
+

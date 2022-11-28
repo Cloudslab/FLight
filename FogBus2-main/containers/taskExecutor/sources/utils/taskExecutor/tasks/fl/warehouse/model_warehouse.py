@@ -13,6 +13,7 @@ class model_warehouse:
         ftp = 3
 
     def __init__(self):
+        self.id_to_storage = {}
         self.ram_storage = ram_accessory()
 
     def __new__(cls, *args, **kwargs):
@@ -24,7 +25,10 @@ class model_warehouse:
         result_model_id = None
         if storage == self.model_accessory_name.ram:
             result_model_id = self.ram_storage.set({"model": data}, model_id)
+            self.id_to_storage[result_model_id] = self.model_accessory_name.ram
         return result_model_id
 
     def get_model(self, model_id: str):
-        pass
+        storage_type = self.id_to_storage.get(model_id, None)
+        if storage_type == self.model_accessory_name.ram:
+            return self.ram_storage.get({}, model_id)
