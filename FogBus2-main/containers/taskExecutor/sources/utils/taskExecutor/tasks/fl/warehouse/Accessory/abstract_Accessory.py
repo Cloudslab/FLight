@@ -15,4 +15,4 @@ class abstract_accessory(ABC):
 
     @staticmethod
     def get_new_id():
-        return uuid1()
+        return str(uuid1())
