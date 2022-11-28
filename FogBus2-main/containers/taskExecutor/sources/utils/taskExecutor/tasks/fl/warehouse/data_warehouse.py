@@ -21,8 +21,8 @@ class data_warehouse:
     def set_data(self, data, data_id: str, storage: data_accessory_name):
         model_id = None
         if storage == self.data_accessory_name.ram:
-            model_id = self.ram_storage.set({"data": data}, data_id)
-        return model_id
+            data_id = self.ram_storage.set({"data": data}, data_id)
+        return data_id
 
     def get_data(self, data_id: str):
         pass
