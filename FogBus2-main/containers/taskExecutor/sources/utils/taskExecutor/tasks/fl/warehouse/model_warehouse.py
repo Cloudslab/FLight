@@ -15,6 +15,7 @@ class model_warehouse:
     def __init__(self):
         self.id_to_storage = {}
         self.ram_storage = ram_accessory()
+        self.local_file_storage = local_file_accessory()
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
@@ -26,9 +27,15 @@ class model_warehouse:
         if storage == self.model_accessory_name.ram:
             result_model_id = self.ram_storage.set({"model": data}, model_id)
             self.id_to_storage[result_model_id] = self.model_accessory_name.ram
+        if storage == self.model_accessory_name.local_file:
+            if type(data) is dict and "file_path" in data and "raw_data" in data:
+                result_model_id = self.local_file_storage.set(data, model_id)
+                self.id_to_storage[result_model_id] = self.model_accessory_name.local_file
         return result_model_id
 
     def get_model(self, model_id: str):
-        storage_type = self.id_to_storage.get(model_id, None)
-        if storage_type == self.model_accessory_name.ram:
+        storage = self.id_to_storage.get(model_id, None)
+        if storage == self.model_accessory_name.ram:
             return self.ram_storage.get({}, model_id)
+        if storage == self.model_accessory_name.local_file:
+            return self.local_file_storage.get({}, model_id)

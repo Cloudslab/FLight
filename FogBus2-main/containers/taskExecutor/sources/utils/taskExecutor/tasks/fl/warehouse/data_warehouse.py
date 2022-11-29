@@ -13,6 +13,7 @@ class data_warehouse:
     def __init__(self):
         self.id_to_storage = {}
         self.ram_storage = ram_accessory()
+        self.local_file_storage = local_file_accessory()
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):
@@ -24,10 +25,15 @@ class data_warehouse:
         if storage == self.data_accessory_name.ram:
             result_data_id = self.ram_storage.set({"data": data}, data_id)
             self.id_to_storage[result_data_id] = self.data_accessory_name.ram
+        if storage == self.data_accessory_name.local_file:
+            if type(data) is dict and "file_path" in data and "raw_data" in data:
+                result_data_id = self.local_file_storage.set(data, data_id)
+                self.id_to_storage[result_data_id] = self.data_accessory_name.local_file
         return result_data_id
 
     def get_data(self, data_id: str):
-        storage_type = self.id_to_storage.get(data_id, None)
-        if storage_type == self.data_accessory_name.ram:
+        storage = self.id_to_storage.get(data_id, None)
+        if storage == self.data_accessory_name.ram:
             return self.ram_storage.get({}, data_id)
-
+        if storage == self.data_accessory_name.local_file:
+            return self.local_file_storage.get({}, data_id)
