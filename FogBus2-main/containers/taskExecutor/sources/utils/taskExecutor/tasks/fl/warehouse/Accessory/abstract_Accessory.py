@@ -6,11 +6,11 @@ from uuid import uuid1
 class abstract_accessory(ABC):
 
     @abstractmethod
-    def set(self, args: dict, data_id: uuid.UUID = None):
+    def set(self, args: dict, data_id: str = None):
         pass
 
     @abstractmethod
-    def get(self, args: dict, data_id: uuid.UUID):
+    def get(self, args: dict, data_id: str):
         pass
 
     @staticmethod
