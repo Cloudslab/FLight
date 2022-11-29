@@ -3,6 +3,7 @@ import uuid
 from abc import ABC, abstractmethod
 from uuid import uuid1
 
+
 class abstract_accessory(ABC):
 
     @abstractmethod
