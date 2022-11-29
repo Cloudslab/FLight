@@ -5,6 +5,7 @@ class provide getter & setter for training data retrieval from different storage
 from enum import Enum
 from .Accessory import *
 
+
 class data_warehouse:
     class data_accessory_name(Enum):
         ram = 1
@@ -37,3 +38,7 @@ class data_warehouse:
             return self.ram_storage.get({}, data_id)
         if storage == self.data_accessory_name.local_file:
             return self.local_file_storage.get({}, data_id)
+
+
+data_storages_str = {"ram": data_warehouse.data_accessory_name.ram,
+                     "local_file": data_warehouse.data_accessory_name.local_file}

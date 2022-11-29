@@ -5,13 +5,11 @@ Collecting both data_warehouse & model_warehouse interface into a single class
 
 import uuid
 
-from .data_warehouse import data_warehouse
-from .model_warehouse import model_warehouse
+from .data_warehouse import data_warehouse, data_storages_str
+from .model_warehouse import model_warehouse, model_storages_str
 
 data_storages = data_warehouse.data_accessory_name
-data_storages_str = {"ram": data_storages.ram, "local_file": data_storages.local_file}
 model_storages = model_warehouse.model_accessory_name
-model_storages_str = {"ram": model_storages.ram, "local_file": model_storages.local_file, "ftp": model_storages.ftp}
 
 
 class warehouse:

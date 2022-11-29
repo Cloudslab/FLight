@@ -39,3 +39,8 @@ class model_warehouse:
             return self.ram_storage.get({}, model_id)
         if storage == self.model_accessory_name.local_file:
             return self.local_file_storage.get({}, model_id)
+
+
+model_storages_str = {"ram": model_warehouse.model_accessory_name.ram,
+                      "local_file": model_warehouse.model_accessory_name.local_file,
+                      "ftp": model_warehouse.model_accessory_name.ftp}
