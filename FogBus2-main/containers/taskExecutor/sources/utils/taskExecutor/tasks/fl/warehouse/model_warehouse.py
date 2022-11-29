@@ -28,7 +28,7 @@ class model_warehouse:
             result_model_id = self.ram_storage.set({"model": data}, model_id)
             self.id_to_storage[result_model_id] = self.model_accessory_name.ram
         if storage == self.model_accessory_name.local_file:
-            if type(data) is dict and "file_path" in data and "raw_data" in data:
+            if type(data) is dict and "file_name" in data and "raw_data" in data:
                 result_model_id = self.local_file_storage.set(data, model_id)
                 self.id_to_storage[result_model_id] = self.model_accessory_name.local_file
         return result_model_id

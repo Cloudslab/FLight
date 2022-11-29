@@ -8,7 +8,7 @@ import pickle
 
 class local_file_accessory(abstract_accessory):
     def __init__(self):
-        self._file_paths = defaultdict("")
+        self._file_paths = defaultdict(lambda: "")
         self._destination_folder = folder_position.local_file_storage_folder()
 
     def get(self, args: dict, data_id: str):

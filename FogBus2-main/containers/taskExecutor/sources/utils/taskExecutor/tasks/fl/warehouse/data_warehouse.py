@@ -26,7 +26,7 @@ class data_warehouse:
             result_data_id = self.ram_storage.set({"data": data}, data_id)
             self.id_to_storage[result_data_id] = self.data_accessory_name.ram
         if storage == self.data_accessory_name.local_file:
-            if type(data) is dict and "file_path" in data and "raw_data" in data:
+            if type(data) is dict and "file_name" in data and "raw_data" in data:
                 result_data_id = self.local_file_storage.set(data, data_id)
                 self.id_to_storage[result_data_id] = self.data_accessory_name.local_file
         return result_data_id
