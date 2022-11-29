@@ -2,7 +2,6 @@
 
 from .abstract_Accessory import abstract_accessory
 from collections import defaultdict
-import uuid
 
 
 class ram_accessory(abstract_accessory):
