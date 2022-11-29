@@ -1,5 +1,5 @@
 from fl.warehouse.warehouse import warehouse
-
+from fl.warehouse.storage_folder.folder_manager import folder_position
 if __name__ == "__main__":
     print("Test Starts")
 
@@ -34,3 +34,10 @@ if __name__ == "__main__":
     assert data_not_exist is None
     assert model_not_exist is None
     print("========= Test 3 Retrieve not exist END=========")
+
+    # -----------------------------------------------------
+    print("======== Test 4 Folder manager START=========")
+    local_file_storage_position = folder_position.local_file_storage_folder()
+    ftp_file_storage_position = folder_position.ftp_folder_manager()
+    # make sure the file path is correct
+    print("======== Test 4 Folder manager END=========")
