@@ -11,5 +11,5 @@ class folder_position:
         return local_file_folder_manager.local_file_folder_manager.folder_dir()
 
     @staticmethod
-    def ftp_folder_manager():
+    def ftp_folder():
         return ftp_folder_manager.ftp_folder_manager.folder_dir()

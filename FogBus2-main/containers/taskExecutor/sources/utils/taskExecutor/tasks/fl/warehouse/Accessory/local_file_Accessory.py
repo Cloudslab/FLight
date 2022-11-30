@@ -5,6 +5,7 @@ from collections import defaultdict
 from ..storage_folder.folder_manager import folder_position
 import os
 import pickle
+import ftplib
 
 class local_file_accessory(abstract_accessory):
     def __init__(self):
@@ -26,6 +27,18 @@ class local_file_accessory(abstract_accessory):
             file_path = os.path.join(self._destination_folder, args["file_name"])
             self.write_to_file(file_path, args["raw_data"])
             self._file_paths[data_id] = file_path
+        return data_id
+
+    def download_from_ftp(self, ftp_server_addr, server_file_name, user_name, password, data_id: str = None):
+        if not data_id:
+            data_id = self.get_new_id()
+        server = ftplib.FTP()
+        server.connect(ftp_server_addr[0], ftp_server_addr[1])
+        server.login(user_name, password)
+        dest_path = os.path.join(self._destination_folder, server_file_name)
+        with open(dest_path, "wb") as file:
+            server.retrbinary(f"RETR {server_file_name}", file.write)
+        self._file_paths[data_id] = dest_path
         return data_id
 
     @staticmethod
