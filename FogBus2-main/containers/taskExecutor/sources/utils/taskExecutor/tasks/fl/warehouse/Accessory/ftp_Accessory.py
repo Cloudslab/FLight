@@ -29,15 +29,14 @@ class ftp_accessory(abstract_accessory):
             file_path = os.path.join(self._ftp_server.directory_path, args["file_name"])
             self.write_to_file(file_path, args["raw_data"])
             self._file_names[data_id] = args["file_name"]
+        return data_id
 
     def get(self, args: dict, data_id: str):  # return credential to download from ftp server
-        if "user_name" in args:
-            file_name = self._file_names.get(data_id)
-            if file_name:
-                user_name, password = self._ftp_server.add_temp_user(args["user_name"])
-                return self.ftp_server_addr, user_name, password, file_name
-            else:
-                return None
+        file_name = self._file_names.get(data_id)
+        user_name = random_password(32)
+        if file_name:
+            user_name, password = self._ftp_server.add_temp_user(user_name)
+            return self.ftp_server_addr, user_name, password, file_name
         else:
             return None
 

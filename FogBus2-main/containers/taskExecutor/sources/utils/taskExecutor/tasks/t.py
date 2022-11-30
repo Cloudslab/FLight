@@ -39,7 +39,7 @@ if __name__ == "__main__":
     # -----------------------------------------------------
     print("======== Test 4 Folder manager START=========")
     local_file_storage_position = folder_position.local_file_storage_folder()
-    ftp_file_storage_position = folder_position.ftp_folder_manager()
+    ftp_file_storage_position = folder_position.ftp_folder()
     # make sure the file path is correct (check by hand...)
 
     print("======== Test 4 Folder manager END=========")
@@ -73,3 +73,17 @@ if __name__ == "__main__":
     assert data_id == data_id_back
 
     print("========= Test 7 Set & Retrieve from local_file given ID END=========")
+
+    print("========= Test 8 Saving to FTP server START=========")
+    w.model_warehouse.start_ftp_server(addr=("127.0.0.1", 12345))
+    model = {"Test 8 Model": "Version1"}
+    model_id = w.set_model({"raw_data": model, "file_name": "test_8_model.txt"}, storage="ftp")
+    # make sure a file exist in ftp_file_storage
+    print("========= Test 8 Saving to FTP server END=========")
+
+    print("========= Test 9 Download from FTP server START=========")
+    ftp_server_addr, user_name, password, file_name = w.get_model(model_id)
+    assert ftp_server_addr == ("127.0.0.1", 12345)
+    w.download_model(ftp_server_addr, file_name, user_name, password)
+    # make sure a file downloaded to local_file_storage
+    print("========= Test 9 Download from FTP server END=========")
