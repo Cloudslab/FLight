@@ -95,3 +95,4 @@ if __name__ == "__main__":
     router.get_default_router().send(router.get_default_router().message_receiver_address, "dummy", [1, (1, "1")])
     # make sure receive reply on the panel
     print("========= Test 10 Router send Message END=========")
+
