@@ -36,7 +36,7 @@ class message_sender:
                 print(e)
 
     def send(self, address, event, data, reply_address=None):
-        event = event.lstrip(HANDLER_NAME_LENGTH)[:HANDLER_NAME_LENGTH]
+        event = event.ljust(HANDLER_NAME_LENGTH)[:HANDLER_NAME_LENGTH]
         self._sending_queue.put((address, event, data, reply_address))
 
     def start(self):

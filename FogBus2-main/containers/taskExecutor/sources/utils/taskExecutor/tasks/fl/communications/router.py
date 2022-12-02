@@ -18,16 +18,18 @@ class router:
 
     @staticmethod
     def try_address(obj_to_be_construct, address, retries=3):
+        if retries == 0:
+            return None
         ip, port = address
         try:
             obj = obj_to_be_construct(address)
             return obj, address
         except Exception as e:
-            return router.try_address(obj_to_be_construct, (ip, port+1), retries - 1)
+            return router.try_address(obj_to_be_construct, (ip, port+1), retries + 1)
 
     @classmethod
     def get_default_router(cls, router_name="default_router"):
-        if not hasattr(router, router_name) or not isinstance(getattr(router, router_name)):
+        if not hasattr(router, router_name) or not isinstance(getattr(router, router_name), router):
             router()
             router_name = "default_router"
         return getattr(router, router_name)

@@ -10,7 +10,7 @@ class handler_manager:
 
     @classmethod
     def get_handler(cls, key=""):
-        key = key.lstrip(handler_name_len)[:handler_name_len]  # make sure the key is of length handler_name_len
+        key = key.ljust(handler_name_len)[:handler_name_len]  # make sure the key is of length handler_name_len
         handler = None
         if hasattr(cls, key):
             handler = getattr(cls, key)
@@ -20,7 +20,7 @@ class handler_manager:
     def add_handler(cls, handler, key=None):
         if not key:
             key = handler.name
-        key = key.lstrip(handler_name_len)[:handler_name_len]  # make sure the key if of length handler_name_len
+        key = key.ljust(handler_name_len)[:handler_name_len]  # make sure the key if of length handler_name_len
         if not hasattr(cls, key):
             setattr(cls, key, handler)
 
