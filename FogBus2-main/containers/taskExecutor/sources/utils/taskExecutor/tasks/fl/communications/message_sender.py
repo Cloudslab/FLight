@@ -11,6 +11,7 @@ Sending message to message receiver on other nodes, the reason that use TPC inst
 import queue
 import socket
 import pickle
+from threading import Thread
 from .handlers.abstract_handler import abstract_handler
 ADDR_LEN = 40
 HANDLER_NAME_LENGTH = abstract_handler.HANDLER_NAME_LENGTH
@@ -21,11 +22,12 @@ class message_sender:
         self._sending_queue = queue.Queue()
         self._default_reply_address = default_reply_address
 
-    def _send(self, reply_address=""):
-        if not reply_address:
-            reply_address = self._default_reply_address
+    def _send(self):
+
         while True:
-            address, event, data = self._sending_queue.get()
+            address, event, data, reply_address = self._sending_queue.get()
+            if not reply_address:
+                reply_address = self._default_reply_address
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect(address)
@@ -33,6 +35,9 @@ class message_sender:
             except Exception as e:
                 print(e)
 
-    def send(self, address, event, data):
+    def send(self, address, event, data, reply_address=None):
         event = event.lstrip(HANDLER_NAME_LENGTH)[:HANDLER_NAME_LENGTH]
-        self._sending_queue.put((address, event, data))
+        self._sending_queue.put((address, event, data, reply_address))
+
+    def start(self):
+        Thread(target=self._send, args=()).start()
