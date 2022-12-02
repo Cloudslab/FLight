@@ -1,6 +1,8 @@
 from fl.warehouse.warehouse import warehouse
 from fl.warehouse.storage_folder.folder_manager import folder_position
 from fl.communications.router import router
+from fl.fl_apis.base import base
+from fl.fl_apis.relationship_apis.model_pointer import model_pointer
 
 if __name__ == "__main__":
     print("Test Starts")
@@ -91,8 +93,30 @@ if __name__ == "__main__":
 
     print("========= Test 10 Router send Message START=========")
     router(("127.0.0.1", 12345))
-    from fl.communications.handlers.handler_manager import handler_manager
     router.get_default_router().send(router.get_default_router().message_receiver_address, "dummy", [1, (1, "1")])
     # make sure receive reply on the panel
     print("========= Test 10 Router send Message END=========")
 
+    print("========= Test 11 START=========")
+    b = base()
+    b.add_server(router.get_default_router().message_receiver_address)
+    b.add_client(router.get_default_router().message_receiver_address)
+    b.add_peer(router.get_default_router().message_receiver_address)
+    import time
+    while not b.get_servers() or not b.get_clients() or not b.get_peers():
+        time.sleep(0.01)
+    remote_server_ptr, remote_client_ptr, remote_peer_ptr = b.get_servers()[0], b.get_clients()[0], b.get_peers()[0]
+    remote_server, remote_client, remote_peer = \
+        warehouse().get_model(remote_server_ptr.uuid), \
+        warehouse().get_model(remote_client_ptr.uuid), \
+        warehouse().get_model(remote_peer_ptr.uuid)
+
+    assert remote_server is not None
+    assert remote_client is not None
+    assert remote_peer is not None
+    b_pointer = model_pointer(b.uuid, router.get_default_router().message_receiver_address)
+    assert remote_server.get_clients()[0] == b_pointer
+    assert remote_client.get_servers()[0] == b_pointer
+    assert remote_peer.get_peers()[0] == b_pointer
+
+    print("========= Test 11 END=========")

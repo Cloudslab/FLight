@@ -27,27 +27,30 @@ class relationship_manager:
         return self.peers.copy()
 
     @staticmethod
-    def add_client(client_address, self_uuid, additional_args=None):
+    def add_client(client_address, self_uuid, model_name ,additional_args=None):
         r = router.get_default_router()
         r.send(client_address, relationship_handler.name,
                {"sub_event": relationship_handler.sub_events.add_client,
                 "reply_uuid": self_uuid,
+                "model_name": model_name,
                 "additional_args": additional_args})
 
     @staticmethod
-    def add_server(server_address, self_uuid, additional_args=None):
+    def add_server(server_address, self_uuid, model_name, additional_args=None):
         r = router.get_default_router()
         r.send(server_address, relationship_handler.name,
                {"sub_event": relationship_handler.sub_events.add_server,
                 "reply_uuid": self_uuid,
+                "model_name": model_name,
                 "additional_args": additional_args})
 
     @staticmethod
-    def add_peer(server_address, self_uuid, additional_args=None):
+    def add_peer(server_address, self_uuid, model_name, additional_args=None):
         r = router.get_default_router()
         r.send(server_address, relationship_handler.name,
                {"sub_event": relationship_handler.sub_events.add_peer,
                 "reply_uuid": self_uuid,
+                "model_name": model_name,
                 "additional_args": additional_args})
 
     def _add_client(self, client_ptr: model_pointer, additional_args=None):
@@ -66,7 +69,7 @@ class relationship_manager:
         self.peers_lock.acquire()
         if peer_ptr not in self.peers:
             self.peers.append(peer_ptr)
-        self.servers_lock.release()
+        self.peers_lock.release()
 
     def add_ptr(self, role_of_remote, remote_ptr: model_pointer, additional_args=None):
         if role_of_remote == "c" and remote_ptr not in self.clients:
@@ -74,7 +77,7 @@ class relationship_manager:
         if role_of_remote == "s" and remote_ptr not in self.servers:
             self._add_server(remote_ptr, additional_args)
         if role_of_remote == "p" and remote_ptr not in self.peers:
-            self._add_server(remote_ptr, additional_args)
+            self._add_peer(remote_ptr, additional_args)
 
     @staticmethod
     def ack_add(self_uuid, role_of_this_model, remote_ptr: model_pointer, additional_args=None):
@@ -82,5 +85,6 @@ class relationship_manager:
         r.send(remote_ptr.address, relationship_handler.name,
                {"sub_event": relationship_handler.sub_events.ack_add,
                 "reply_uuid": self_uuid,
+                "remote_uuid": remote_ptr.uuid,
                 "role_of_this_model": role_of_this_model,
                 "additional_args": additional_args})
