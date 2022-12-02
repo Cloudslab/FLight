@@ -1,14 +1,16 @@
 """Collect a group of handlers"""
 
 
+from .abstract_handler import abstract_handler
 from .dummy_handler import dummy_handler
+handler_name_len = abstract_handler.HANDLER_NAME_LENGTH
 
 
 class handler_manager:
 
     @classmethod
     def get_handler(cls, key=""):
-        key = key.lstrip(5)[:5]  # make sure the key is of length 5
+        key = key.lstrip(handler_name_len)[:handler_name_len]  # make sure the key is of length handler_name_len
         handler = None
         if hasattr(cls, key):
             handler = getattr(cls, key)
@@ -18,7 +20,7 @@ class handler_manager:
     def add_handler(cls, handler, key=None):
         if not key:
             key = handler.name
-        key = key.lstrip(5)[:5]  # make sure the key if of length 5
+        key = key.lstrip(handler_name_len)[:handler_name_len]  # make sure the key if of length handler_name_len
         if not hasattr(cls, key):
             setattr(cls, key, handler)
 

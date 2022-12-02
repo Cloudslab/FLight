@@ -9,7 +9,8 @@ from abc import ABC, abstractmethod
 
 class abstract_handler(ABC):
 
-    EVENT_STRING_LEN = 10
+    SUB_EVENT_STRING_LEN = 5
+    HANDLER_NAME_LENGTH = 5
 
     @abstractmethod
     def __call__(self, conn, reply_addr, *args, **kwargs):

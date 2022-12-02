@@ -11,7 +11,9 @@ Sending message to message receiver on other nodes, the reason that use TPC inst
 import queue
 import socket
 import pickle
+from .handlers.abstract_handler import abstract_handler
 ADDR_LEN = 40
+HANDLER_NAME_LENGTH = abstract_handler.HANDLER_NAME_LENGTH
 
 
 class message_sender:
@@ -32,4 +34,5 @@ class message_sender:
                 print(e)
 
     def send(self, address, event, data):
+        event = event.lstrip(HANDLER_NAME_LENGTH)[:HANDLER_NAME_LENGTH]
         self._sending_queue.put((address, event, data))
