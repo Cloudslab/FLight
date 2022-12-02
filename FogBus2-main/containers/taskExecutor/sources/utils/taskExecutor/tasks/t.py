@@ -1,5 +1,6 @@
 from fl.warehouse.warehouse import warehouse
 from fl.warehouse.storage_folder.folder_manager import folder_position
+from fl.communications.router import router
 
 if __name__ == "__main__":
     print("Test Starts")
@@ -87,3 +88,10 @@ if __name__ == "__main__":
     w.download_model(ftp_server_addr, file_name, user_name, password)
     # make sure a file downloaded to local_file_storage
     print("========= Test 9 Download from FTP server END=========")
+
+    print("========= Test 10 Router send Message START=========")
+    router(("127.0.0.1", 12345))
+    from fl.communications.handlers.handler_manager import handler_manager
+    router.get_default_router().send(router.get_default_router().message_receiver_address, "dummy", [1, (1, "1")])
+    # make sure receive reply on the panel
+    print("========= Test 10 Router send Message END=========")

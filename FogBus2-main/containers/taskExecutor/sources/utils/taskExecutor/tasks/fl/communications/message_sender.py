@@ -23,7 +23,6 @@ class message_sender:
         self._default_reply_address = default_reply_address
 
     def _send(self):
-
         while True:
             address, event, data, reply_address = self._sending_queue.get()
             if not reply_address:
@@ -31,7 +30,7 @@ class message_sender:
             try:
                 s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
                 s.connect(address)
-                s.sendall(event.encode('utf-8') + reply_address.encode("utf-8").ljust(ADDR_LEN) + pickle.dumps(data))
+                s.sendall(event.encode('utf-8') + str(reply_address).encode("utf-8").ljust(ADDR_LEN) + pickle.dumps(data))
             except Exception as e:
                 print(e)
 

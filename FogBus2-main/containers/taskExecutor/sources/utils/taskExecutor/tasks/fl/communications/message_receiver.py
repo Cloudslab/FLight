@@ -31,6 +31,9 @@ class message_receiver:
             corresponding_handler = handler_manager.get_handler(event)
             if corresponding_handler:
                 Thread(target=corresponding_handler, args=(conn, reply_address, )).start()
+            else:
+                x = 1
+                x.sot()
 
     def start(self):
         Thread(target=self._dispatch, args=()).start()

@@ -7,9 +7,11 @@ handler_name_len = abstract_handler.HANDLER_NAME_LENGTH
 
 
 class handler_manager:
-
+    INITIALIZED = False
     @classmethod
     def get_handler(cls, key=""):
+        if not handler_manager.INITIALIZED:
+            handler_manager()
         key = key.ljust(handler_name_len)[:handler_name_len]  # make sure the key is of length handler_name_len
         handler = None
         if hasattr(cls, key):
