@@ -6,3 +6,30 @@ Sending message to message receiver on other nodes, the reason that use TPC inst
 (FTP of warehouse instead)
 4. Reliability
 """
+
+
+import queue
+import socket
+import pickle
+ADDR_LEN = 40
+
+
+class message_sender:
+    def __init__(self, default_reply_address=""):
+        self._sending_queue = queue.Queue()
+        self._default_reply_address = default_reply_address
+
+    def _send(self, reply_address=""):
+        if not reply_address:
+            reply_address = self._default_reply_address
+        while True:
+            address, event, data = self._sending_queue.get()
+            try:
+                s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                s.connect(address)
+                s.sendall(event.encode('utf-8') + reply_address.encode("utf-8").ljust(ADDR_LEN) + pickle.dumps(data))
+            except Exception as e:
+                print(e)
+
+    def send(self, address, event, data):
+        self._sending_queue.put((address, event, data))
