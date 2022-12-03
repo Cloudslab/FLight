@@ -20,3 +20,7 @@ class dummy_model(ml_model):
 
     def to_dict(self):
         return {"count": self.count}
+
+    def from_dict(self, dict_model: dict):
+        self.count = dict_model["count"]
+

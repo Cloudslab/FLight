@@ -12,5 +12,8 @@ class ml_model:
     def to_dict(self):
         pass
 
+    def from_dict(self, model_dict: dict):
+        pass
+
     def __init__(self, additional_args=None):
         self.version = 0
