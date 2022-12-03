@@ -48,6 +48,10 @@ class FederatedServer(BaseTask):
         warehouse().model_warehouse.start_ftp_server(self.addr)
         b = base()
         b.add_client(self.potential_client_addr[0])
+        remote_server_ptr, remote_client_ptr, remote_peer_ptr = b.get_servers(), b.get_clients(), b.get_peers()
+        inputData = {"remote_server_ptr": remote_server_ptr, "remote_client_ptr": remote_client_ptr,
+                     "remote_peer_ptr": remote_peer_ptr}
+        return inputData
         b.add_server(self.potential_client_addr[1])
         b.add_peer(self.potential_client_addr[2])
         #while not b.get_servers() or not b.get_clients() or not b.get_peers():
