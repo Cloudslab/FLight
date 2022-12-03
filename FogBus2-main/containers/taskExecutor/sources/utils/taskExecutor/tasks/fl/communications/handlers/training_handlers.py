@@ -21,14 +21,26 @@ class training_handler(abstract_handler):
 
         if sub_event == self.sub_events.train_remote:
             steps, additional_args, reply_uuid, local_uuid, evaluate = \
-                data_received["steps"], data_received["additional_args"], data_received["reply_uuid"], \
-                data_received["remote_uuid"], data_received["evaluate"]
+                data_received["steps"], \
+                data_received["additional_args"], \
+                data_received["reply_uuid"], \
+                data_received["remote_uuid"], \
+                data_received["evaluate"]
             remote_ptr = model_pointer(reply_uuid, reply_addr)
             model = warehouse().get_model(local_uuid)
             if model:  # can add criteria here to check if eligible to request train
                 model.train(steps, additional_args, evaluate)
+                model.ack_train_finish(remote_ptr)
 
         if sub_event == self.sub_events.ack_train_finish:
-            local_uuid, reply_uuid = data_received["remote_uuid"], data_received["reply_uuid"]
-            print(local_uuid, reply_uuid)
+            local_uuid, reply_uuid, base_version, remote_version = \
+                data_received["remote_uuid"], \
+                data_received["reply_uuid"], \
+                data_received["base_version"], \
+                data_received["self_version"]
+
+            model = warehouse().get_model(local_uuid)
+            if model:
+                remote_ptr = model_pointer(reply_uuid, reply_addr)
+                model.update_weights_info(remote_ptr, remote_version, base_version)
 

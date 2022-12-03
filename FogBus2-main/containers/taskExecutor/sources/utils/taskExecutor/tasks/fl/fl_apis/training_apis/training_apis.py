@@ -13,7 +13,7 @@ from datetime import datetime
 from ...communications.router import router
 from ..relationship_apis.model_pointer import model_pointer
 from ...communications.handlers.training_handlers import training_handler
-
+from .remote_model_weights_manager.remote_model_weights_manager import remote_model_weights_manager
 
 class ml_train_apis:
     def __init__(self, model_class, ml_model_initialise_args=None, additional_args=None):
@@ -31,6 +31,8 @@ class ml_train_apis:
             "peer_models": Lock(),
             "federated_results": Lock()
         }
+
+        self._remote_model_weights_manager = remote_model_weights_manager()
 
     def train(self, steps, additional_args=None, evaluate=False):
         self._model_lock.acquire()
@@ -52,13 +54,14 @@ class ml_train_apis:
             "evaluate": evaluate
         })
 
-    @staticmethod
-    def ack_train_finish(self_uuid, remote_ptr: model_pointer):
+    def ack_train_finish(self, self_uuid, remote_ptr: model_pointer):
         r = router.get_default_router()
         r.send(remote_ptr.address, training_handler.name, {
             "sub_event": training_handler.sub_events.ack_train_finish,
             "reply_uuid": self_uuid,
-            "remote_uuid": remote_ptr.uuid
+            "remote_uuid": remote_ptr.uuid,
+            "base_version": None,  # update when access generator & fetcher provides such information
+            "self_version": self._model.version
         })
 
     def federate(self, access_to_cache, federated_algo):
@@ -81,3 +84,9 @@ class ml_train_apis:
 
     def get_model_dict(self):
         return self._model.to_dict()
+
+    def update_weights_info(self, remote_ptr: model_pointer, remote_version, base_local_version, additional_args=None):
+        self._remote_model_weights_manager.update_weights_info(remote_ptr, remote_version, base_local_version, additional_args)
+
+    def get_available_remote_model_weights(self):
+        return self._remote_model_weights_manager.get_available_remote_model_weights()

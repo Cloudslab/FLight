@@ -1,7 +1,7 @@
 """Handle communication of model weights between different parties"""
 from ..training_apis.ml_models.ml_model import ml_model
 from ..relationship_apis.model_pointer import model_pointer
-
+from .fetcher import fetcher
 
 class model_transmission_manager:
     def __init__(self):

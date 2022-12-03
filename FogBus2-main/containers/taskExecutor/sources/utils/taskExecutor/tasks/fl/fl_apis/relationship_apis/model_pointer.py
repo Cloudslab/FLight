@@ -12,3 +12,6 @@ class model_pointer:
 
     def __eq__(self, other):
         return self.uuid == other.uuid and self.address[0] == other.address[0]  # only check for IP similarity
+
+    def __hash__(self):
+        return hash((self.uuid, self.address[0]))

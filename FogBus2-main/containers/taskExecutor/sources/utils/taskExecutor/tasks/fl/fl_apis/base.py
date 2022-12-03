@@ -32,3 +32,5 @@ class base:
         self.federate = self._ml_train_apis.federate
         self.can_federate = self._ml_train_apis.can_federate
         self.get_model_dict = self._ml_train_apis.get_model_dict
+        self.update_weights_info = self._ml_train_apis.update_weights_info
+        self.get_available_remote_model_weights = self._ml_train_apis.get_available_remote_model_weights

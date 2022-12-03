@@ -142,4 +142,6 @@ if __name__ == "__main__":
     time.sleep(1)  # make sure train finished on all clients
     for client_ptr in b_server.get_clients():
         assert warehouse().get_model(client_ptr.uuid).get_model_dict()["count"] == 11
+    for v in b_server.get_available_remote_model_weights().values():
+        assert v[0] == 10  # experienced 10 trains, so version should be +=5 +=5 = 10
     print("========= Test 12 Test Request Remote to Train END=========")
