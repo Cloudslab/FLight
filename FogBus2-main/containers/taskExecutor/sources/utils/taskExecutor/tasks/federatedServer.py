@@ -17,6 +17,13 @@ from .federated_learning.federaed_learning_model.datawarehouse import data_wareh
 import time
 import random
 
+
+# ------------------------ import from new version
+from .fl.communications.router import router
+from .fl.warehouse.warehouse import warehouse
+from .fl.fl_apis.base import base
+
+
 WAITING_TIME_SLOT = 0.01
 
 class FederatedServer(BaseTask):
@@ -36,131 +43,144 @@ class FederatedServer(BaseTask):
 
         if len(self.potential_client_addr) < self.num_clients:
             return
+
+        return None
+
+        router(self.addr)
+        warehouse().model_warehouse.start_ftp_server(self.addr)
+        b = base()
+        b.add_client(self.potential_client_addr[0])
+        b.add_server(self.potential_client_addr[1])
+        b.add_peer(self.potential_client_addr[2])
+        while not b.get_servers() or not b.get_clients() or not b.get_peers():
+            time.sleep(0.01)
+        remote_server_ptr, remote_client_ptr, remote_peer_ptr = b.get_servers()[0], b.get_clients()[0], b.get_peers()[0]
+        return {"remote_server_ptr": remote_server_ptr, "remote_client_ptr": remote_client_ptr, "remote_peer_ptr": remote_peer_ptr}
         # set up router
 
 
-        address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
-        addr, r = router_factory.get_router((address, port))
-        ftp_server_factory.set_ftp_server((address, port))
-        r.add_handler("relation__", relationship_handler())
-        r.add_handler("communicat", model_communication_handler())
-        r.add_handler("cli_step__", remote_call_handler())
+    #    address, port = self.addr[0], inputData["participants"][self.taskName]["data"]["port"]
+    #    addr, r = router_factory.get_router((address, port))
+    #    ftp_server_factory.set_ftp_server((address, port))
+    #    r.add_handler("relation__", relationship_handler())
+    #    r.add_handler("communicat", model_communication_handler())
+    #    r.add_handler("cli_step__", remote_call_handler())
 
-        cpu_freq_factor = {}
-        cpu_freq_sum = 0
-        for k in self.machine_profile:
-            cpu_freq_factor[k] = self.machine_profile[k][0]["frequency"] * (1 - self.machine_profile[k][0]["utilization"])
-            cpu_freq_sum += cpu_freq_factor[k]
+    #    cpu_freq_factor = {}
+    #    cpu_freq_sum = 0
+    #    for k in self.machine_profile:
+    #        cpu_freq_factor[k] = self.machine_profile[k][0]["frequency"] * (1 - self.machine_profile[k][0]["utilization"])
+    #        cpu_freq_sum += cpu_freq_factor[k]
 
 
         # -------------------------------------------------------------------
-        if inputData["participants"][self.taskName]["data"]["model"] == 'lrs':
-            learning_rate = inputData["participants"][self.taskName]["data"]["lr"]
-            waiting_time = inputData["participants"][self.taskName]["data"]["tim"]
-            itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
-            itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
-            model = linear_regression(0.3)
-            for client_addr in self.potential_client_addr:
-                model.add_client(client_addr, learning_rate)
+    #    if inputData["participants"][self.taskName]["data"]["model"] == 'lrs':
+    #        learning_rate = inputData["participants"][self.taskName]["data"]["lr"]
+    #        waiting_time = inputData["participants"][self.taskName]["data"]["tim"]
+    #        itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
+    #        itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
+    #        model = linear_regression(0.3)
+    #        for client_addr in self.potential_client_addr:
+    #            model.add_client(client_addr, learning_rate)
 
-            while len(model.get_client()) != 3:
-                time.sleep(0.01)
+    #        while len(model.get_client()) != 3:
+    #            time.sleep(0.01)
 
-            for i in range(itr_server):
-                inputData["debug_logger"].info(str(i))
-                for ii in range(waiting_time):
-                    time.sleep(1)
-                    inputData["debug_logger"].info(str(waiting_time - ii) + " left.")
+    #        for i in range(itr_server):
+    #            inputData["debug_logger"].info(str(i))
+    #            for ii in range(waiting_time):
+    #                time.sleep(1)
+    #                inputData["debug_logger"].info(str(waiting_time - ii) + " left.")
 
-                for m in model.get_client():
-                    model.step_client(m, itr_client)
+    #            for m in model.get_client():
+    #                model.step_client(m, itr_client)
 
-                while not model.can_federate("syn"):
-                    time.sleep(0.01)
-                model.federate()
-                inputData["debug_logger"].info("\nWeight: "+str(model.lr.weight))
-                inputData["debug_logger"].info("\nBias: " + str(model.lr.bias))
-        if inputData["participants"][self.taskName]["data"]["model"] == 'mst':
-            selection = inputData["participants"][self.taskName]["data"]["lr"]
-            ws = inputData["participants"][self.taskName]["data"]["ws"]
-            itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
-            itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
+    #            while not model.can_federate("syn"):
+    #                time.sleep(0.01)
+    #            model.federate()
+    #            inputData["debug_logger"].info("\nWeight: "+str(model.lr.weight))
+    #            inputData["debug_logger"].info("\nBias: " + str(model.lr.bias))
+    #    if inputData["participants"][self.taskName]["data"]["model"] == 'mst':
+    #        selection = inputData["participants"][self.taskName]["data"]["lr"]
+    #        ws = inputData["participants"][self.taskName]["data"]["ws"]
+    #        itr_server = inputData["participants"][self.taskName]["data"]["itr_server"]
+    #        itr_client = inputData["participants"][self.taskName]["data"]["itr_client"]
 
-            model = minst_classification()
-            if selection == 0:
-                model.add_client(self.potential_client_addr[0], (0, 10))
-                while len(model.get_client()) != 1:
-                    time.sleep(0.01)
-                model.synchronous_federate_minimum_client = 1
-            elif selection == 1:
-                for i in range(10):
-                    model.add_client(self.potential_client_addr[i%3], (i, i + 1))
-                while len(model.get_client()) != 10:
-                    time.sleep(0.01)
-                model.synchronous_federate_minimum_client = 10
-            elif selection == 2:
-                model.add_client(self.potential_client_addr[0], (0,1))
-                model.add_client(self.potential_client_addr[1], (1,3))
-                model.add_client(self.potential_client_addr[2], (3,6))
-                model.add_client(self.potential_client_addr[0], (6,10))
-                while len(model.get_client()) != 4:
-                    time.sleep(0.01)
+    #        model = minst_classification()
+    #        if selection == 0:
+    #            model.add_client(self.potential_client_addr[0], (0, 10))
+    #            while len(model.get_client()) != 1:
+    #                time.sleep(0.01)
+    #            model.synchronous_federate_minimum_client = 1
+    #        elif selection == 1:
+    #            for i in range(10):
+    #                model.add_client(self.potential_client_addr[i%3], (i, i + 1))
+    #            while len(model.get_client()) != 10:
+    #                time.sleep(0.01)
+    #            model.synchronous_federate_minimum_client = 10
+    #        elif selection == 2:
+    #            model.add_client(self.potential_client_addr[0], (0,1))
+    #            model.add_client(self.potential_client_addr[1], (1,3))
+    #            model.add_client(self.potential_client_addr[2], (3,6))
+    #            model.add_client(self.potential_client_addr[0], (6,10))
+    #            while len(model.get_client()) != 4:
+    #                time.sleep(0.01)
 
-                for cli in model.get_client():
-                    model.client_performance[cli[:2]]["train_one_time"] = model.client_performance[cli[:2]]["data_size"] * 0.6
+    #            for cli in model.get_client():
+    #                model.client_performance[cli[:2]]["train_one_time"] = model.client_performance[cli[:2]]["data_size"] * 0.6
 
-                model.time_allowed = 0
-                model.synchronous_federate_minimum_client = 4
-            elif selection == 3:
-                model.add_client(self.potential_client_addr[0], (0,1))
-                model.add_client(self.potential_client_addr[1], (1,3))
-                model.add_client(self.potential_client_addr[2], (3,6))
-                model.add_client(self.potential_client_addr[0], (6,10))
-                while len(model.get_client()) != 4:
-                    time.sleep(0.01)
-                ws = False
-                model.synchronous_federate_minimum_client = 1
-
-
-            t = time.time()
-            for i in range(itr_server):
-                last_accuracy = 0
-                if selection == 2 and ws:
-                    while len(model.select_client()) == 0:
-                        model.update_time_allowed(0.1)
-                    clients = model.select_client()
-                    model.synchronous_federate_minimum_client = len(clients)
-                    for m in clients:
-                        model.step_client(m, itr_client)
-                else:
-                    for m in model.get_client():
-                        model.step_client(m, itr_client)
-                while not model.can_federate("syn"):
-                    time.sleep(0.01)
-
-                model.federate()
-                if selection == 2 and ws:
-                    if model.should_update_time_allowed(last_accuracy, model.model.accuracy.item()):
-                        model.update_time_allowed(0.5)
-                    last_accuracy = model.model.accuracy.item()
-                # print(model.model.accuracy, time.time() - t)
-                inputData["debug_logger"].info("\n\n\n\n\n")
-                if model.model.accuracy > 80:
-                    tr1 = time.time() - t
-                    inputData["debug_logger"].info(str(model.model.accuracy.item()) + " achieved at time: " + str(tr1))
-                    break
-                else:
-                    tr1 = time.time() - t
-                    inputData["debug_logger"].info(str(model.model.accuracy.item()) + " achieved at time: " + str(tr1))
-
-                inputData["debug_logger"].info("\n\n\n\n\n")
+    #            model.time_allowed = 0
+    #            model.synchronous_federate_minimum_client = 4
+    #        elif selection == 3:
+    #            model.add_client(self.potential_client_addr[0], (0,1))
+    #            model.add_client(self.potential_client_addr[1], (1,3))
+    #            model.add_client(self.potential_client_addr[2], (3,6))
+    #            model.add_client(self.potential_client_addr[0], (6,10))
+    #            while len(model.get_client()) != 4:
+    #                time.sleep(0.01)
+    #            ws = False
+    #            model.synchronous_federate_minimum_client = 1
 
 
+    #        t = time.time()
+    #        for i in range(itr_server):
+    #            last_accuracy = 0
+    #            if selection == 2 and ws:
+    #                while len(model.select_client()) == 0:
+    #                    model.update_time_allowed(0.1)
+    #                clients = model.select_client()
+    #                model.synchronous_federate_minimum_client = len(clients)
+    #                for m in clients:
+    #                    model.step_client(m, itr_client)
+    #            else:
+    #                for m in model.get_client():
+    #                    model.step_client(m, itr_client)
+    #            while not model.can_federate("syn"):
+    #                time.sleep(0.01)
+
+    #            model.federate()
+    #            if selection == 2 and ws:
+    #                if model.should_update_time_allowed(last_accuracy, model.model.accuracy.item()):
+    #                    model.update_time_allowed(0.5)
+    #                last_accuracy = model.model.accuracy.item()
+    #            # print(model.model.accuracy, time.time() - t)
+    #            inputData["debug_logger"].info("\n\n\n\n\n")
+    #            if model.model.accuracy > 80:
+    #                tr1 = time.time() - t
+    #                inputData["debug_logger"].info(str(model.model.accuracy.item()) + " achieved at time: " + str(tr1))
+    #                break
+    #            else:
+    #                tr1 = time.time() - t
+    #                inputData["debug_logger"].info(str(model.model.accuracy.item()) + " achieved at time: " + str(tr1))
+
+    #            inputData["debug_logger"].info("\n\n\n\n\n")
 
 
 
-        inputData = {"HI":"HIIII"}
-        return inputData
+
+
+    #    inputData = {"HI":"HIIII"}
+    #    return inputData
         #for r_min in range(5):
         #    res_cifar[10][r_min] = {}
         #    res_cifar[10][r_max] = {}
@@ -186,15 +206,15 @@ class FederatedServer(BaseTask):
         #    "minst_accuracy300": minst_accuracy300
         #}
 
-        res = {100:{},300:{}}
-        for i in [100, 300]:
-            for mode in ["none", "linear", "polynomial", "exponential"]:
+        #res = {100:{},300:{}}
+        #for i in [100, 300]:
+        #    for mode in ["none", "linear", "polynomial", "exponential"]:
 
-                t, a = cifar_federated_learning_t_change_cs_no_even_asynchronous(self.potential_client_addr, i, cpu_freq_factor, cpu_freq_sum, mode)
-                res[i][mode] = (t, a)
-        inputData["res"] = res
+        #        t, a = cifar_federated_learning_t_change_cs_no_even_asynchronous(self.potential_client_addr, i, cpu_freq_factor, cpu_freq_sum, mode)
+        #        res[i][mode] = (t, a)
+        #inputData["res"] = res
 
-        return inputData
+        #return inputData
 
 def cifar_federated_learning_t_change_cs_no_even_asynchronous(client_addrs, amount, cpu_freq_factor, cpu_freq_sum, mode):
     model = cifar10_classification()
