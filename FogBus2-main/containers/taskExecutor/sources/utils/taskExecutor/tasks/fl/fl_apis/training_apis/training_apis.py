@@ -38,6 +38,7 @@ class ml_train_apis:
             self._model.train(additional_args)
         if evaluate:
             self._model.evaluate()
+        self._model_lock.release()
 
     @staticmethod
     def train_remote(self_uuid, steps, remote_ptr: model_pointer, additional_args=None, evaluate=False):
@@ -78,3 +79,5 @@ class ml_train_apis:
         time_out = not required_time or datetime.now().timestamp() > (required_time[0] + required_time[1])
         return response_enough and time_out
 
+    def get_model_dict(self):
+        return self._model.to_dict()

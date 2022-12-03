@@ -97,7 +97,7 @@ if __name__ == "__main__":
     # make sure receive reply on the panel
     print("========= Test 10 Router send Message END=========")
 
-    print("========= Test 11 START=========")
+    print("========= Test 11 Establish relationship with remote START=========")
     b = base()
     b.add_server(router.get_default_router().message_receiver_address)
     b.add_client(router.get_default_router().message_receiver_address)
@@ -119,4 +119,27 @@ if __name__ == "__main__":
     assert remote_client.get_servers()[0] == b_pointer
     assert remote_peer.get_peers()[0] == b_pointer
 
-    print("========= Test 11 END=========")
+    print("========= Test 11 Establish relationship with remote END=========")
+
+    print("========= Test 12 Test Request Remote to Train START=========")
+    b_server = base()
+    b_server.add_client(router.get_default_router().message_receiver_address)
+    b_server.add_client(router.get_default_router().message_receiver_address)
+    b_server.add_client(router.get_default_router().message_receiver_address)
+    while len(b_server.get_clients()) < 3:
+        time.sleep(0.01)
+
+    # ----- Train 5 times without evaluate will cause count: 0 += 5
+    for client_ptr in b_server.get_clients():
+        b_server.train_remote(5, client_ptr)
+    time.sleep(1)  # make sure train finished on all clients
+    for client_ptr in b_server.get_clients():
+        assert warehouse().get_model(client_ptr.uuid).get_model_dict()["count"] == 5
+
+    # ----- Train 5 times with evaluate will cause count: 5 += 5 += 1 = 11
+    for client_ptr in b_server.get_clients():
+        b_server.train_remote(5, client_ptr, evaluate=True)
+    time.sleep(1)  # make sure train finished on all clients
+    for client_ptr in b_server.get_clients():
+        assert warehouse().get_model(client_ptr.uuid).get_model_dict()["count"] == 11
+    print("========= Test 12 Test Request Remote to Train END=========")

@@ -3,15 +3,16 @@
 from .relationship_apis.relationship_manager import relationship_manager
 from .training_apis.training_apis import ml_train_apis
 from ..warehouse.warehouse import warehouse
-
+from .training_apis.ml_models.dummy_model import dummy_model
 
 class base:
 
     name = "base"
+    underlying_model = dummy_model
 
-    def __init__(self, underlying_model, other_init_args=None, ml_model_initialise_args=None, additional_args=None):
+    def __init__(self, other_init_args=None, ml_model_initialise_args=None, additional_args=None):
         self._relationship_handler = relationship_manager()
-        self._ml_train_apis = ml_train_apis(underlying_model, ml_model_initialise_args, additional_args)
+        self._ml_train_apis = ml_train_apis(base.underlying_model, ml_model_initialise_args, additional_args)
         self.uuid = warehouse().set_model(self)
 
         # expose relationship APIS here
@@ -30,3 +31,4 @@ class base:
         self.ack_train_finish = lambda remote_ptr: self._ml_train_apis.ack_train_finish(self.uuid, remote_ptr)
         self.federate = self._ml_train_apis.federate
         self.can_federate = self._ml_train_apis.can_federate
+        self.get_model_dict = self._ml_train_apis.get_model_dict

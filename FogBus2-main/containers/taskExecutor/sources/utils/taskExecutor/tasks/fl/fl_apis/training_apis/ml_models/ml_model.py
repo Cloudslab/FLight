@@ -9,5 +9,8 @@ class ml_model:
     def evaluate(self):
         pass
 
+    def to_dict(self):
+        pass
+
     def __init__(self, additional_args=None):
         pass

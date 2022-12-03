@@ -15,3 +15,6 @@ class dummy_model(ml_model):
     def evaluate(self):
         self.content += "Dummy evaluate " + str(self.count) + "\n"
         self.count += 1
+
+    def to_dict(self):
+        return {"count": self.count}

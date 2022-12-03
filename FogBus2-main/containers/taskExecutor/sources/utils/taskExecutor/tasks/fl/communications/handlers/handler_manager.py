@@ -4,6 +4,7 @@
 from .abstract_handler import abstract_handler
 from .dummy_handler import dummy_handler
 from .relationship_handler import relationship_handler
+from .training_handlers import training_handler
 handler_name_len = abstract_handler.HANDLER_NAME_LENGTH
 
 
@@ -30,3 +31,5 @@ class handler_manager:
     def __init__(self):
         self.add_handler(dummy_handler())
         self.add_handler(relationship_handler())
+        self.add_handler(training_handler())
+
