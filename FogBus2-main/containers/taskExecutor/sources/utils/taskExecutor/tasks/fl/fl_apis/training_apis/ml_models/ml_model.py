@@ -4,7 +4,7 @@
 class ml_model:
 
     def train(self, additional_args=None):
-        pass
+        self.version += 1
 
     def evaluate(self):
         pass
@@ -13,4 +13,4 @@ class ml_model:
         pass
 
     def __init__(self, additional_args=None):
-        pass
+        self.version = 0
