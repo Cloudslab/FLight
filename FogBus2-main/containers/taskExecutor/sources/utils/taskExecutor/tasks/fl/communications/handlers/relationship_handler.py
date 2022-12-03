@@ -40,8 +40,6 @@ class relationship_handler(abstract_handler):
             reply_id, additional_args, local_id, role_of_remote = data_received["reply_uuid"], data_received["additional_args"], data_received["remote_uuid"], data_received["role_of_this_model"]
             model = warehouse().get_model(local_id)
             if model:
-                x = 1
-                x.sot()
                 model.add_ptr(role_of_remote, model_pointer(reply_id, reply_addr), additional_args)
 
     def __init__(self):

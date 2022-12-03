@@ -51,22 +51,16 @@ class FederatedServer(BaseTask):
         b.add_server(self.potential_client_addr[1])
         b.add_peer(self.potential_client_addr[2])
 
-        remote_server_ptr, remote_client_ptr, remote_peer_ptr = b.get_servers(), b.get_clients(), b.get_peers()
-        inputData = {"remote_server_ptr": remote_server_ptr, "remote_client_ptr": remote_client_ptr,
-                     "remote_peer_ptr": remote_peer_ptr}
+
+        while not b.get_servers() or not b.get_clients() or not b.get_peers():
+            time.sleep(0.01)
+
+
+
+
+        remote_server_ptr, remote_client_ptr, remote_peer_ptr = b.get_servers()[0], b.get_clients()[0], b.get_peers()[0]
+        inputData = {"remote_server_ptr": [remote_server_ptr.address, remote_server_ptr.uuid], "remote_client_ptr": [remote_client_ptr.address, remote_client_ptr.uuid], "remote_peer_ptr": [remote_peer_ptr.address, remote_peer_ptr.uuid]}
         return inputData
-
-
-        #while not b.get_servers() or not b.get_clients() or not b.get_peers():
-        #    time.sleep(0.01)
-        time.sleep(2)
-
-
-
-
-        #remote_server_ptr, remote_client_ptr, remote_peer_ptr = b.get_servers()[0], b.get_clients()[0], b.get_peers()[0]
-        #inputData = {"remote_server_ptr": remote_server_ptr, "remote_client_ptr": remote_client_ptr, "remote_peer_ptr": remote_peer_ptr}
-        #return inputData
         # set up router
 
 
