@@ -137,7 +137,7 @@ if __name__ == "__main__":
         assert warehouse().get_model(client_ptr.uuid).get_model_dict()["count"] == 5
     for version, base_version, credential, additional_args in list(b_server.get_available_remote_model_weights().values()):
         assert base_version == 0
-    # print(b_server.get_available_remote_model_weights())
+    print(b_server.get_available_remote_model_weights())
 
     # ----- Train 5 times with evaluate will cause count shift back to original 0 (count from b_server) += 5 = 5
     # ----- Evaluate one time will cause count += 1 (5 + 1 = 6)
@@ -155,8 +155,8 @@ if __name__ == "__main__":
     print("========= Test 13 Test Fetch Remote START=========")
     for client_ptr in b_server.get_clients():
         b_server.fetch_remote(client_ptr)
-
     time.sleep(1)
     assert b_server.can_federate(required_response=["general", 3])  # receive all three response
     assert not b_server.can_federate(required_response=["general", 4])  # receive only three response, less than four required
     print("========= Test 13 Test Fetch Remote END=========")
+

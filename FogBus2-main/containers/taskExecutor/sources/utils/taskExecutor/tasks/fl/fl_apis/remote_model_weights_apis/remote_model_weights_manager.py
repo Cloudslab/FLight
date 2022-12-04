@@ -13,3 +13,8 @@ class remote_model_weights_manager:
 
     def get_available_remote_model_weights(self):
         return self.remote_model_weights
+
+    def get_available_remote_model_weight_credential(self, model_ptr: model_pointer):
+        if model_ptr in self.remote_model_weights:
+            res = self.remote_model_weights.get(model_ptr).copy()
+            del self.remote_model_weights[model_ptr]
