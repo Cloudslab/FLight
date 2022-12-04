@@ -34,17 +34,18 @@ class training_handler(abstract_handler):
                 id_of_local_cache = model.download_model(credential["credential"])
                 model.load_model_dict(warehouse().get_model(id_of_local_cache))
                 model.train(steps, additional_args, evaluate)
-                model.ack_train_finish(remote_ptr)
+                model.ack_train_finish(remote_ptr, credential["version"])
 
         if sub_event == self.sub_events.ack_train_finish:
-            local_uuid, reply_uuid, base_version, remote_version = \
+            local_uuid, reply_uuid, base_version, remote_version, credential = \
                 data_received["remote_uuid"], \
                 data_received["reply_uuid"], \
                 data_received["base_version"], \
-                data_received["self_version"]
+                data_received["self_version"], \
+                data_received["credential"]
 
             model = warehouse().get_model(local_uuid)
             if model:
                 remote_ptr = model_pointer(reply_uuid, reply_addr)
-                model.update_weights_info(remote_ptr, remote_version, base_version)
+                model.update_weights_info(remote_ptr, remote_version, base_version, credential)
 

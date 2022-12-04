@@ -55,14 +55,15 @@ class ml_train_apis:
             "credential": model_download_credentials
         })
 
-    def ack_train_finish(self, self_uuid, remote_ptr: model_pointer):
+    def ack_train_finish(self, self_uuid, remote_ptr: model_pointer, base_version, model_download_credential=None):
         r = router.get_default_router()
         r.send(remote_ptr.address, training_handler.name, {
             "sub_event": training_handler.sub_events.ack_train_finish,
             "reply_uuid": self_uuid,
             "remote_uuid": remote_ptr.uuid,
-            "base_version": None,  # update when access generator & fetcher provides such information
-            "self_version": self._model.version
+            "base_version": base_version,
+            "self_version": self._model.version,
+            "credential": model_download_credential
         })
 
     def federate(self, access_to_cache, federated_algo):
@@ -97,3 +98,10 @@ class ml_train_apis:
 
     def load_model_dict(self, model_dict: dict):
         return self._model.from_dict(model_dict)
+
+    def save_to_cache(self, model_in_dict, access_to_cache):
+        if access_to_cache not in ["client_models", "server_models", "peer_models"]:
+            return
+        self._cache_lock[access_to_cache].acquire()
+        self._cache[access_to_cache].append(model_in_dict)
+        self._cache_lock[access_to_cache].release()

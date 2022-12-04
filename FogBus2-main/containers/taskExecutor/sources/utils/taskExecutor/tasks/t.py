@@ -135,6 +135,8 @@ if __name__ == "__main__":
     time.sleep(1)  # make sure train finished on all clients
     for client_ptr in b_server.get_clients():
         assert warehouse().get_model(client_ptr.uuid).get_model_dict()["count"] == 5
+    for version, base_version, credential, additional_args in list(b_server.get_available_remote_model_weights().values()):
+        assert base_version == 0
 
     # ----- Train 5 times with evaluate will cause count shift back to original 0 (count from b_server) += 5 = 5
     # ----- Evaluate one time will cause count += 1 (5 + 1 = 6)
@@ -145,6 +147,7 @@ if __name__ == "__main__":
         assert warehouse().get_model(client_ptr.uuid).get_model_dict()["count"] == 6
     for v in b_server.get_available_remote_model_weights().values():
         assert v[0] == 10  # experienced 10 trains, so version should be +=5 +=5 = 10
+    time.sleep(1)
     print("========= Test 12 Test Request Remote to Train END=========")
 
     print("========= Test 13 Test Fetch Remote START=========")
