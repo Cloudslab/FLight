@@ -160,3 +160,4 @@ if __name__ == "__main__":
     assert not b_server.can_federate(required_response=["general", 4])  # receive only three response, less than four required
     print("========= Test 13 Test Fetch Remote END=========")
 
+    print("")

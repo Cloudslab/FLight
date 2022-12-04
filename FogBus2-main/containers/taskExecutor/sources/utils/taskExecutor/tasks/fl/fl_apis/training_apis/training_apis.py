@@ -59,16 +59,6 @@ class ml_train_apis:
             "credential": model_download_credential
         })
 
-    # def federate(self, access_to_cache, federated_algo):
-    #    if access_to_cache not in ["client_models", "server_models", "peer_models"]:
-    #        return
-    #    self._cache_lock[access_to_cache].acquire()
-    #    temp = self._cache[access_to_cache].copy()
-    #    self._cache_lock[access_to_cache].release()
-    #    res = federated_algo(temp)
-    #    self._cache_lock["federated_results"].acquire()
-    #    self._cache["federated_results"] = res
-    #    self._cache_lock["federated_results"].release()
-
-    # required_response : (type, count), e.g.("peer_models", 5)
-    # required_time: (time_stamp, duration), e.g.(12345.3212, 20)
+    @staticmethod
+    def federate(access_to_cache, federated_algo, additional_args=None):
+        return federated_algo(access_to_cache, additional_args)

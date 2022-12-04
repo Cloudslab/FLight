@@ -31,3 +31,12 @@ class cache_manager:
         response_enough = not required_response or len(self._cache[required_response[0]]) >= required_response[1]
         time_out = not required_time or datetime.now().timestamp() > (required_time[0] + required_time[1])
         return response_enough and time_out
+
+    def clear_cache(self, access_to_cache="general"):
+        if access_to_cache not in ["client_models", "server_models", "peer_models", "general"]:
+            return
+        self._cache_lock[access_to_cache].acquire()
+        response = self._cache[access_to_cache].copy()
+        self._cache[access_to_cache].clear()
+        self._cache_lock[access_to_cache].release()
+        return response
