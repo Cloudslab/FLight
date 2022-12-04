@@ -13,7 +13,6 @@ from datetime import datetime
 from ...communications.router import router
 from ..relationship_apis.model_pointer import model_pointer
 from ...communications.handlers.training_handlers import training_handler
-from .remote_model_weights_manager.remote_model_weights_manager import remote_model_weights_manager
 
 
 class ml_train_apis:
