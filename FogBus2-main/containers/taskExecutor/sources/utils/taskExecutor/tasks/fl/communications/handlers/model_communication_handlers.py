@@ -27,4 +27,7 @@ class model_communication_handler(abstract_handler):
 
         if sub_event == self.sub_event.provide_credential:
             credential, reply_uuid, local_uuid, additional_args = data_received["credential"], data_received["reply_uuid"], data_received["remote_uuid"], data_received["additional_args"]
-            print(credential)
+            model = warehouse().get_model(local_uuid)
+            if model:  # can check if still interested
+                id_of_local_cache = model.download_model(credential)
+                model.save_to_cache(warehouse().get_model(id_of_local_cache))

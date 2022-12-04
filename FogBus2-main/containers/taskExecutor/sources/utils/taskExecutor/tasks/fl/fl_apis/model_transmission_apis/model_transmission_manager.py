@@ -19,13 +19,13 @@ class model_transmission_manager:
         credential = warehouse().get_model(self._version_to_id[v_current])
         return {"credential": credential,
                 "reply_uuid": model_uuid,
-                "remote_uuid": model_uuid,
                 "additional_args": additional_args,
                 "version": v_current}
 
     def provide_access(self, remote_ptr: model_pointer, model_object: ml_model, model_uuid, additional_args=None):
         response = self.generate_access(model_object, model_uuid, additional_args)
         response["sub_event"] = model_communication_handler.sub_event.provide_credential
+        response["remote_uuid"] = remote_ptr.uuid
         r = router.get_default_router()
         r.send(remote_ptr.address, model_communication_handler.name, response)
 
@@ -40,9 +40,6 @@ class model_transmission_manager:
         self._version_to_id[model_version] = model_id
         self._max_version = model_version
         self._export_lock.release()
-
-    def load_model_to_cache(self, cache: dict, cache_type, model_dict: dict):
-        pass
 
     @staticmethod
     def fetch_remote(self_uuid, remote_ptr: model_pointer, additional_args=None):
@@ -59,4 +56,3 @@ class model_transmission_manager:
         ftp_address, user_name, password, file_path = credentials
         local_model_id = warehouse().download_model(ftp_address, file_path, user_name, password)
         return local_model_id
-

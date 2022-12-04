@@ -6,20 +6,22 @@ from datetime import datetime
 class cache_manager:
     def __init__(self):
         self._cache = {
+            "general": [],
             "client_models": [],
             "server_models": [],
             "peer_models": [],
             "federated_results": None
         }
         self._cache_lock = {
+            "general": Lock(),
             "client_models": Lock(),
             "server_models": Lock(),
             "peer_models": Lock(),
             "federated_results": Lock()
         }
 
-    def save_to_cache(self, model_in_dict, access_to_cache):
-        if access_to_cache not in ["client_models", "server_models", "peer_models"]:
+    def save_to_cache(self, model_in_dict, access_to_cache="general"):
+        if access_to_cache not in ["client_models", "server_models", "peer_models", "general"]:
             return
         self._cache_lock[access_to_cache].acquire()
         self._cache[access_to_cache].append(model_in_dict)
