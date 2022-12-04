@@ -36,7 +36,6 @@ class base:
         self.train = self._ml_train_apis.train
         self.train_remote = lambda steps, remote_ptr, additional_args=None, evaluate=False, additional_args_for_access=None: self._ml_train_apis.train_remote(self.uuid, steps, remote_ptr, additional_args, evaluate, self.generate_access(additional_args_for_access))
         self.ack_train_finish = lambda remote_ptr, base_version, additional_args_for_access=None: self._ml_train_apis.ack_train_finish(self.uuid, remote_ptr, base_version, self.generate_access(additional_args_for_access))
-        ##self.federate = self._ml_train_apis.federate
         self.get_model_dict = self._ml_train_apis.get_model_dict
         self.load_model_dict = self._ml_train_apis.load_model_dict
 
