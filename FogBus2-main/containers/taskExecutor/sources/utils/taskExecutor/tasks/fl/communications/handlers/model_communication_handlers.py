@@ -13,6 +13,7 @@ class model_communication_handler(abstract_handler):
 
     class sub_event(Enum):
         fetch_model_weights = 1
+        provide_credential = 2
 
     def __call__(self, conn, reply_addr, *args, **kwargs):
         data_received = pickle.loads((conn.recv(2048)))
@@ -20,5 +21,10 @@ class model_communication_handler(abstract_handler):
         if sub_event == self.sub_event.fetch_model_weights:
             local_uuid, reply_uuid, additional_args = data_received["remote_uuid"], data_received["reply_uuid"], data_received["additional_args"]
             model = warehouse().get_model(local_uuid)
-            if model:
-                print("ha")
+            if model:  # add access check here
+                remote_ptr = model_pointer(reply_uuid, reply_addr)
+                model.provide_access(remote_ptr, additional_args)
+
+        if sub_event == self.sub_event.provide_credential:
+            credential, reply_uuid, local_uuid, additional_args = data_received["credential"], data_received["reply_uuid"], data_received["remote_uuid"], data_received["additional_args"]
+            print(credential)

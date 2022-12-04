@@ -39,3 +39,5 @@ class base:
 
         # expose model transmission APIs here
         self.fetch_remote = lambda remote_ptr, additional_args=None: self._model_transmission_manager.fetch_remote(self.uuid, remote_ptr, additional_args)
+        self.generate_access = lambda additional_args=None: self._model_transmission_manager.generate_access(self._ml_train_apis.get_model_object(), self.uuid, additional_args)
+        self.provide_access = lambda remote_ptr, additional_args=None: self._model_transmission_manager.provide_access(remote_ptr, self._ml_train_apis.get_model_object(), self.uuid, additional_args)

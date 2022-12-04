@@ -90,3 +90,6 @@ class ml_train_apis:
 
     def get_available_remote_model_weights(self):
         return self._remote_model_weights_manager.get_available_remote_model_weights()
+
+    def get_model_object(self):
+        return self._model
