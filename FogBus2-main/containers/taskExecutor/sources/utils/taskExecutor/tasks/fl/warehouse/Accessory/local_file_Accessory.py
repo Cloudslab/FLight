@@ -36,7 +36,7 @@ class local_file_accessory(abstract_accessory):
         server = ftplib.FTP()
         server.connect(ftp_server_addr[0], ftp_server_addr[1])
         server.login(user_name, password)
-        local_file_name = "".join([server_file_name.split(".")[0], "_", user_name, server_file_name.split(".")[1]])
+        local_file_name = "".join([server_file_name.split(".")[0], "_", user_name, ".", server_file_name.split(".")[1]])
         dest_path = os.path.join(self._destination_folder, local_file_name)
         with open(dest_path, "wb") as file:
             server.retrbinary(f"RETR {server_file_name}", file.write)
