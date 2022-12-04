@@ -15,24 +15,17 @@ from ..relationship_apis.model_pointer import model_pointer
 from ...communications.handlers.training_handlers import training_handler
 from .remote_model_weights_manager.remote_model_weights_manager import remote_model_weights_manager
 
+
 class ml_train_apis:
     def __init__(self, model_class, ml_model_initialise_args=None, additional_args=None):
         self._model = model_class(ml_model_initialise_args)
         self._model_lock = Lock()
-        self._cache = {
-            "client_models": [],
-            "server_models": [],
-            "peer_models": [],
-            "federated_results": None
-        }
-        self._cache_lock = {
-            "client_models": Lock(),
-            "server_models": Lock(),
-            "peer_models": Lock(),
-            "federated_results": Lock()
-        }
 
-        self._remote_model_weights_manager = remote_model_weights_manager()
+
+        # expose model's common apis
+        self.get_model_dict = self._model.to_dict
+        self.get_model_object = lambda: self._model
+        self.load_model_dict = self._model.from_dict
 
     def train(self, steps, additional_args=None, evaluate=False):
         self._model_lock.acquire()
@@ -43,7 +36,8 @@ class ml_train_apis:
         self._model_lock.release()
 
     @staticmethod
-    def train_remote(self_uuid, steps, remote_ptr: model_pointer, additional_args=None, evaluate=False, model_download_credentials=None):
+    def train_remote(self_uuid, steps, remote_ptr: model_pointer, additional_args=None, evaluate=False,
+                     model_download_credentials=None):
         r = router.get_default_router()
         r.send(remote_ptr.address, training_handler.name, {
             "sub_event": training_handler.sub_events.train_remote,
@@ -66,42 +60,16 @@ class ml_train_apis:
             "credential": model_download_credential
         })
 
-    def federate(self, access_to_cache, federated_algo):
-        if access_to_cache not in ["client_models", "server_models", "peer_models"]:
-            return
-        self._cache_lock[access_to_cache].acquire()
-        temp = self._cache[access_to_cache].copy()
-        self._cache_lock[access_to_cache].release()
-        res = federated_algo(temp)
-        self._cache_lock["federated_results"].acquire()
-        self._cache["federated_results"] = res
-        self._cache_lock["federated_results"].release()
+    # def federate(self, access_to_cache, federated_algo):
+    #    if access_to_cache not in ["client_models", "server_models", "peer_models"]:
+    #        return
+    #    self._cache_lock[access_to_cache].acquire()
+    #    temp = self._cache[access_to_cache].copy()
+    #    self._cache_lock[access_to_cache].release()
+    #    res = federated_algo(temp)
+    #    self._cache_lock["federated_results"].acquire()
+    #    self._cache["federated_results"] = res
+    #    self._cache_lock["federated_results"].release()
 
     # required_response : (type, count), e.g.("peer_models", 5)
     # required_time: (time_stamp, duration), e.g.(12345.3212, 20)
-    def can_federate(self, required_response=None, required_time=None, additional_args=None):
-        response_enough = not required_response or len(self._cache[required_response[0]] >= required_response[1])
-        time_out = not required_time or datetime.now().timestamp() > (required_time[0] + required_time[1])
-        return response_enough and time_out
-
-    def get_model_dict(self):
-        return self._model.to_dict()
-
-    def update_weights_info(self, remote_ptr: model_pointer, remote_version, base_local_version, download_credentials=None, additional_args=None):
-        self._remote_model_weights_manager.update_weights_info(remote_ptr, remote_version, base_local_version, download_credentials, additional_args)
-
-    def get_available_remote_model_weights(self):
-        return self._remote_model_weights_manager.get_available_remote_model_weights()
-
-    def get_model_object(self):
-        return self._model
-
-    def load_model_dict(self, model_dict: dict):
-        return self._model.from_dict(model_dict)
-
-    def save_to_cache(self, model_in_dict, access_to_cache):
-        if access_to_cache not in ["client_models", "server_models", "peer_models"]:
-            return
-        self._cache_lock[access_to_cache].acquire()
-        self._cache[access_to_cache].append(model_in_dict)
-        self._cache_lock[access_to_cache].release()
