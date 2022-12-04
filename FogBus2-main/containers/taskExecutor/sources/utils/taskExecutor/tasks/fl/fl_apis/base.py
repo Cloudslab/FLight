@@ -3,6 +3,7 @@
 from .relationship_apis.relationship_manager import relationship_manager
 from .training_apis.training_apis import ml_train_apis
 from ..warehouse.warehouse import warehouse
+from .model_transmission_apis.model_transmission_manager import model_transmission_manager
 from .training_apis.ml_models.dummy_model import dummy_model
 
 class base:
@@ -13,6 +14,7 @@ class base:
     def __init__(self, other_init_args=None, ml_model_initialise_args=None, additional_args=None):
         self._relationship_handler = relationship_manager()
         self._ml_train_apis = ml_train_apis(base.underlying_model, ml_model_initialise_args, additional_args)
+        self._model_transmission_manager = model_transmission_manager()
         self.uuid = warehouse().set_model(self)
 
         # expose relationship APIS here
@@ -34,3 +36,6 @@ class base:
         self.get_model_dict = self._ml_train_apis.get_model_dict
         self.update_weights_info = self._ml_train_apis.update_weights_info
         self.get_available_remote_model_weights = self._ml_train_apis.get_available_remote_model_weights
+
+        # expose model transmission APIs here
+        self.fetch_remote = lambda remote_ptr, additional_args=None: self._model_transmission_manager.fetch_remote(self.uuid, remote_ptr, additional_args)

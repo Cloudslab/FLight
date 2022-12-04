@@ -145,3 +145,8 @@ if __name__ == "__main__":
     for v in b_server.get_available_remote_model_weights().values():
         assert v[0] == 10  # experienced 10 trains, so version should be +=5 +=5 = 10
     print("========= Test 12 Test Request Remote to Train END=========")
+
+    print("========= Test 13 Test Fetch Remote START=========")
+    for client_ptr in b_server.get_clients():
+        b_server.fetch_remote(client_ptr)
+    print("========= Test 13 Test Fetch Remote END=========")

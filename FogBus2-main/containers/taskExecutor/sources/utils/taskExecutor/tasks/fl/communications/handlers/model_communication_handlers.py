@@ -15,4 +15,10 @@ class model_communication_handler(abstract_handler):
         fetch_model_weights = 1
 
     def __call__(self, conn, reply_addr, *args, **kwargs):
-        pass
+        data_received = pickle.loads((conn.recv(2048)))
+        sub_event = data_received["sub_event"]
+        if sub_event == self.sub_event.fetch_model_weights:
+            local_uuid, reply_uuid, additional_args = data_received["remote_uuid"], data_received["reply_uuid"], data_received["additional_args"]
+            model = warehouse().get_model(local_uuid)
+            if model:
+                print("ha")
