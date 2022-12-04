@@ -59,6 +59,7 @@ class ml_train_apis:
             "credential": model_download_credential
         })
 
-    @staticmethod
-    def federate(access_to_cache, federated_algo, additional_args=None):
-        return federated_algo(access_to_cache, additional_args)
+    def federate(self, access_to_cache, federated_algo, additional_args=None):
+        self._model.from_dict(federated_algo(weights=access_to_cache, additional_args=additional_args))
+        self._model.version += 1
+

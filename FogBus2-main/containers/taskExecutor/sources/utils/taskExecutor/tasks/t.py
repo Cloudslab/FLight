@@ -160,4 +160,67 @@ if __name__ == "__main__":
     assert not b_server.can_federate(required_response=["general", 4])  # receive only three response, less than four required
     print("========= Test 13 Test Fetch Remote END=========")
 
-    print("")
+    print("========= Test 14 A Complete FL train Test START=========")
+    b_server = base()
+    b_server.add_client(router.get_default_router().message_receiver_address)
+    b_server.add_client(router.get_default_router().message_receiver_address)
+    b_server.add_client(router.get_default_router().message_receiver_address)
+    while len(b_server.get_clients()) < 3:
+        time.sleep(0.01)
+
+    # ask all workers to start training
+    i = 3
+    for client_ptr in b_server.get_clients():  # train for 3, 4, 5 times
+        b_server.train_remote(i, client_ptr)
+        i += 1
+
+    # wait until receive enough response
+    while len(b_server.get_available_remote_model_weights()) < 3:
+        time.sleep(0.1)
+
+    # fetch all those responses
+    for client_ptr in b_server.get_available_remote_model_weights().copy().keys():
+        remote_version, base_local_version, download_credentials, additional_args = b_server.get_available_remote_model_weight_credential(client_ptr)
+        remote_model_local_cache_id = b_server.download_model(download_credentials["credential"])  # the remote model is stored locally, and the id is the key to retrieve the info from local data warehouse
+        b_server.save_to_cache(warehouse().get_model(remote_model_local_cache_id))
+
+    # wait until all credentials arrived
+    while not b_server.can_federate(required_response=["general", 3]):
+        time.sleep(0.1)
+
+    # federate
+    b_server.federate()
+    assert b_server.get_model_dict()["count"] == 4  # (3 + 4 + 5)/3 = 4
+
+    for client_ptr in b_server.get_clients():  # train for 6, 7, 8 times, start at 4 (count of server is 4)
+        b_server.train_remote(i, client_ptr)
+        i += 1
+
+    # same process as above
+    while len(b_server.get_available_remote_model_weights()) < 3:
+        time.sleep(0.1)
+    for client_ptr in b_server.get_available_remote_model_weights().copy().keys():
+        remote_version, base_local_version, download_credentials, additional_args = b_server.get_available_remote_model_weight_credential(client_ptr)
+        remote_model_local_cache_id = b_server.download_model(download_credentials["credential"])
+        b_server.save_to_cache(warehouse().get_model(remote_model_local_cache_id))
+    while not b_server.can_federate(required_response=["general", 3]):
+        time.sleep(0.1)
+
+    b_server.federate()
+    assert b_server.get_model_dict()["count"] == 11  # (6 + 7 + 8)/3 = 7, 7 + 4 (count of server from last iteration) = 11
+
+    for client_ptr in b_server.get_clients():  # train for 9, 10, 11 times, start at 11 (count of server is 11)
+        b_server.train_remote(i, client_ptr)
+        i += 1
+
+    while len(b_server.get_available_remote_model_weights()) < 3:
+        time.sleep(0.1)
+    for client_ptr in b_server.get_available_remote_model_weights().copy().keys():
+        remote_version, base_local_version, download_credentials, additional_args = b_server.get_available_remote_model_weight_credential(client_ptr)
+        remote_model_local_cache_id = b_server.download_model(download_credentials["credential"])
+        b_server.save_to_cache(warehouse().get_model(remote_model_local_cache_id))
+    while not b_server.can_federate(required_response=["general", 1]):   # here the required response is less than actual response can get (1 < 3), which is asynchronous FL
+        time.sleep(0.1)
+    b_server.federate()
+    print(b_server.get_model_dict())
+    print("========= Test 14 A Complete FL train Test END=========")

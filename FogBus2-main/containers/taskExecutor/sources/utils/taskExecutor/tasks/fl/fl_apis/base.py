@@ -13,7 +13,7 @@ class base:
 
     name = "base"
     underlying_model = dummy_model
-    average_algorithm = federated_average.federate
+    average_algorithm = federated_average().federate
 
     def __init__(self, other_init_args=None, ml_model_initialise_args=None, additional_args=None):
         self._relationship_handler = relationship_manager()
@@ -40,7 +40,7 @@ class base:
         self.ack_train_finish = lambda remote_ptr, base_version, additional_args_for_access=None: self._ml_train_apis.ack_train_finish(self.uuid, remote_ptr, base_version, self.generate_access(additional_args_for_access))
         self.get_model_dict = self._ml_train_apis.get_model_dict
         self.load_model_dict = self._ml_train_apis.load_model_dict
-        self.federate = lambda federated_algo=self.average_algorithm, additional_args=None, access_to_cache="general": self._ml_train_apis.federate(self._cache_manager.clear_cache(access_to_cache), federated_algo, additional_args)
+        self.federate = lambda federated_algo=base.average_algorithm, additional_args=None, access_to_cache="general": self._ml_train_apis.federate(self._cache_manager.clear_cache(access_to_cache), federated_algo, additional_args)
 
         # expose model transmission APIs here
         self.fetch_remote = lambda remote_ptr, additional_args=None: self._model_transmission_manager.fetch_remote(self.uuid, remote_ptr, additional_args)
@@ -56,3 +56,4 @@ class base:
         # expose model cache related APIs here
         self.update_weights_info = self._remote_model_weights_manager.update_weights_info
         self.get_available_remote_model_weights = self._remote_model_weights_manager.get_available_remote_model_weights
+        self.get_available_remote_model_weight_credential = self._remote_model_weights_manager.get_available_remote_model_weight_credential
