@@ -26,6 +26,6 @@ class cache_manager:
         self._cache_lock[access_to_cache].release()
 
     def can_federate(self, required_response=None, required_time=None, additional_args=None):
-        response_enough = not required_response or len(self._cache[required_response[0]] >= required_response[1])
+        response_enough = not required_response or len(self._cache[required_response[0]]) >= required_response[1]
         time_out = not required_time or datetime.now().timestamp() > (required_time[0] + required_time[1])
         return response_enough and time_out
