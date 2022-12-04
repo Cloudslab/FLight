@@ -29,11 +29,12 @@ class base:
 
         # expose training APIS here
         self.train = self._ml_train_apis.train
-        self.train_remote = lambda steps, remote_ptr, additional_args=None, evaluate=False: self._ml_train_apis.train_remote(self.uuid, steps, remote_ptr, additional_args, evaluate)
+        self.train_remote = lambda steps, remote_ptr, additional_args=None, evaluate=False, additional_args_for_access=None: self._ml_train_apis.train_remote(self.uuid, steps, remote_ptr, additional_args, evaluate, self.generate_access(additional_args_for_access))
         self.ack_train_finish = lambda remote_ptr: self._ml_train_apis.ack_train_finish(self.uuid, remote_ptr)
         self.federate = self._ml_train_apis.federate
         self.can_federate = self._ml_train_apis.can_federate
         self.get_model_dict = self._ml_train_apis.get_model_dict
+        self.load_model_dict = self._ml_train_apis.load_model_dict
         self.update_weights_info = self._ml_train_apis.update_weights_info
         self.get_available_remote_model_weights = self._ml_train_apis.get_available_remote_model_weights
 
@@ -41,3 +42,4 @@ class base:
         self.fetch_remote = lambda remote_ptr, additional_args=None: self._model_transmission_manager.fetch_remote(self.uuid, remote_ptr, additional_args)
         self.generate_access = lambda additional_args=None: self._model_transmission_manager.generate_access(self._ml_train_apis.get_model_object(), self.uuid, additional_args)
         self.provide_access = lambda remote_ptr, additional_args=None: self._model_transmission_manager.provide_access(remote_ptr, self._ml_train_apis.get_model_object(), self.uuid, additional_args)
+        self.download_model = self._model_transmission_manager.download_model

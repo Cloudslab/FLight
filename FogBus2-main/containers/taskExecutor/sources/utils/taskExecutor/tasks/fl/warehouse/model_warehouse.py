@@ -22,7 +22,9 @@ class model_warehouse:
         self._ftp_server_storage = ftp_accessory(addr)
 
     def download_model(self, ftp_server_addr, server_file_name, user_name, password, data_id: str = None):
-        self._local_file_storage.download_from_ftp(ftp_server_addr, server_file_name, user_name, password, data_id)
+        local_file_model_id = self._local_file_storage.download_from_ftp(ftp_server_addr, server_file_name, user_name, password, data_id)
+        self.id_to_storage[local_file_model_id] = model_warehouse.model_accessory_name.local_file
+        return local_file_model_id
 
     def __new__(cls, *args, **kwargs):
         if not hasattr(cls, "instance"):

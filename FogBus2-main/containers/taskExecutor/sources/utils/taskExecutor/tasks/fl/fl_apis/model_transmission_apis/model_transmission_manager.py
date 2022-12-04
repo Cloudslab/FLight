@@ -41,8 +41,7 @@ class model_transmission_manager:
         self._max_version = model_version
         self._export_lock.release()
 
-
-    def load_model_to_cache(self, cache: dict, cache_type):
+    def load_model_to_cache(self, cache: dict, cache_type, model_dict: dict):
         pass
 
     @staticmethod
@@ -55,6 +54,9 @@ class model_transmission_manager:
             "additional_args": additional_args
         })
 
-    def download_model(self, local_file_path, credentials):
-        pass
+    @staticmethod
+    def download_model(credentials):
+        ftp_address, user_name, password, file_path = credentials
+        local_model_id = warehouse().download_model(ftp_address, file_path, user_name, password)
+        return local_model_id
 

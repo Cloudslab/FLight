@@ -20,15 +20,19 @@ class training_handler(abstract_handler):
         sub_event = data_received["sub_event"]
 
         if sub_event == self.sub_events.train_remote:
-            steps, additional_args, reply_uuid, local_uuid, evaluate = \
+            steps, additional_args, reply_uuid, local_uuid, evaluate, credential = \
                 data_received["steps"], \
                 data_received["additional_args"], \
                 data_received["reply_uuid"], \
                 data_received["remote_uuid"], \
-                data_received["evaluate"]
+                data_received["evaluate"], \
+                data_received["credential"]
             remote_ptr = model_pointer(reply_uuid, reply_addr)
             model = warehouse().get_model(local_uuid)
             if model:  # can add criteria here to check if eligible to request train
+                # get model on server before starts to train
+                id_of_local_cache = model.download_model(credential["credential"])
+                model.load_model_dict(warehouse().get_model(id_of_local_cache))
                 model.train(steps, additional_args, evaluate)
                 model.ack_train_finish(remote_ptr)
 

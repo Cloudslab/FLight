@@ -43,7 +43,7 @@ class ml_train_apis:
         self._model_lock.release()
 
     @staticmethod
-    def train_remote(self_uuid, steps, remote_ptr: model_pointer, additional_args=None, evaluate=False):
+    def train_remote(self_uuid, steps, remote_ptr: model_pointer, additional_args=None, evaluate=False, model_download_credentials=None):
         r = router.get_default_router()
         r.send(remote_ptr.address, training_handler.name, {
             "sub_event": training_handler.sub_events.train_remote,
@@ -51,7 +51,8 @@ class ml_train_apis:
             "additional_args": additional_args,
             "reply_uuid": self_uuid,
             "remote_uuid": remote_ptr.uuid,
-            "evaluate": evaluate
+            "evaluate": evaluate,
+            "credential": model_download_credentials
         })
 
     def ack_train_finish(self, self_uuid, remote_ptr: model_pointer):
@@ -85,11 +86,14 @@ class ml_train_apis:
     def get_model_dict(self):
         return self._model.to_dict()
 
-    def update_weights_info(self, remote_ptr: model_pointer, remote_version, base_local_version, additional_args=None):
-        self._remote_model_weights_manager.update_weights_info(remote_ptr, remote_version, base_local_version, additional_args)
+    def update_weights_info(self, remote_ptr: model_pointer, remote_version, base_local_version, download_credentials=None, additional_args=None):
+        self._remote_model_weights_manager.update_weights_info(remote_ptr, remote_version, base_local_version, download_credentials, additional_args)
 
     def get_available_remote_model_weights(self):
         return self._remote_model_weights_manager.get_available_remote_model_weights()
 
     def get_model_object(self):
         return self._model
+
+    def load_model_dict(self, model_dict: dict):
+        return self._model.from_dict(model_dict)

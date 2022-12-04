@@ -11,6 +11,7 @@ class local_file_accessory(abstract_accessory):
     def __init__(self):
         self._file_paths = defaultdict(lambda: "")
         self._destination_folder = folder_position.local_file_storage_folder()
+        self._download_count = 0
 
     def get(self, args: dict, data_id: str):
         file_path = self._file_paths.get(data_id)
@@ -35,7 +36,8 @@ class local_file_accessory(abstract_accessory):
         server = ftplib.FTP()
         server.connect(ftp_server_addr[0], ftp_server_addr[1])
         server.login(user_name, password)
-        dest_path = os.path.join(self._destination_folder, server_file_name)
+        local_file_name = "".join([server_file_name.split(".")[0], "_", user_name, server_file_name.split(".")[1]])
+        dest_path = os.path.join(self._destination_folder, local_file_name)
         with open(dest_path, "wb") as file:
             server.retrbinary(f"RETR {server_file_name}", file.write)
         self._file_paths[data_id] = dest_path
