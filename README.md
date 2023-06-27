@@ -14,9 +14,6 @@ Federated Learning, Internet of Things, Cloud/Edge/Fog Computing, Containers
 
 # Cite FLight 
 ## Will be updated soon.
-```
-
-
 
 # References
-* Will be updated soon.
+Will be updated soon.
